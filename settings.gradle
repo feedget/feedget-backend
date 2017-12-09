@@ -1,0 +1,3 @@
+rootProject.name = 'feedget'
+
+include 'feedget-common', 'feedget-api'
