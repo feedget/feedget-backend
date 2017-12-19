@@ -22,3 +22,11 @@ dependencies {
 //	compileOnly('org.springframework.boot:spring-boot-configuration-processor')
 
 }
+
+springBoot {
+    mainClass = "kr.co.mashup.feedgetapi.FeedgetApiApplication"
+}
+
+bootRun {
+    systemProperty 'spring.profiles.active', 'localhost'
+}

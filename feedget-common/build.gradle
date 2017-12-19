@@ -15,14 +15,19 @@ apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 
 dependencies {
-    testCompile('org.springframework.boot:spring-boot-starter-test')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
 //    compile('org.springframework.boot:spring-boot-starter-data-redis')
 //    compile('org.springframework.boot:spring-boot-starter-actuator')
 
-    compileOnly('org.projectlombok:lombok')
+    // test
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('com.h2database:h2')
 
-    runtime('com.h2database:h2')
-    runtime('mysql:mysql-connector-java')
+    // db
+    compile('mysql:mysql-connector-java')
+    compile group: 'com.zaxxer', name: 'HikariCP', version: '2.7.2'
+
+    // util
+    compile('org.projectlombok:lombok')
 //    compile('org.flywaydb:flyway-core')
 }
