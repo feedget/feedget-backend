@@ -1,8 +1,20 @@
-allprojects {
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+// settings.gradle에 include된 project를 전부 관리
+subprojects {
     group 'kr.co.mashup'
     version '1.0-SNAPSHOT'
 
     apply plugin: 'java'
+    apply plugin: 'eclipse'
+    apply plugin: 'org.springframework.boot'
 
     repositories {
         mavenCentral()
@@ -13,5 +25,12 @@ allprojects {
 
     dependencies {
         testCompile group: 'junit', name: 'junit', version: '4.12'
+    }
+}
+
+// 하위 project간 의존성 관리
+project(':feedget-api') {
+    dependencies {
+        compile project(':feedget-common')
     }
 }

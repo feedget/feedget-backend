@@ -1,18 +1,8 @@
-buildscript {
-	ext {
-		springBootVersion = '1.5.9.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
-}
+archivesBaseName = rootProject.name + '.common'
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
+bootRepackage {
+	enabled = false
+}
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-jpa')

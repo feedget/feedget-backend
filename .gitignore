@@ -23,3 +23,9 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+### gradle multi module ###
+/feedback-common/out/
+/feedback-common/build/
+/feedback-api/out/
+/feedback-api/build/
