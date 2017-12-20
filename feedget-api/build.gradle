@@ -6,6 +6,9 @@ dependencies {
 //	compile('org.springframework.boot:spring-boot-starter-cache')
 //	compileOnly('org.springframework.boot:spring-boot-configuration-processor')
 
+    // Swagger
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.6.1'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.6.1'
 }
 
 springBoot {
