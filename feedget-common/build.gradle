@@ -9,17 +9,59 @@ dependencies {
 //    compile('org.springframework.boot:spring-boot-starter-data-redis')
 //    compile('org.springframework.boot:spring-boot-starter-actuator')
 
-    // test
-    testCompile('org.springframework.boot:spring-boot-starter-test')
-    testCompile('com.h2database:h2')
-
     // db
     compile('mysql:mysql-connector-java')
     compile group: 'com.zaxxer', name: 'HikariCP', version: '2.7.2'
+
+    def querydslVersion = "4.1.4"
+    compile "com.querydsl:querydsl-core:$querydslVersion"
+    compile "com.querydsl:querydsl-jpa:$querydslVersion"
+    compile "com.querydsl:querydsl-apt:$querydslVersion"
 
     // util
     compile('org.projectlombok:lombok')
 //    compile('org.flywaydb:flyway-core')
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'commons-io:commons-io:2.5'
+}
+
+/**
+ * QueryDSL Configuration
+ */
+sourceSets {
+    generated {
+        java {
+            srcDirs =  ["src/main/generated"]
+        }
+    }
+}
+
+configurations {
+    querydslapt
+}
+
+task generateQueryDSL(type: JavaCompile, group: 'build', description: 'Query dsl Generator') {
+    source = sourceSets.main.java
+    classpath = configurations.compile + configurations.querydslapt
+    options.compilerArgs = [
+            "-proc:only",
+            "-processor", "com.querydsl.apt.jpa.JPAAnnotationProcessor"
+    ]
+    options.encoding = 'UTF-8'
+    destinationDir = sourceSets.generated.java.srcDirs.iterator().next()
+}
+
+compileJava {
+    dependsOn generateQueryDSL
+    source generateQueryDSL.destinationDir
+}
+
+compileGeneratedJava {
+    dependsOn generateQueryDSL
+    options.warnings = false
+    classpath += sourceSets.main.runtimeClasspath
+}
+
+clean {
+    delete sourceSets.generated.java.srcDirs.iterator().next()
 }
