@@ -23,6 +23,8 @@ public class Notification extends AbstractEntity<Long> {
     @Column(name = "notification_id", columnDefinition = "INT(11)")
     private Long notificationId;
 
+    // Todo: 전송자 추가??
+
     // 알림 대상자
     @Column(name = "receiver_id", columnDefinition = "INT(11)")
     private Long receiverId;

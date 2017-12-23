@@ -104,7 +104,7 @@ public class User extends AbstractEntity<Long> {
      * 유저 등급
      * Todo: 임시 naming이므로 수정 필요
      */
-    enum UserGrade {
+    public enum UserGrade {
         GOLD,
         SILVER,
         BRONZE;
