@@ -79,7 +79,7 @@ public class Creation extends AbstractEntity<Long> {
 
     // 게시물 상태
     // Todo: 상태 코드 추가
-    enum Status {
+    public enum Status {
         // 진행중
         PROCEEDING,
 

@@ -22,7 +22,7 @@ public class SwaggerConfig {
 
     @Bean
     public Docket api() {
-        return new Docket(DocumentationType.SPRING_WEB)
+        return new Docket(DocumentationType.SWAGGER_2)
                 .groupName("kr.co.mashup.feedget")
                 .apiInfo(apiInfo())
                 .select()
