@@ -1,16 +1,11 @@
 package kr.co.mashup.feedgetcommon;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootApplication
 public class FeedgetCommonApplicationTests {
 
-	@Test
-	public void contextLoads() {
-	}
+    public void contextLoads() {
+    }
 
 }
