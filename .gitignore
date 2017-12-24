@@ -29,3 +29,6 @@ nbdist/
 /feedget-common/build/
 /feedget-api/out/
 /feedget-api/build/
+
+### QueryDSL ###
+/feedget-common/src/main/generated/
