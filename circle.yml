@@ -1,0 +1,28 @@
+machine:
+  timezone: Asia/Seoul
+  java:
+    version: oraclejdk8
+
+dependencies:
+  pre:
+    - chmod +x ./gradlew
+    # Todo: aws linkage
+  override:
+    - ./gradlew dependencies
+  cache_directories:
+    - "~/.gradle"
+
+test:
+  override:
+    - ./gradlew clean build -i
+  pre:
+    - echo "Build Start"
+  post:
+    - echo "Build End"
+
+deployment:
+  release:
+    branch: master
+    commands:
+    - ./gradlew build
+    # Todo: aws s3 linkage
