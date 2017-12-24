@@ -5,6 +5,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -24,7 +26,7 @@ public abstract class AbstractEntity<K extends Serializable> implements Serializ
      * 생성일자
      */
     @CreatedDate
-    @Column(name = "created_at", insertable = true, updatable = false, columnDefinition = "timestamp default CURRENT_TIMESTAMP")
+    @Column(name = "created_at", insertable = true, updatable = false)
     // insert 구문 포함, update 못하게 설정
     private LocalDateTime createdAt;
 
@@ -32,7 +34,7 @@ public abstract class AbstractEntity<K extends Serializable> implements Serializ
      * 수정일자
      */
     @LastModifiedDate
-    @Column(name = "updated_at", insertable = true, updatable = true, columnDefinition = "timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    @Column(name = "updated_at", insertable = true, updatable = true)
     // insert, update 구문 포함
     private LocalDateTime updatedAt;
 
