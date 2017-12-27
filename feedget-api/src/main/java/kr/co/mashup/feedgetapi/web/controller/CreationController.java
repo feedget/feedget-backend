@@ -5,10 +5,11 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import kr.co.mashup.feedgetapi.exception.ErrorResponse;
-import kr.co.mashup.feedgetapi.web.dto.DataListResponse;
+import kr.co.mashup.feedgetapi.service.CreationService;
 import kr.co.mashup.feedgetapi.web.dto.CreationDto;
+import kr.co.mashup.feedgetapi.web.dto.DataListResponse;
 import kr.co.mashup.feedgetapi.web.dto.DataResponse;
-import kr.co.mashup.feedgetapi.web.dto.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -28,8 +29,8 @@ import java.util.List;
 @Api(description = "창작물", tags = {"creation"})
 public class CreationController {
 
-//    @Autowired
-//    private CreationService creationService;
+    @Autowired
+    private CreationService creationService;
 
     @ApiOperation(value = "창작물 리스트 조회", notes = "창작물 리스트를 조회한다")
     @ApiResponses(value = {
@@ -39,7 +40,7 @@ public class CreationController {
     })
     @GetMapping
     public DataListResponse<CreationDto.Response> getCreations(@RequestParam(value = "page", defaultValue = "0") int page,
-                                                           @RequestParam(value = "size", defaultValue = "20") int size) {
+                                                               @RequestParam(value = "size", defaultValue = "20") int size) {
 
         List<CreationDto.Response> creations = new ArrayList<>();
         creations.add(new CreationDto.Response());
@@ -55,7 +56,7 @@ public class CreationController {
     })
     @GetMapping(value = "/{creationId}")
     public DataResponse<CreationDto.DetailResponse> getCreation(@RequestHeader long userId,
-                                                      @PathVariable(value = "creationId") long creationId) {
+                                                                @PathVariable(value = "creationId") long creationId) {
 
         return new DataResponse<>(new CreationDto.DetailResponse());
     }
@@ -68,10 +69,10 @@ public class CreationController {
     })
     @PostMapping
     public ResponseEntity createCreation(@RequestHeader long userId,  // Todo: 유저 ID 셋팅
-                                   @Valid @RequestBody CreationDto.Create create,
-                                   BindingResult result) {
+                                         @Valid @RequestBody CreationDto.Create create,
+                                         BindingResult result) {
 
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             ErrorResponse errorRepoonse = new ErrorResponse();
             errorRepoonse.setMessage("질못된 요청입니다");
             errorRepoonse.setCode("bad request");
@@ -79,10 +80,9 @@ public class CreationController {
             return new ResponseEntity<>(errorRepoonse, HttpStatus.BAD_REQUEST);
         }
 
-        // Todo: implement create logic
 //        ParameterUtil.checkParameterEmpty();
-
-        return new ResponseEntity<>(DataResponse.created(), HttpStatus.CREATED);
+        long creationId = creationService.addCreation(userId, create);
+        return new ResponseEntity<>(new DataResponse<>(creationId), HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "창작물 수정", notes = "창작물을 수정한다")
@@ -107,4 +107,6 @@ public class CreationController {
     public void deleteCreation() {
         // Todo: implement remove logic
     }
+
+    // Todo: 서비스 단의 exception handler 추
 }
