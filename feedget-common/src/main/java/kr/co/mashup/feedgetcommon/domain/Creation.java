@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class Creation extends AbstractEntity<Long> {
 
     // 마감일 - system default 2주 후로 설정
     @Column(name = "due_date", nullable = false)
-    private ZonedDateTime dueDate;
+    private LocalDateTime dueDate;
 
     // 보상 포인트
     @Column(name = "reward_point", nullable = false, columnDefinition = "DECIMAL(12,2) default 0")

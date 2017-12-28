@@ -2,11 +2,11 @@ package kr.co.mashup.feedgetcommon.domain;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
+import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
  * Created by ethankim on 2017. 11. 4..
  */
 @MappedSuperclass  //Parent Entity Class 지원
+@EntityListeners(AuditingEntityListener.class)
 //@JsonInclude(value = JsonInclude.Include.ALWAYS)   //필드값 존재 여부에 따라 Json에 포함할지 여부
 //@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility =
 //        JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
