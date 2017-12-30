@@ -5,7 +5,6 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -43,7 +42,7 @@ public class Creation extends AbstractEntity<Long> {
     private Category category;
 
     // 컨텐츠 정보 - 최대 10개
-    @OneToMany(mappedBy = "creation")
+    @OneToMany(mappedBy = "creation", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CreationContents> contents;
 
     // 마감일 - system default 2주 후로 설정
@@ -60,7 +59,7 @@ public class Creation extends AbstractEntity<Long> {
     private Status status;
 
     // 작성자
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id", foreignKey = @ForeignKey(name = "fk_creation_to_writer_id"))
     private User writer;
 
@@ -88,5 +87,10 @@ public class Creation extends AbstractEntity<Long> {
         DEADLINE;
 
 //        평가 없음?
+    }
+
+    public void addContents(CreationContents contents) {
+        // Todo: 복수로 수정
+        this.contents.add(contents);
     }
 }

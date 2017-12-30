@@ -4,44 +4,59 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import kr.co.mashup.feedgetapi.web.ParameterUtil;
+import kr.co.mashup.feedgetapi.exception.ErrorResponse;
+import kr.co.mashup.feedgetapi.service.ContentsDto;
+import kr.co.mashup.feedgetapi.service.ContentsService;
 import kr.co.mashup.feedgetapi.web.dto.Response;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import javax.validation.Valid;
 
 /**
- * 컨텐츠 관련 request에 대한 처리
+ * 창작물의 컨텐츠 관련 request에 대한 처리
  * <p>
  * Created by ethan.kim on 2017. 12. 21..
  */
 @RestController
-@RequestMapping(value = "/contents")
-@Api(description = "컨텐츠", tags = {"contents"})
+@RequestMapping(value = "/creations/{creationId}/contents")
+@Api(description = "창작물 컨텐츠", tags = {"creation contents"})
 @Slf4j
+@RequiredArgsConstructor
 public class ContentsController {
 
-    @ApiOperation(value = "컨텐츠 추가")
+    @Autowired
+    private final ContentsService contentsService;
+
+    @ApiOperation(value = "창작물의 컨텐츠 추가")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "추가 성공"),
             @ApiResponse(code = 400, message = "잘못된 요청(필수 파라미터 누락)"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public Response createContents(@RequestParam("creationId") long creationId,
-                                   @RequestParam("type") String contentsType,
-                                   @RequestParam(name = "files") List<MultipartFile> files) {
-        log.info("createContents - creationId : {}, type : {}, files : {}", creationId, contentsType, files);
+    public ResponseEntity createContents(@PathVariable(value = "creationId") long creationId,
+                                         @Valid @ModelAttribute ContentsDto dto,
+                                         BindingResult result) {
+        log.info("createContents - creationId : {}, contents : {}", creationId, dto);
 
-        // 컨텐츠 - 이미지
-        // 컨텐츠 이미지는 0 ~ 10개까지 게시할 수 있다
+        if (result.hasErrors() ||
+                !CollectionUtils.isEmpty(dto.getFiles()) && dto.getFiles().size() > 10) {
+            // 컨텐츠는 0 ~ 10개까지 게시할 수 있다
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.setMessage("잘못된 요청입니다");
+            errorResponse.setCode("bad request");
+            // Todo: BindingResult안에 들어 있는 에러 정보 사용
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
 
-        ParameterUtil.checkParameterEmpty(creationId, contentsType, files);
-//        contentsService.addContents(creationId, Contents.Type.fromString(contentsType), files);
-        return Response.created();
+        contentsService.addContents(creationId, dto);
+        return new ResponseEntity<>(Response.created(), HttpStatus.CREATED);
     }
 }

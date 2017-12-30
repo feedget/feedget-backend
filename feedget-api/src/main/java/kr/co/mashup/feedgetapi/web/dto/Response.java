@@ -46,6 +46,6 @@ public class Response {
     }
 
     public static Response noContent() {
-        return new Response(HttpStatus.NO_CONTENT.value(), "no content");
+        return new Response(HttpStatus.NO_CONTENT.value(), "no contents");
     }
 }
