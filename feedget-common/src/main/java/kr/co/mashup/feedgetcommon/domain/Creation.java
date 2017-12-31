@@ -43,7 +43,7 @@ public class Creation extends AbstractEntity<Long> {
 
     // 컨텐츠 정보 - 최대 10개
     @OneToMany(mappedBy = "creation", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CreationContents> contents;
+    private List<CreationContent> contents;
 
     // 마감일 - system default 2주 후로 설정
     @Column(name = "due_date", nullable = false)
@@ -89,8 +89,12 @@ public class Creation extends AbstractEntity<Long> {
 //        평가 없음?
     }
 
-    public void addContents(CreationContents contents) {
-        // Todo: 복수로 수정
-        this.contents.add(contents);
+    /**
+     * 컨텐츠 추가
+     *
+     * @param content 추가할 창작물의 내용물
+     */
+    public void addContent(CreationContent content) {
+        contents.add(content);
     }
 }

@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import kr.co.mashup.feedgetapi.exception.ErrorResponse;
-import kr.co.mashup.feedgetapi.service.ContentsDto;
+import kr.co.mashup.feedgetapi.web.dto.ContentsDto;
 import kr.co.mashup.feedgetapi.service.ContentsService;
 import kr.co.mashup.feedgetapi.web.dto.Response;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping(value = "/creations/{creationId}/contents")
-@Api(description = "창작물 컨텐츠", tags = {"creation contents"})
+@Api(description = "창작물 컨텐츠", tags = {"creation content"})
 @Slf4j
 @RequiredArgsConstructor
 public class ContentsController {
@@ -44,10 +44,10 @@ public class ContentsController {
     public ResponseEntity createContents(@PathVariable(value = "creationId") long creationId,
                                          @Valid @ModelAttribute ContentsDto dto,
                                          BindingResult result) {
-        log.info("createContents - creationId : {}, contents : {}", creationId, dto);
+        log.info("createContents - creationId : {}, content : {}", creationId, dto);
 
         if (result.hasErrors() ||
-                !CollectionUtils.isEmpty(dto.getFiles()) && dto.getFiles().size() > 10) {
+                CollectionUtils.isEmpty(dto.getFiles()) || dto.getFiles().size() > 10) {
             // 컨텐츠는 0 ~ 10개까지 게시할 수 있다
             ErrorResponse errorResponse = new ErrorResponse();
             errorResponse.setMessage("잘못된 요청입니다");

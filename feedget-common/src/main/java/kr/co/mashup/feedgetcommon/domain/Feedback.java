@@ -31,7 +31,7 @@ public class Feedback extends AbstractEntity<Long> {
 
     // 컨텐츠 정보 - 최대 3개
     @OneToMany(mappedBy = "feedback")
-    private List<FeedbackContents> contents;
+    private List<FeedbackContent> contents;
 
     @ManyToOne(fetch = FetchType.LAZY)  // Feedback(Many) : User(One)
     @JoinColumn(name = "writer_id", foreignKey = @ForeignKey(name = "fk_feedback_to_writer_id"))
