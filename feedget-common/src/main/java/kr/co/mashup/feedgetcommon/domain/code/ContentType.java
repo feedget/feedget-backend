@@ -1,7 +1,7 @@
 package kr.co.mashup.feedgetcommon.domain.code;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 컨텐츠 종류
@@ -18,15 +18,15 @@ public enum ContentType {
         this.value = value;
     }
 
-    private static final Map<String, ContentType> stringToEnum = new HashMap<>();
+    private static final Map<String, ContentType> lookup = new ConcurrentHashMap<>();
 
     static {  // 상수 이름을 실제 상수로 대응시키는 map 초기화
         for (ContentType type : values()) {
-            stringToEnum.put(type.toString(), type);
+            lookup.put(type.value, type);
         }
     }
 
     public static ContentType fromString(String symbol) {
-        return stringToEnum.get(symbol);
+        return lookup.get(symbol);
     }
 }

@@ -5,15 +5,13 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import kr.co.mashup.feedgetapi.exception.ErrorResponse;
-import kr.co.mashup.feedgetapi.web.dto.ContentsDto;
 import kr.co.mashup.feedgetapi.service.ContentsService;
+import kr.co.mashup.feedgetapi.web.dto.ContentsDto;
 import kr.co.mashup.feedgetapi.web.dto.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +29,6 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class ContentsController {
 
-    @Autowired
     private final ContentsService contentsService;
 
     @ApiOperation(value = "창작물의 컨텐츠 추가")
@@ -46,9 +43,7 @@ public class ContentsController {
                                          BindingResult result) {
         log.info("createContents - creationId : {}, content : {}", creationId, dto);
 
-        if (result.hasErrors() ||
-                CollectionUtils.isEmpty(dto.getFiles()) || dto.getFiles().size() > 10) {
-            // 컨텐츠는 0 ~ 10개까지 게시할 수 있다
+        if (result.hasErrors()) {
             ErrorResponse errorResponse = new ErrorResponse();
             errorResponse.setMessage("잘못된 요청입니다");
             errorResponse.setCode("bad request");

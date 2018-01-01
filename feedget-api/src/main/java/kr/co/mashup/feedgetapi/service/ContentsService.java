@@ -32,6 +32,12 @@ public class ContentsService {
 
     private final StorageProperties storageProperties;
 
+    /**
+     * 창작물의 컨텐츠 추가
+     *
+     * @param creationId
+     * @param dto
+     */
     @Transactional
     public void addContents(long creationId, ContentsDto dto) {
         ContentType contentType = ContentType.fromString(dto.getContentsType());
