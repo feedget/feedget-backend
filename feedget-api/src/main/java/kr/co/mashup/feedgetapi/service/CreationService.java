@@ -55,7 +55,7 @@ public class CreationService {
         creation.setWriter(writer);
         creation.setAnonymity(dto.isAnonymity());
         creation.setFeedbackCount(0L);
-        creationRepository.save(creation);
+        creation = creationRepository.save(creation);
 
         writer.setCurrentPoint(writer.getCurrentPoint() - dto.getRewardPoint());
         writer.setPeriodPoint(writer.getPeriodPoint() - dto.getRewardPoint());

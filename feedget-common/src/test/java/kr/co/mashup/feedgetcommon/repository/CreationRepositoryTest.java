@@ -1,6 +1,8 @@
 package kr.co.mashup.feedgetcommon.repository;
 
 import kr.co.mashup.feedgetcommon.domain.Creation;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +10,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by ethan.kim on 2017. 12. 24..
@@ -19,17 +24,39 @@ import java.util.List;
 public class CreationRepositoryTest {
 
     @Autowired
-    private CreationRepository creationRepository;
+    private CreationRepository sut;
+
+    private Creation creation;
+
+    @Before
+    public void setup() {
+        creation = new Creation();
+        creation.setTitle("title");
+        creation.setDescription("description");
+        creation.setCategory(null);
+        creation.setDueDate(LocalDateTime.now().plusDays(14));
+        creation.setRewardPoint(10.0);
+        creation.setStatus(Creation.Status.PROCEEDING);
+        creation.setWriter(null);
+        creation.setAnonymity(true);
+        creation.setFeedbackCount(0L);
+        creation = sut.save(creation);
+    }
+
+    @After
+    public void tearDown() {
+        sut.deleteAll();
+    }
 
     @Test
-    public void test() throws Exception {
-        // given :
+    public void findByCreationId_창작물_단건_조회_성공() throws Exception {
+        // given : 창작물 ID로
+        long creationId = creation.getCreationId();
 
-        List<Creation> creations = creationRepository.findAll();
+        // when : 창작물을 조회하면
+        Optional<Creation> creationOp = sut.findByCreationId(creationId);
 
-        // when :
-
-        // then :
-
+        // then : 창작물이 조회된다
+        assertTrue(creationOp.isPresent());
     }
 }
