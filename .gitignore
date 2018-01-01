@@ -32,3 +32,6 @@ nbdist/
 
 ### QueryDSL ###
 /feedget-common/src/main/generated/
+
+### local storage ###
+/storage/

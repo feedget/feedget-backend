@@ -32,12 +32,12 @@ public class CategoryController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping
-    public ResponseEntity<CategoryDto.Response> getCategories(@RequestParam(value = "page", defaultValue = "0") int page,
+    public ResponseEntity<List<CategoryDto.Response>> getCategories(@RequestParam(value = "page", defaultValue = "0") int page,
                                                               @RequestParam(value = "size", defaultValue = "20") int size) {
 
         List<CategoryDto.Response> categories = new ArrayList<>();
         categories.add(new CategoryDto.Response());
 
-        return new ResponseEntity(categories, HttpStatus.OK);
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 }
