@@ -42,6 +42,9 @@ public class CreationService {
             throw new InvalidParameterException("exceed current point");
         }
 
+        writer.changePoint(-dto.getRewardPoint());
+        userRepository.save(writer);
+
         Optional<Category> categoryOp = categoryRepository.findByName(dto.getCategory());
         Category category = categoryOp.orElseThrow(() -> new NotFoundException("not found category"));
 
@@ -57,10 +60,46 @@ public class CreationService {
         creation.setFeedbackCount(0L);
         creation = creationRepository.save(creation);
 
-        writer.setCurrentPoint(writer.getCurrentPoint() - dto.getRewardPoint());
-        writer.setPeriodPoint(writer.getPeriodPoint() - dto.getRewardPoint());
+        return creation.getCreationId();
+    }
+
+    @Transactional
+    public void modifyCreation(long userId, long creationId, CreationDto.Update dto) {
+        User writer = userRepository.findOne(userId);
+        if (writer == null) {
+            throw new NotFoundException("not found writer");
+        }
+
+        Optional<Creation> creationOp = creationRepository.findByCreationId(creationId);
+        Creation creation = creationOp.orElseThrow(() -> new NotFoundException("not found creation"));
+
+        if (!creation.isWritedBy(writer)) {
+            // Todo: exception class 수정
+            throw new InvalidParameterException("not match writer");
+        }
+
+        if (creation.isDeadline()) {
+            // Todo: exception class 수정
+            throw new NotFoundException("forbidden modify");
+        }
+
+        if (creation.hasFeedback()) {
+            // Todo: exception class 수정
+            throw new NotFoundException("forbidden modify");
+        }
+
+        // 보상 포인트 수정시 차액은 반환된다
+        writer.changePoint(creation.getRewardPoint() - dto.getRewardPoint());
         userRepository.save(writer);
 
-        return creation.getCreationId();
+        Optional<Category> categoryOp = categoryRepository.findByName(dto.getCategory());
+        Category category = categoryOp.orElseThrow(() -> new NotFoundException("not found category"));
+
+        creation.setTitle(dto.getTitle());
+        creation.setDescription(dto.getDescription());
+        creation.setCategory(category);
+        creation.setRewardPoint(dto.getRewardPoint());
+        creation.setAnonymity(dto.isAnonymity());
+        creationRepository.save(creation);
     }
 }

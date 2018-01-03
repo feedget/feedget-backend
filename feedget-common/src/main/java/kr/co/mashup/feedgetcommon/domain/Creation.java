@@ -95,6 +95,18 @@ public class Creation extends AbstractEntity<Long> {
      * @param content 추가할 창작물의 내용물
      */
     public void addContent(CreationContent content) {
-        contents.add(content);
+        this.contents.add(content);
+    }
+
+    public boolean isWritedBy(User user) {
+        return this.writer.isSameUser(user);
+    }
+
+    public boolean hasFeedback() {
+        return this.feedbackCount > 0;
+    }
+
+    public boolean isDeadline() {
+        return this.status == Status.DEADLINE;
     }
 }

@@ -16,9 +16,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,7 +38,7 @@ public class CreationControllerTest {
     private ObjectMapper objectMapper;
 
     @Before
-    public void setup() {
+    public void setUp() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup(sut)
                 .alwaysDo(print())
                 .build();
