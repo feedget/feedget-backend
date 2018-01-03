@@ -109,4 +109,21 @@ public class User extends AbstractEntity<Long> {
         SILVER,
         BRONZE;
     }
+
+    public boolean isSameUser(User user) {
+        if (user == null) {
+            return false;
+        }
+        return this.userId.equals(user.userId);
+    }
+
+    public boolean changePoint(double point) {
+        this.currentPoint += point;
+        this.periodPoint += point;
+
+        if (currentPoint < 0) {
+            return false;
+        }
+        return true;
+    }
 }

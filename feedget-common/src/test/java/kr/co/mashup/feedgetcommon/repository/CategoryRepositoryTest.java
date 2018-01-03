@@ -28,14 +28,14 @@ public class CategoryRepositoryTest {
     private Category category;
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         category = new Category();
         category.setName("design");
         category = sut.save(category);
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws Exception {
         sut.deleteAll();
     }
 

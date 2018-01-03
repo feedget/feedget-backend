@@ -9,8 +9,6 @@ import kr.co.mashup.feedgetcommon.domain.User;
 import kr.co.mashup.feedgetcommon.repository.CategoryRepository;
 import kr.co.mashup.feedgetcommon.repository.CreationRepository;
 import kr.co.mashup.feedgetcommon.repository.UserRepository;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -23,9 +21,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by ethan.kim on 2018. 1. 2..
@@ -53,8 +49,11 @@ public class CreationServiceTest {
         // given : 유저 ID, 추가할 창작물 데이터로
         long userId = 1L;
         CreationDto.Create dto = new CreationDto.Create();
-        dto.setRewardPoint(10.0);
+        dto.setTitle("title");
+        dto.setDescription("description");
         dto.setCategory("design");
+        dto.setAnonymity(true);
+        dto.setRewardPoint(10.0);
 
         User writer = new User();
         writer.setUserId(userId);
@@ -88,8 +87,11 @@ public class CreationServiceTest {
         // given : 유저 ID, 추가할 창작물 데이터로
         long userId = 1L;
         CreationDto.Create dto = new CreationDto.Create();
-        dto.setRewardPoint(10.0);
+        dto.setTitle("title");
+        dto.setDescription("description");
         dto.setCategory("design");
+        dto.setAnonymity(true);
+        dto.setRewardPoint(10.0);
 
         when(userRepository.findOne(userId)).thenReturn(null);
 
@@ -100,12 +102,15 @@ public class CreationServiceTest {
     }
 
     @Test(expected = InvalidParameterException.class)
-    public void addCreation_창작물_추가_포인트_초과로_실패() {
+    public void addCreation_창작물_추가_보유_포인트_초과로_실패() {
         // given : 유저 ID, 추가할 창작물 데이터로
         long userId = 1L;
         CreationDto.Create dto = new CreationDto.Create();
-        dto.setRewardPoint(10.0);
+        dto.setTitle("title");
+        dto.setDescription("description");
         dto.setCategory("design");
+        dto.setAnonymity(true);
+        dto.setRewardPoint(10.0);
 
         User writer = new User();
         writer.setUserId(userId);
@@ -128,8 +133,11 @@ public class CreationServiceTest {
         // given : 유저 ID, 추가할 창작물 데이터로
         long userId = 1L;
         CreationDto.Create dto = new CreationDto.Create();
-        dto.setRewardPoint(10.0);
+        dto.setTitle("title");
+        dto.setDescription("description");
         dto.setCategory("design");
+        dto.setAnonymity(true);
+        dto.setRewardPoint(10.0);
 
         User writer = new User();
         writer.setUserId(userId);
@@ -143,5 +151,280 @@ public class CreationServiceTest {
         sut.addCreation(userId, dto);
 
         // then : 카테고리가 없어 창작물이 추가되지 않는다
+    }
+
+    @Test
+    public void modifyCreation_창작물_수정_성공() {
+        // given : 유저 ID, 창작물 ID, 수정할 창작물 데이터로
+        long userId = 1L;
+        long creationId = 1L;
+        CreationDto.Update dto = new CreationDto.Update();
+        dto.setTitle("title");
+        dto.setDescription("description");
+        dto.setCategory("design");
+        dto.setAnonymity(true);
+        dto.setRewardPoint(10.0);
+
+        User writer = new User();
+        writer.setUserId(userId);
+        writer.setCurrentPoint(100.0);
+        writer.setPeriodPoint(100.0);
+
+        Creation creation = new Creation();
+        creation.setCreationId(creationId);
+        creation.setWriter(writer);
+        creation.setFeedbackCount(0L);
+        creation.setRewardPoint(10.0);
+        creation.setStatus(Creation.Status.PROCEEDING);
+
+        Category category = new Category();
+        category.setName("design");
+
+        when(userRepository.findOne(userId)).thenReturn(writer);
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.of(creation));
+        when(categoryRepository.findByName(dto.getCategory())).thenReturn(Optional.of(category));
+
+        // when : 창작물을 수정하면
+        sut.modifyCreation(userId, creationId, dto);
+
+        // then : 창작물이 수정된다
+        verify(userRepository, times(1)).save(any(User.class));
+        verify(creationRepository, times(1)).save(any(Creation.class));
+    }
+
+    @Test
+    public void modifyCreation_창작물_수정_작성자가_없어_실패() {
+        expectedException.expect(NotFoundException.class);
+        expectedException.expectMessage("not found writer");
+
+        // given : 유저 ID, 창작물 ID, 수정할 창작물 데이터로
+        long userId = 1L;
+        long creationId = 1L;
+        CreationDto.Update dto = new CreationDto.Update();
+        dto.setTitle("title");
+        dto.setDescription("description");
+        dto.setCategory("design");
+        dto.setAnonymity(true);
+        dto.setRewardPoint(10.0);
+
+        when(userRepository.findOne(userId)).thenReturn(null);
+
+        // when : 창작물을 수정하면
+        sut.modifyCreation(userId, creationId, dto);
+
+        // then : 존재하지 않는 작성자라 창작물이 수정되지 않는다
+    }
+
+    @Test
+    public void modifyCreation_창작물_수정_창작물이_없어_실패() {
+        expectedException.expect(NotFoundException.class);
+        expectedException.expectMessage("not found creation");
+
+        // given : 유저 ID, 창작물 ID, 수정할 창작물 데이터로
+        long userId = 1L;
+        long creationId = 1L;
+        CreationDto.Update dto = new CreationDto.Update();
+        dto.setTitle("title");
+        dto.setDescription("description");
+        dto.setCategory("design");
+        dto.setAnonymity(true);
+        dto.setRewardPoint(10.0);
+
+        User writer = new User();
+        writer.setUserId(userId);
+        writer.setCurrentPoint(100.0);
+        writer.setPeriodPoint(100.0);
+
+        when(userRepository.findOne(userId)).thenReturn(writer);
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.empty());
+
+        // when : 창작물을 수정하면
+        sut.modifyCreation(userId, creationId, dto);
+
+        // then : 존재하지 않는 창작물이라 수정되지 않는다
+    }
+
+    @Test
+    public void modifyCreation_창작물_수정_작성자가_아니라_실패() {
+        expectedException.expect(InvalidParameterException.class);
+        expectedException.expectMessage("not match writer");
+
+        // given : 유저 ID, 창작물 ID, 수정할 창작물 데이터로
+        long userId = 1L;
+        long creationId = 1L;
+        CreationDto.Update dto = new CreationDto.Update();
+        dto.setTitle("title");
+        dto.setDescription("description");
+        dto.setCategory("design");
+        dto.setAnonymity(true);
+        dto.setRewardPoint(10.0);
+
+        User writer = new User();
+        writer.setUserId(userId);
+        writer.setCurrentPoint(100.0);
+        writer.setPeriodPoint(100.0);
+
+        User otherUser = new User();
+        otherUser.setUserId(2L);
+
+        Creation creation = new Creation();
+        creation.setCreationId(creationId);
+        creation.setWriter(otherUser);
+        creation.setFeedbackCount(0L);
+        creation.setRewardPoint(10.0);
+        creation.setStatus(Creation.Status.PROCEEDING);
+
+        when(userRepository.findOne(userId)).thenReturn(writer);
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.of(creation));
+
+        // when : 창작물을 수정하면
+        sut.modifyCreation(userId, creationId, dto);
+
+        // then : 작성자가 아니라 창작물이 수정되지 않는다
+    }
+
+    @Test
+    public void modifyCreation_창작물_수정_게시기간_마감이라_실패() {
+        expectedException.expect(InvalidParameterException.class);
+        expectedException.expectMessage("creation is deadline");
+
+        // given : 유저 ID, 창작물 ID, 수정할 창작물 데이터로
+        long userId = 1L;
+        long creationId = 1L;
+        CreationDto.Update dto = new CreationDto.Update();
+        dto.setTitle("title");
+        dto.setDescription("description");
+        dto.setCategory("design");
+        dto.setAnonymity(true);
+        dto.setRewardPoint(10.0);
+
+        User writer = new User();
+        writer.setUserId(userId);
+        writer.setCurrentPoint(100.0);
+        writer.setPeriodPoint(100.0);
+
+        Creation creation = new Creation();
+        creation.setCreationId(creationId);
+        creation.setWriter(writer);
+        creation.setFeedbackCount(0L);
+        creation.setRewardPoint(10.0);
+        creation.setStatus(Creation.Status.DEADLINE);
+
+        when(userRepository.findOne(userId)).thenReturn(writer);
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.of(creation));
+
+        // when : 창작물을 수정하면
+        sut.modifyCreation(userId, creationId, dto);
+
+        // then : 게시기간 마감이라 창작물이 수정되지 않는다
+    }
+
+    @Test
+    public void modifyCreation_창작물_수정_피드백이_존재해_실패() {
+        expectedException.expect(InvalidParameterException.class);
+        expectedException.expectMessage("forbidden modify");
+
+        // given : 유저 ID, 창작물 ID, 수정할 창작물 데이터로
+        long userId = 1L;
+        long creationId = 1L;
+        CreationDto.Update dto = new CreationDto.Update();
+        dto.setTitle("title");
+        dto.setDescription("description");
+        dto.setCategory("design");
+        dto.setAnonymity(true);
+        dto.setRewardPoint(10.0);
+
+        User writer = new User();
+        writer.setUserId(userId);
+        writer.setCurrentPoint(100.0);
+        writer.setPeriodPoint(100.0);
+
+        Creation creation = new Creation();
+        creation.setCreationId(creationId);
+        creation.setWriter(writer);
+        creation.setFeedbackCount(1L);
+        creation.setRewardPoint(10.0);
+        creation.setStatus(Creation.Status.PROCEEDING);
+
+        when(userRepository.findOne(userId)).thenReturn(writer);
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.of(creation));
+
+        // when : 창작물을 수정하면
+        sut.modifyCreation(userId, creationId, dto);
+
+        // then : 피드백이 존재해 창작물이 수정되지 않는다
+    }
+
+    @Test
+    public void modifyCreation_창작물_수정_보유_포인트_초과로_실패() {
+        expectedException.expect(InvalidParameterException.class);
+        expectedException.expectMessage("exceed current point");
+
+        // given : 유저 ID, 창작물 ID, 수정할 창작물 데이터로
+        long userId = 1L;
+        long creationId = 1L;
+        CreationDto.Update dto = new CreationDto.Update();
+        dto.setTitle("title");
+        dto.setDescription("description");
+        dto.setCategory("design");
+        dto.setAnonymity(true);
+        dto.setRewardPoint(1000.0);
+
+        User writer = new User();
+        writer.setUserId(userId);
+        writer.setCurrentPoint(100.0);
+        writer.setPeriodPoint(100.0);
+
+        Creation creation = new Creation();
+        creation.setCreationId(creationId);
+        creation.setWriter(writer);
+        creation.setFeedbackCount(0L);
+        creation.setRewardPoint(10.0);
+        creation.setStatus(Creation.Status.PROCEEDING);
+
+        when(userRepository.findOne(userId)).thenReturn(writer);
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.of(creation));
+
+        // when : 창작물을 수정하면
+        sut.modifyCreation(userId, creationId, dto);
+
+        // then : 존재하지 않는 카테고리라 창작물이 수정되지 않는다
+    }
+
+    @Test
+    public void modifyCreation_창작물_수정_카테고리가_없어_실패() {
+        expectedException.expect(NotFoundException.class);
+        expectedException.expectMessage("not found category");
+
+        // given : 유저 ID, 창작물 ID, 수정할 창작물 데이터로
+        long userId = 1L;
+        long creationId = 1L;
+        CreationDto.Update dto = new CreationDto.Update();
+        dto.setTitle("title");
+        dto.setDescription("description");
+        dto.setCategory("design");
+        dto.setAnonymity(true);
+        dto.setRewardPoint(10.0);
+
+        User writer = new User();
+        writer.setUserId(userId);
+        writer.setCurrentPoint(100.0);
+        writer.setPeriodPoint(100.0);
+
+        Creation creation = new Creation();
+        creation.setCreationId(creationId);
+        creation.setWriter(writer);
+        creation.setFeedbackCount(0L);
+        creation.setRewardPoint(10.0);
+        creation.setStatus(Creation.Status.PROCEEDING);
+
+        when(userRepository.findOne(userId)).thenReturn(writer);
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.of(creation));
+        when(categoryRepository.findByName(dto.getCategory())).thenReturn(Optional.empty());
+
+        // when : 창작물을 수정하면
+        sut.modifyCreation(userId, creationId, dto);
+
+        // then : 존재하지 않는 카테고리라 창작물이 수정되지 않는다
     }
 }

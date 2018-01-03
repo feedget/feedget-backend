@@ -2,6 +2,7 @@ package kr.co.mashup.feedgetapi.web.controller;
 
 import kr.co.mashup.feedgetapi.service.ContentsService;
 import kr.co.mashup.feedgetapi.web.dto.ContentsDto;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +36,7 @@ public class ContentsControllerTest {
     private ContentsController sut;
 
     @Before
-    public void setup() {
+    public void setUp() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup(sut)
                 .alwaysDo(print())
                 .build();

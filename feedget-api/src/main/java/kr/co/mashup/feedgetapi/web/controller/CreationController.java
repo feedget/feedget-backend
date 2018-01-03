@@ -9,6 +9,7 @@ import kr.co.mashup.feedgetapi.service.CreationService;
 import kr.co.mashup.feedgetapi.web.dto.CreationDto;
 import kr.co.mashup.feedgetapi.web.dto.DataListResponse;
 import kr.co.mashup.feedgetapi.web.dto.DataResponse;
+import kr.co.mashup.feedgetapi.web.dto.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -92,9 +93,20 @@ public class CreationController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PutMapping(value = "/{creationId}")
-    public void updateCreation(@RequestHeader long userId,
-                               @Valid @RequestBody CreationDto.Update update) {
-        // Todo: implement modify logic
+    public ResponseEntity updateCreation(@RequestHeader long userId,
+                                         @PathVariable(value = "creationId") long creationId,
+                                         @Valid @RequestBody CreationDto.Update update,
+                                         BindingResult result) {
+        if (result.hasErrors()) {
+            ErrorResponse errorRepoonse = new ErrorResponse();
+            errorRepoonse.setMessage("질못된 요청입니다");
+            errorRepoonse.setCode("bad request");
+            // Todo: BindingResult안에 들어 있는 에러 정보 사용
+            return new ResponseEntity<>(errorRepoonse, HttpStatus.BAD_REQUEST);
+        }
+
+        creationService.modifyCreation(userId, creationId, update);
+        return new ResponseEntity<>(Response.ok(), HttpStatus.OK);
     }
 
     @ApiOperation(value = "창작물 삭제", notes = "창작물를 삭제한다")
@@ -108,5 +120,5 @@ public class CreationController {
         // Todo: implement remove logic
     }
 
-    // Todo: 서비스 단의 exception handler 추
+    // Todo: 서비스 단의 exception handler 추가
 }

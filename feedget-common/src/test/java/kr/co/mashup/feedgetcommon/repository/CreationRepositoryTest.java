@@ -29,7 +29,7 @@ public class CreationRepositoryTest {
     private Creation creation;
 
     @Before
-    public void setup() {
+    public void setUp() throws Exception {
         creation = new Creation();
         creation.setTitle("title");
         creation.setDescription("description");
@@ -44,7 +44,7 @@ public class CreationRepositoryTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws Exception {
         sut.deleteAll();
     }
 
