@@ -38,11 +38,11 @@ public class CreationService {
             throw new NotFoundException("not found writer");
         }
 
-        if (writer.getCurrentPoint() < dto.getRewardPoint()) {
+        // Todo: implement grade change logic
+        boolean result = writer.changePoint(-dto.getRewardPoint());
+        if (!result) {
             throw new InvalidParameterException("exceed current point");
         }
-
-        writer.changePoint(-dto.getRewardPoint());
         userRepository.save(writer);
 
         Optional<Category> categoryOp = categoryRepository.findByName(dto.getCategory());
@@ -80,16 +80,20 @@ public class CreationService {
 
         if (creation.isDeadline()) {
             // Todo: exception class 수정
-            throw new NotFoundException("forbidden modify");
+            throw new InvalidParameterException("creation is deadline");
         }
 
         if (creation.hasFeedback()) {
             // Todo: exception class 수정
-            throw new NotFoundException("forbidden modify");
+            throw new InvalidParameterException("forbidden modify");
         }
 
         // 보상 포인트 수정시 차액은 반환된다
-        writer.changePoint(creation.getRewardPoint() - dto.getRewardPoint());
+        // Todo: implement grade change logic
+        boolean result = writer.changePoint(creation.getRewardPoint() - dto.getRewardPoint());
+        if (!result) {
+            throw new InvalidParameterException("exceed current point");
+        }
         userRepository.save(writer);
 
         Optional<Category> categoryOp = categoryRepository.findByName(dto.getCategory());

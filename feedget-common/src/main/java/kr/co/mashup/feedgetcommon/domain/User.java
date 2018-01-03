@@ -3,7 +3,6 @@ package kr.co.mashup.feedgetcommon.domain;
 import lombok.*;
 
 import javax.persistence.*;
-import java.security.InvalidParameterException;
 import java.util.List;
 
 /**
@@ -118,12 +117,13 @@ public class User extends AbstractEntity<Long> {
         return this.userId.equals(user.userId);
     }
 
-    public void changePoint(double point) {
+    public boolean changePoint(double point) {
         this.currentPoint += point;
         this.periodPoint += point;
 
         if (currentPoint < 0) {
-            throw new InvalidParameterException("exceed current point");
+            return false;
         }
+        return true;
     }
 }
