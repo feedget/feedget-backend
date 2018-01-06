@@ -2,8 +2,8 @@ package kr.co.mashup.feedgetapi.web.controller;
 
 import kr.co.mashup.feedgetapi.service.ContentsService;
 import kr.co.mashup.feedgetapi.web.dto.ContentsDto;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -100,5 +100,11 @@ public class ContentsControllerTest {
 
         // then : 컨텐츠가 추가되지 않는다
         verify(contentsService, never()).addContents(eq(creationId), any(ContentsDto.class));
+    }
+
+    @Ignore
+    @Test
+    public void updateContents_창작물의_컨텐츠_수정() throws Exception {
+        // Todo: mock mvc가 fileupload()는 POST로만 되고, package constructor라 현재 구현으로는 접근 불가
     }
 }

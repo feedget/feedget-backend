@@ -19,6 +19,7 @@ import javax.validation.Valid;
 
 /**
  * 창작물의 컨텐츠 관련 request에 대한 처리
+ * Todo: 창작물 request와 합칠지 고려
  * <p>
  * Created by ethan.kim on 2017. 12. 21..
  */
@@ -39,7 +40,7 @@ public class ContentsController {
     })
     @PostMapping
     public ResponseEntity createContents(@PathVariable(value = "creationId") long creationId,
-                                         @Valid @ModelAttribute ContentsDto dto,
+                                         @Valid ContentsDto dto,
                                          BindingResult result) {
         log.info("createContents - creationId : {}, content : {}", creationId, dto);
 
@@ -53,5 +54,29 @@ public class ContentsController {
 
         contentsService.addContents(creationId, dto);
         return new ResponseEntity<>(Response.created(), HttpStatus.CREATED);
+    }
+
+    @ApiOperation(value = "창작물의 컨텐츠 수정")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "추가 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청(필수 파라미터 누락)"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    @PutMapping
+    public ResponseEntity updateContents(@PathVariable(value = "creationId") long creationId,
+                                         @Valid ContentsDto dto,
+                                         BindingResult result) {
+        log.info("updateContents - creationId : {}, content : {}", creationId, dto);
+
+        if (result.hasErrors()) {
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.setMessage("잘못된 요청입니다");
+            errorResponse.setCode("bad request");
+            // Todo: BindingResult안에 들어 있는 에러 정보 사용
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+
+        contentsService.modifyContents(creationId, dto);
+        return ResponseEntity.ok().build();
     }
 }
