@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 컨텐츠 관련 비즈니스 로직 처리
@@ -67,5 +68,30 @@ public class ContentsService {
         } else if (contentType == ContentType.AUDIO) {
             // Todo: audio 저장 로직 추가
         }
+    }
+
+    /**
+     * 창작물의 컨텐츠 제거
+     *
+     * @param creationId
+     * @param contentIds
+     */
+    @Transactional
+    public void removeContents(long creationId, List<Long> contentIds) {
+        Optional<Creation> creationOp = creationRepository.findByCreationId(creationId);
+        Creation creation = creationOp.orElseThrow(() -> new NotFoundException("not found creation"));
+
+        // Todo: fetch join으로 수정?
+        List<CreationContent> contents = creation.getContents();
+        CopyOnWriteArrayList<CreationContent> removeContents = new CopyOnWriteArrayList<>(contents);
+        removeContents.stream()
+                .filter(content -> contentIds.contains(content.getCreationContentId()))
+                .forEach(content -> {
+                    // 파일 제거
+                    String filePath = FileUtil.getImageUploadPath(storageProperties.getPath(), creationId) + "/" + content.getFileName();
+                    FileUtil.deleteFile(filePath);
+
+                    creation.removeContent(content);
+                });
     }
 }

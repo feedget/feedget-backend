@@ -98,6 +98,13 @@ public class Creation extends AbstractEntity<Long> {
         this.contents.add(content);
     }
 
+    /**
+     * 컨텐츠 제거
+     */
+    public void removeContent(CreationContent content) {
+        this.contents.remove(content);
+    }
+
     public boolean isWritedBy(User user) {
         return this.writer.isSameUser(user);
     }

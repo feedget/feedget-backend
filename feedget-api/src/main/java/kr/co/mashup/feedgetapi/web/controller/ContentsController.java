@@ -16,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 창작물의 컨텐츠 관련 request에 대한 처리
@@ -39,7 +40,7 @@ public class ContentsController {
     })
     @PostMapping
     public ResponseEntity createContents(@PathVariable(value = "creationId") long creationId,
-                                         @Valid @ModelAttribute ContentsDto dto,
+                                         @Valid ContentsDto dto,
                                          BindingResult result) {
         log.info("createContents - creationId : {}, content : {}", creationId, dto);
 
@@ -53,5 +54,20 @@ public class ContentsController {
 
         contentsService.addContents(creationId, dto);
         return new ResponseEntity<>(Response.created(), HttpStatus.CREATED);
+    }
+
+    @ApiOperation(value = "창작물의 컨텐츠 삭제")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "삭제 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청(필수 파라미터 누락)"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    @DeleteMapping
+    public ResponseEntity deleteContents(@PathVariable(value = "creationId") long creationId,
+                                         @RequestParam(value = "contentId") List<Long> contentIds) {
+        log.info("deleteContents - creationId : {}, contentIds : {}", creationId, contentIds);
+
+        contentsService.removeContents(creationId, contentIds);
+        return ResponseEntity.ok().build();
     }
 }
