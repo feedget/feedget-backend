@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString(exclude = {})
+@ToString(exclude = {"creations", "feedbacks"})
 @EqualsAndHashCode(callSuper = false, of = "userId")
 public class User extends AbstractEntity<Long> {
 
