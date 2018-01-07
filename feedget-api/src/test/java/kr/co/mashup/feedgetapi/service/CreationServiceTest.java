@@ -427,4 +427,167 @@ public class CreationServiceTest {
 
         // then : 존재하지 않는 카테고리라 창작물이 수정되지 않는다
     }
+
+    @Test
+    public void removeCreation_창작물_삭제_성공() {
+        // given : 유저 ID, 창작물 ID
+        long userId = 1L;
+        long creationId = 1L;
+
+        User writer = new User();
+        writer.setUserId(userId);
+        writer.setCurrentPoint(100.0);
+        writer.setPeriodPoint(100.0);
+
+        Creation creation = new Creation();
+        creation.setCreationId(creationId);
+        creation.setWriter(writer);
+        creation.setFeedbackCount(0L);
+        creation.setRewardPoint(10.0);
+        creation.setStatus(Creation.Status.PROCEEDING);
+
+        when(userRepository.findOne(userId)).thenReturn(writer);
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.of(creation));
+
+        // when : 창작물을 삭제하면
+        sut.removeCreation(userId, creationId);
+
+        // then : 창작물이 삭제된다
+        verify(creationRepository, times(1)).findByCreationId(creationId);
+        verify(userRepository, times(1)).save(any(User.class));
+        verify(creationRepository, times(1)).delete(creationId);
+    }
+
+    @Test
+    public void removeCreation_창작물_삭제_작성자가_없어_실패() {
+        expectedException.expect(NotFoundException.class);
+        expectedException.expectMessage("not found writer");
+
+        // given : 유저 ID, 창작물 ID
+        long userId = 1L;
+        long creationId = 1L;
+
+        when(userRepository.findOne(userId)).thenReturn(null);
+
+        // when : 창작물을 삭제하면
+        sut.removeCreation(userId, creationId);
+
+        // then : 존재하지 않는 작성자라 창작물이 삭제되지 않는다
+    }
+
+    @Test
+    public void removeCreation_창작물_삭제_창작물이_없어_실패() {
+        expectedException.expect(NotFoundException.class);
+        expectedException.expectMessage("not found creation");
+
+        // given : 유저 ID, 창작물 ID
+        long userId = 1L;
+        long creationId = 1L;
+
+        User writer = new User();
+        writer.setUserId(userId);
+        writer.setCurrentPoint(100.0);
+        writer.setPeriodPoint(100.0);
+
+        when(userRepository.findOne(userId)).thenReturn(writer);
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.empty());
+
+        // when : 창작물을 삭제하면
+        sut.removeCreation(userId, creationId);
+
+        // then : 존재하지 않는 창작물이라 삭제되지 않는다
+    }
+
+    @Test
+    public void removeCreation_창작물_삭제_작성자가_아니라_실패() {
+        expectedException.expect(InvalidParameterException.class);
+        expectedException.expectMessage("not match writer");
+
+        // given : 유저 ID, 창작물 ID
+        long userId = 1L;
+        long creationId = 1L;
+
+        User writer = new User();
+        writer.setUserId(userId);
+        writer.setCurrentPoint(100.0);
+        writer.setPeriodPoint(100.0);
+
+        User otherUser = new User();
+        otherUser.setUserId(2L);
+
+        Creation creation = new Creation();
+        creation.setCreationId(creationId);
+        creation.setWriter(otherUser);
+        creation.setFeedbackCount(0L);
+        creation.setRewardPoint(10.0);
+        creation.setStatus(Creation.Status.PROCEEDING);
+
+        when(userRepository.findOne(userId)).thenReturn(writer);
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.of(creation));
+
+        // when : 창작물을 삭제하면
+        sut.removeCreation(userId, creationId);
+
+        // then : 작성자가 아니라 창작물이 삭제되지 않는다
+    }
+
+    @Test
+    public void removeCreation_창작물_삭제_게시기간_마감이라_실패() {
+        expectedException.expect(InvalidParameterException.class);
+        expectedException.expectMessage("creation is deadline");
+
+        // given : 유저 ID, 창작물 ID
+        long userId = 1L;
+        long creationId = 1L;
+
+        User writer = new User();
+        writer.setUserId(userId);
+        writer.setCurrentPoint(100.0);
+        writer.setPeriodPoint(100.0);
+
+        Creation creation = new Creation();
+        creation.setCreationId(creationId);
+        creation.setWriter(writer);
+        creation.setFeedbackCount(0L);
+        creation.setRewardPoint(10.0);
+        creation.setStatus(Creation.Status.DEADLINE);
+
+        when(userRepository.findOne(userId)).thenReturn(writer);
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.of(creation));
+
+        // when : 창작물을 삭제하면
+        sut.removeCreation(userId, creationId);
+
+        // then : 게시기간 마감이라 창작물이 삭제되지 않는다
+    }
+
+    @Test
+    public void removeCreation_창작물_삭제_피드백이_존재해_실패() {
+        expectedException.expect(InvalidParameterException.class);
+        expectedException.expectMessage("forbidden modify");
+
+        // given : 유저 ID, 창작물 ID
+        long userId = 1L;
+        long creationId = 1L;
+
+        User writer = new User();
+        writer.setUserId(userId);
+        writer.setCurrentPoint(100.0);
+        writer.setPeriodPoint(100.0);
+
+        Creation creation = new Creation();
+        creation.setCreationId(creationId);
+        creation.setWriter(writer);
+        creation.setFeedbackCount(1L);
+        creation.setRewardPoint(10.0);
+        creation.setStatus(Creation.Status.PROCEEDING);
+
+        when(userRepository.findOne(userId)).thenReturn(writer);
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.of(creation));
+
+        // when : 창작물을 삭제하면
+        sut.removeCreation(userId, creationId);
+
+        // then : 피드백이 존재해 창작물이 삭제되지 않는다
+    }
 }

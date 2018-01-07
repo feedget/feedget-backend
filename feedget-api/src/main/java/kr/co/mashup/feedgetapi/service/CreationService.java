@@ -31,6 +31,13 @@ public class CreationService {
 
     private final CreationRepository creationRepository;
 
+    /**
+     * 창작물 추가
+     *
+     * @param userId 작성자 ID
+     * @param dto    추가할 창작물 데이터
+     * @return 추가된 창작물 ID
+     */
     @Transactional
     public long addCreation(long userId, CreationDto.Create dto) {
         User writer = userRepository.findOne(userId);
@@ -63,6 +70,13 @@ public class CreationService {
         return creation.getCreationId();
     }
 
+    /**
+     * 창작물 수정
+     *
+     * @param userId     작성자 ID
+     * @param creationId 창작물 ID
+     * @param dto        수정할 창작물 데이터
+     */
     @Transactional
     public void modifyCreation(long userId, long creationId, CreationDto.Update dto) {
         User writer = userRepository.findOne(userId);
@@ -105,5 +119,43 @@ public class CreationService {
         creation.setRewardPoint(dto.getRewardPoint());
         creation.setAnonymity(dto.isAnonymity());
         creationRepository.save(creation);
+    }
+
+    /**
+     * 창작물 삭제
+     *
+     * @param userId     작성자 ID
+     * @param creationId 창작물 ID
+     */
+    @Transactional
+    public void removeCreation(long userId, long creationId) {
+        User writer = userRepository.findOne(userId);
+        if (writer == null) {
+            throw new NotFoundException("not found writer");
+        }
+
+        Optional<Creation> creationOp = creationRepository.findByCreationId(creationId);
+        Creation creation = creationOp.orElseThrow(() -> new NotFoundException("not found creation"));
+
+        if (!creation.isWritedBy(writer)) {
+            // Todo: exception class 수정
+            throw new InvalidParameterException("not match writer");
+        }
+
+        if (creation.isDeadline()) {
+            // Todo: exception class 수정
+            throw new InvalidParameterException("creation is deadline");
+        }
+
+        if (creation.hasFeedback()) {
+            // Todo: exception class 수정
+            throw new InvalidParameterException("forbidden modify");
+        }
+
+        // Todo: implement grade change logic
+        writer.changePoint(creation.getRewardPoint());
+        userRepository.save(writer);
+
+        creationRepository.delete(creationId);
     }
 }
