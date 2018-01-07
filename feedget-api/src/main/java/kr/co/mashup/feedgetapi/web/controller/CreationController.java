@@ -10,6 +10,7 @@ import kr.co.mashup.feedgetapi.web.dto.CreationDto;
 import kr.co.mashup.feedgetapi.web.dto.DataListResponse;
 import kr.co.mashup.feedgetapi.web.dto.DataResponse;
 import kr.co.mashup.feedgetapi.web.dto.Response;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/creations")
 @Api(description = "창작물", tags = {"creation"})
+@Slf4j
 public class CreationController {
 
     @Autowired
@@ -72,6 +74,7 @@ public class CreationController {
     public ResponseEntity createCreation(@RequestHeader long userId,  // Todo: 유저 ID 셋팅
                                          @Valid @RequestBody CreationDto.Create create,
                                          BindingResult result) {
+        log.info("createCreation - userId : {}, dto : {}", userId, create);
 
         if (result.hasErrors()) {
             ErrorResponse errorRepoonse = new ErrorResponse();
@@ -97,6 +100,8 @@ public class CreationController {
                                          @PathVariable(value = "creationId") long creationId,
                                          @Valid @RequestBody CreationDto.Update update,
                                          BindingResult result) {
+        log.info("updateCreation - userId : {}, creationId : {}, dto : {}", userId, creationId, update);
+
         if (result.hasErrors()) {
             ErrorResponse errorRepoonse = new ErrorResponse();
             errorRepoonse.setMessage("질못된 요청입니다");
@@ -116,8 +121,12 @@ public class CreationController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @DeleteMapping(value = "/{creationId}")
-    public void deleteCreation() {
-        // Todo: implement remove logic
+    public ResponseEntity deleteCreation(@RequestHeader long userId,
+                                         @PathVariable(value = "creationId") long creationId) {
+        log.info("deleteCreation - userId : {}, creationId : {}", userId, creationId);
+
+        creationService.removeCreation(userId, creationId);
+        return ResponseEntity.ok().build();
     }
 
     // Todo: 서비스 단의 exception handler 추가

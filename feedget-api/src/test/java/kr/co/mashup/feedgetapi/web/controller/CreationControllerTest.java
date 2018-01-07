@@ -17,8 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -241,5 +240,21 @@ public class CreationControllerTest {
 
         // then : 카테고리가 없어서 창작물이 수정되지 않는다
         verify(creationService, never()).modifyCreation(userId, creationId, dto);
+    }
+
+    @Test
+    public void deleteCreation_창작물_삭제_성공() throws Exception {
+        // given : 유저 ID, 창작물 ID로
+        long userId = 1L;
+        long creationId = 1L;
+
+        // when : 창작물을 삭제하면
+        MvcResult result = mockMvc.perform(delete("/creations/{creationId}", creationId)
+                .header("userId", userId)
+        ).andExpect(status().isOk())
+                .andReturn();
+
+        // then : 창작물이 삭제된다
+        verify(creationService, times(1)).removeCreation(userId, creationId);
     }
 }
