@@ -1,6 +1,5 @@
 package kr.co.mashup.feedgetapi.web.dto;
 
-import kr.co.mashup.feedgetapi.web.dto.Response;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
