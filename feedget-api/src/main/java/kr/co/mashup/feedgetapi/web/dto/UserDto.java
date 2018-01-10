@@ -19,21 +19,16 @@ public class UserDto {
         // 등급
         private User.UserGrade grade;
 
-        // 창작물 작성 여부
-        private boolean sameUser;
-
         /**
          * make Dto from Entity
          *
          * @param writer Entity
-         * @param user
          * @return
          */
-        public static UserDto.Response fromUser(User writer, User user) {
+        public static UserDto.Response fromUser(User writer) {
             UserDto.Response userDto = new UserDto.Response();
             userDto.setNickname(writer.getNickname());
             userDto.setGrade(writer.getUserGrade());
-            userDto.setSameUser(writer.isSameUser(user));
 
             return userDto;
         }

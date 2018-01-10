@@ -182,7 +182,7 @@ public class CreationService {
         }
 
         List<CreationDto.Response> content = creationPage.getContent().stream()
-                .map(creation -> CreationDto.Response.fromCreation(creation, user))
+                .map(creation -> CreationDto.Response.fromCreation(creation))
                 .collect(Collectors.toList());
 
         Pageable resultPageable = new PageRequest(creationPage.getNumber(), creationPage.getSize());

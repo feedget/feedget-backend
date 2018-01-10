@@ -76,10 +76,9 @@ public class CreationDto {
          * make Dto from Entity
          *
          * @param creation Entity
-         * @param user
          * @return
          */
-        public static CreationDto.Response fromCreation(Creation creation, User user) {
+        public static CreationDto.Response fromCreation(Creation creation) {
             CreationDto.Response creationDto = new CreationDto.Response();
             creationDto.setCreationId(creation.getCreationId());
             creationDto.setTitle(creation.getTitle());
@@ -89,7 +88,7 @@ public class CreationDto {
             creationDto.setStatus(creation.getStatus());
             creationDto.setFeedbackCount(creation.getFeedbackCount());
 
-            UserDto.Response writer = UserDto.Response.fromUser(creation.getWriter(), user);
+            UserDto.Response writer = UserDto.Response.fromUser(creation.getWriter());
             creationDto.setWriter(writer);
 
             List<ContentsResponse> contents = creation.getContents().stream()
