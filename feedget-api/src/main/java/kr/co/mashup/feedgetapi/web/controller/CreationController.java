@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -46,22 +45,20 @@ public class CreationController {
     })
     @GetMapping
     public ResponseEntity<DataListResponse> readCreations(@RequestHeader long userId,
-//                                                               @RequestParam(value = "page", defaultValue = "0") int page,
-//                                                               @RequestParam(value = "size", defaultValue = "20") int size,
-                                                          @RequestParam(value = "category", defaultValue = "ALL") String categoryName,
-                                                          @PageableDefault(page = 0, size = 20) Pageable pageable) {
+                                                          @PageableDefault(page = 0, size = 20) Pageable pageable,
+                                                          @RequestParam(value = "category", defaultValue = "ALL") String categoryName) {
         log.info("readCreations - userId : {}, category : {}, pageable : {}", userId, categoryName, pageable);
 
         Page<CreationDto.Response> creationPage = creationService.readCreations(userId, categoryName, pageable);
 
-        // Todo: header에서 필요없는 page 정보 제거
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("pageSize", String.valueOf(creationPage.getSize()));
-        headers.add("pageNo", String.valueOf(creationPage.getNumber()));
-        headers.add("total", String.valueOf(creationPage.getTotalElements()));  // 검색된 전체 data 수
-        headers.add("pageTotal", String.valueOf(creationPage.getTotalPages()));  // 전체 페이지 수
-
-        return new ResponseEntity<>(new DataListResponse<>(creationPage), headers, HttpStatus.OK);
+        // Todo: header에서 기타 정보를 내릴지 고려
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("pageSize", String.valueOf(creationPage.getSize()));
+//        headers.add("pageNo", String.valueOf(creationPage.getNumber()));
+//        headers.add("total", String.valueOf(creationPage.getTotalElements()));  // 검색된 전체 data 수
+//        headers.add("pageTotal", String.valueOf(creationPage.getTotalPages()));  // 전체 페이지 수
+//        return new ResponseEntity<>(new DataListResponse<>(creationPage), headers, HttpStatus.OK);
+        return new ResponseEntity<>(new DataListResponse<>(creationPage), HttpStatus.OK);
     }
 
     @ApiOperation(value = "창작물 단건 조회", notes = "단건의 창작물을 조회한다")

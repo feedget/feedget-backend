@@ -16,7 +16,12 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -589,5 +594,103 @@ public class CreationServiceTest {
         sut.removeCreation(userId, creationId);
 
         // then : 피드백이 존재해 창작물이 삭제되지 않는다
+    }
+
+    @Test
+    public void readCreations_창작물_리스트_조회_모든_창작물_조회_성공() throws Exception {
+        // given : 유저 ID, 카테고리 이름, 페이지 정보로
+        long userId = 1L;
+        String category = "ALL";
+        Pageable pageable = new PageRequest(0, 10);
+
+        User user = new User();
+        user.setUserId(userId);
+        user.setCurrentPoint(100.0);
+        user.setPeriodPoint(100.0);
+
+        Page<Creation> page = new PageImpl<>(Collections.emptyList(), pageable, 0);
+
+        when(userRepository.findByUserId(userId)).thenReturn(Optional.of(user));
+        when(creationRepository.findAll(pageable)).thenReturn(page);
+
+        // when : 창작물 리스트를 조회하면
+        Page<CreationDto.Response> creationPage = sut.readCreations(userId, category, pageable);
+
+        // then : 창작물 리스트가 조회된다
+        verify(creationRepository, times(1)).findAll(pageable);
+        verify(categoryRepository, never()).findByName(anyString());
+        verify(creationRepository, never()).findByCategory(any(Category.class), eq(pageable));
+    }
+
+    @Test
+    public void readCreations_창작물_리스트_조회_특정_카테고리_조회_성공() throws Exception {
+        // given : 유저 ID, 카테고리 이름, 페이지 정보로
+        long userId = 1L;
+        String categoryName = "design";
+        Pageable pageable = new PageRequest(0, 10);
+
+        User user = new User();
+        user.setUserId(userId);
+        user.setCurrentPoint(100.0);
+        user.setPeriodPoint(100.0);
+
+        Page<Creation> page = new PageImpl<>(Collections.emptyList(), pageable, 0);
+
+        Category category = new Category();
+        category.setName(categoryName);
+
+        when(userRepository.findByUserId(userId)).thenReturn(Optional.of(user));
+        when(categoryRepository.findByName(categoryName)).thenReturn(Optional.of(category));
+        when(creationRepository.findByCategory(category, pageable)).thenReturn(page);
+
+        // when : 창작물 리스트를 조회하면
+        Page<CreationDto.Response> creationPage = sut.readCreations(userId, categoryName, pageable);
+
+        // then : 창작물 리스트가 조회된다
+        verify(creationRepository, never()).findAll(pageable);
+        verify(categoryRepository, times(1)).findByName(anyString());
+        verify(creationRepository, times(1)).findByCategory(any(Category.class), eq(pageable));
+    }
+
+    @Test
+    public void readCreations_창작물_리스트_조회_유저가_없어_실패() throws Exception {
+        expectedException.expect(NotFoundException.class);
+        expectedException.expectMessage("not found user");
+
+        // given : 유저 ID, 카테고리 이름, 페이지 정보로
+        long userId = 1L;
+        String categoryName = "design";
+        Pageable pageable = new PageRequest(0, 10);
+
+        when(userRepository.findByUserId(userId)).thenReturn(Optional.empty());
+
+        // when : 창작물 리스트를 조회하면
+        Page<CreationDto.Response> creationPage = sut.readCreations(userId, categoryName, pageable);
+
+        // then : 유저가 없어 창작물 리스트가 조회되지 않는다
+    }
+
+    @Test
+    public void readCreations_창작물_리스트_조회_특정_카테고리_조회_카테고리가_없어_실패() throws Exception {
+        expectedException.expect(NotFoundException.class);
+        expectedException.expectMessage("not found category");
+
+        // given : 유저 ID, 카테고리 이름, 페이지 정보로
+        long userId = 1L;
+        String categoryName = "design";
+        Pageable pageable = new PageRequest(0, 10);
+
+        User user = new User();
+        user.setUserId(userId);
+        user.setCurrentPoint(100.0);
+        user.setPeriodPoint(100.0);
+
+        when(userRepository.findByUserId(userId)).thenReturn(Optional.of(user));
+        when(categoryRepository.findByName(categoryName)).thenReturn(Optional.empty());
+
+        // when : 창작물 리스트를 조회하면
+        Page<CreationDto.Response> creationPage = sut.readCreations(userId, categoryName, pageable);
+
+        // then : 카테고리가 없어 창작물 리스트가 조회되지 않는다
     }
 }

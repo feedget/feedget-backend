@@ -22,6 +22,13 @@ public class UserDto {
         // 창작물 작성 여부
         private boolean sameUser;
 
+        /**
+         * make Dto from Entity
+         *
+         * @param writer Entity
+         * @param user
+         * @return
+         */
         public static UserDto.Response fromUser(User writer, User user) {
             UserDto.Response userDto = new UserDto.Response();
             userDto.setNickname(writer.getNickname());

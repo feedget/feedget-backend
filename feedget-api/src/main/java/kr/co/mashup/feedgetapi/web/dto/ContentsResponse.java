@@ -11,6 +11,12 @@ public class ContentsResponse {
 
     private String url;
 
+    /**
+     * make Dto from Entity
+     *
+     * @param content Entity
+     * @return
+     */
     public static ContentsResponse fromContent(CreationContent content) {
         ContentsResponse contentDto = new ContentsResponse();
         contentDto.setUrl(content.getUrl());

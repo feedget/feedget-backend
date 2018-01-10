@@ -8,7 +8,6 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,6 +72,13 @@ public class CreationDto {
         // 창작물 작성자
         private UserDto.Response writer;
 
+        /**
+         * make Dto from Entity
+         *
+         * @param creation Entity
+         * @param user
+         * @return
+         */
         public static CreationDto.Response fromCreation(Creation creation, User user) {
             CreationDto.Response creationDto = new CreationDto.Response();
             creationDto.setCreationId(creation.getCreationId());
