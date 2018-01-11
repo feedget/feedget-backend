@@ -11,11 +11,18 @@ import kr.co.mashup.feedgetcommon.repository.CreationRepository;
 import kr.co.mashup.feedgetcommon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by ethan.kim on 2017. 12. 23..
@@ -157,5 +164,28 @@ public class CreationService {
         userRepository.save(writer);
 
         creationRepository.delete(creationId);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<CreationDto.Response> readCreations(long userId, String categoryName, Pageable pageable) {
+        Optional<User> userOp = userRepository.findByUserId(userId);
+        User user = userOp.orElseThrow(() -> new NotFoundException("not found user"));
+
+        Page<Creation> creationPage;
+        if (StringUtils.equals(categoryName, "ALL")) {
+            creationPage = creationRepository.findAll(pageable);
+        } else {
+            Optional<Category> categoryOp = categoryRepository.findByName(categoryName);
+            Category category = categoryOp.orElseThrow(() -> new NotFoundException("not found category"));
+
+            creationPage = creationRepository.findByCategory(category, pageable);
+        }
+
+        List<CreationDto.Response> content = creationPage.getContent().stream()
+                .map(creation -> CreationDto.Response.fromCreation(creation))
+                .collect(Collectors.toList());
+
+        Pageable resultPageable = new PageRequest(creationPage.getNumber(), creationPage.getSize());
+        return new PageImpl<>(content, resultPageable, creationPage.getTotalElements());
     }
 }

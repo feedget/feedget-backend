@@ -6,14 +6,25 @@ import kr.co.mashup.feedgetapi.web.dto.CreationDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import java.util.Collections;
+
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -40,6 +51,7 @@ public class CreationControllerTest {
     @Before
     public void setUp() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup(sut)
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .alwaysDo(print())
                 .build();
 
@@ -256,5 +268,31 @@ public class CreationControllerTest {
 
         // then : 창작물이 삭제된다
         verify(creationService, times(1)).removeCreation(userId, creationId);
+    }
+
+    @Test
+    public void readCreations_창작물_리스트_조회_성공() throws Exception {
+        // given : 유저 ID, 카테고리 이름으로
+        long userId = 1L;
+        String category = "ALL";
+        Pageable pageable = new PageRequest(0, 10);
+
+        Page<CreationDto.Response> creationPage = new PageImpl<>(Collections.emptyList());
+
+        when(creationService.readCreations(eq(userId), eq(category), any())).thenReturn(creationPage);
+        ArgumentCaptor<Pageable> pageableArg = ArgumentCaptor.forClass(Pageable.class);
+
+        // when : 창작물 리스트를 조회하면
+        MvcResult result = mockMvc.perform(get("/creations")
+                .header("userId", userId)
+                .param("category", category)
+                .param("page", String.valueOf(0))
+                .param("size", String.valueOf(10))
+        ).andExpect(status().isOk())
+                .andReturn();
+
+        // then : 창작물 리스트가 조회된다
+        verify(creationService, times(1)).readCreations(eq(userId), eq(category), pageableArg.capture());
+        assertEquals(pageableArg.getValue(), pageable);
     }
 }

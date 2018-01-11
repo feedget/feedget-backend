@@ -62,6 +62,7 @@ public class ContentsService {
                         content.setSize(file.getSize());
                         content.setType(contentType);
                         content.setCreation(creation);
+                        content.setUrl(FileUtil.getImageUrl(storageProperties.getUri(), creation.getCreationId(), fileName));
                         creation.addContent(content);
                     });
 

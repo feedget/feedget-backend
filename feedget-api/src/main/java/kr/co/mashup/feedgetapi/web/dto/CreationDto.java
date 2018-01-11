@@ -7,8 +7,10 @@ import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Size;
+import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 창작물의 데이터 전달을 담당한다
@@ -56,7 +58,7 @@ public class CreationDto {
         private List<ContentsResponse> contents;
 
         // 마감일
-        private ZonedDateTime dueDate;
+        private Timestamp dueDate;
 
         // 보상 포인트
         private double rewardPoint;
@@ -65,17 +67,37 @@ public class CreationDto {
         private Creation.Status status;
 
         // 피드백 갯수
-        private int feedbackCount;
+        private long feedbackCount;
 
-        // 창작물 작성 여부
-        @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-        private boolean wroteCreation;
+        // 창작물 작성자
+        private UserDto.Response writer;
 
-        // 창작물 게시자 닉네임
-        private String nickname;
+        /**
+         * make Dto from Entity
+         *
+         * @param creation Entity
+         * @return
+         */
+        public static CreationDto.Response fromCreation(Creation creation) {
+            CreationDto.Response creationDto = new CreationDto.Response();
+            creationDto.setCreationId(creation.getCreationId());
+            creationDto.setTitle(creation.getTitle());
+            creationDto.setDescription(creation.getDescription());
+            creationDto.setDueDate(Timestamp.valueOf(creation.getDueDate()));
+            creationDto.setRewardPoint(creation.getRewardPoint());
+            creationDto.setStatus(creation.getStatus());
+            creationDto.setFeedbackCount(creation.getFeedbackCount());
 
-        // 창작물 게시자 등급
-        private User.UserGrade grade;
+            UserDto.Response writer = UserDto.Response.fromUser(creation.getWriter());
+            creationDto.setWriter(writer);
+
+            List<ContentsResponse> contents = creation.getContents().stream()
+                    .map(ContentsResponse::fromContent)
+                    .collect(Collectors.toList());
+            creationDto.setContents(contents);
+
+            return creationDto;
+        }
     }
 
     @Data
