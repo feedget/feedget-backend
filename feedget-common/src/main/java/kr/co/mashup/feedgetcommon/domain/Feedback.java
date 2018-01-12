@@ -33,6 +33,11 @@ public class Feedback extends AbstractEntity<Long> {
     @OneToMany(mappedBy = "feedback")
     private List<FeedbackContent> contents;
 
+    // 작성자 ID(read only)
+    @Column(name = "writer_id", nullable = false, insertable = false, updatable = false, columnDefinition = "INT(11)")
+    private Long writerId;
+
+    // 작성자
     @ManyToOne(fetch = FetchType.LAZY)  // Feedback(Many) : User(One)
     @JoinColumn(name = "writer_id", foreignKey = @ForeignKey(name = "fk_feedback_to_writer_id"))
     private User writer;
@@ -42,6 +47,11 @@ public class Feedback extends AbstractEntity<Long> {
     @Type(type = "yes_no")
     private boolean anonymity;
 
+    // 창작물 ID(read only)
+    @Column(name = "creation_id", nullable = false, insertable = false, updatable = false, columnDefinition = "INT(11)")
+    private Long creationId;
+
+    // 창작물
     @ManyToOne(fetch = FetchType.LAZY)  // Feedback(Many) : Creation(One)
     @JoinColumn(name = "creation_id", foreignKey = @ForeignKey(name = "fk_feedback_to_creation_id"))
     private Creation creation;

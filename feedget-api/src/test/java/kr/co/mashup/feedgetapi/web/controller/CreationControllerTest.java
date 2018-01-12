@@ -295,4 +295,20 @@ public class CreationControllerTest {
         verify(creationService, times(1)).readCreations(eq(userId), eq(category), pageableArg.capture());
         assertEquals(pageableArg.getValue(), pageable);
     }
+
+    @Test
+    public void readCreation_창작물_단건_조회_성공() throws Exception {
+        // given : 유저 ID, 창작물 ID로
+        long userId = 1L;
+        long creationId = 1L;
+
+        // when : 창작물을 조회하면
+        MvcResult result = mockMvc.perform(get("/creations/{creationId}", creationId)
+                .header("userId", userId)
+        ).andExpect(status().isOk())
+                .andReturn();
+
+        // then : 창작물이 조회된다
+        verify(creationService, times(1)).readCreation(eq(userId), eq(creationId));
+    }
 }

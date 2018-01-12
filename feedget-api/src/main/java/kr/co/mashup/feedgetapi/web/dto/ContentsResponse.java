@@ -9,6 +9,8 @@ import lombok.Data;
 @Data
 public class ContentsResponse {
 
+    private long contentId;
+
     private String url;
 
     /**
@@ -19,6 +21,7 @@ public class ContentsResponse {
      */
     public static ContentsResponse fromContent(CreationContent content) {
         ContentsResponse contentDto = new ContentsResponse();
+        contentDto.setContentId(content.getCreationContentId());
         contentDto.setUrl(content.getUrl());
         return contentDto;
     }
