@@ -21,7 +21,7 @@ public class CreationContent extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "creation_content_id", columnDefinition = "INT(11)")
+    @Column(name = "creation_content_id")
     private Long creationContentId;
 
     //Todo: length 조정. 중복방지용, 36byte(32글자 + 확장자)

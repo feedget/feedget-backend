@@ -22,7 +22,7 @@ public class Feedback extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "feedback_id", columnDefinition = "INT(11)")
+    @Column(name = "feedback_id")
     private Long feedbackId;
 
     // 피드백 내용
@@ -34,7 +34,7 @@ public class Feedback extends AbstractEntity<Long> {
     private List<FeedbackContent> contents;
 
     // 작성자 ID(read only)
-    @Column(name = "writer_id", nullable = false, insertable = false, updatable = false, columnDefinition = "INT(11)")
+    @Column(name = "writer_id", nullable = false, insertable = false, updatable = false)
     private Long writerId;
 
     // 작성자
@@ -48,7 +48,7 @@ public class Feedback extends AbstractEntity<Long> {
     private boolean anonymity;
 
     // 창작물 ID(read only)
-    @Column(name = "creation_id", nullable = false, insertable = false, updatable = false, columnDefinition = "INT(11)")
+    @Column(name = "creation_id", nullable = false, insertable = false, updatable = false)
     private Long creationId;
 
     // 창작물
