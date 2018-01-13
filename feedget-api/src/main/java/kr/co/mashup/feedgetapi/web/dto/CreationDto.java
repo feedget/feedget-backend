@@ -132,9 +132,6 @@ public class CreationDto {
         // 창작물 작성자
         private UserDto.Response writer;
 
-        // 창작물 작성 여부
-        private boolean wroteCreation;
-
         // 피드백 작성 여부
         private boolean wroteFeedback;
 
@@ -149,7 +146,6 @@ public class CreationDto {
             detail.setStatus(creation.getStatus());
             detail.setFeedbackCount(creation.getFeedbackCount());
             detail.setWriter(UserDto.Response.fromUser(creation.getWriter()));
-            detail.setWroteCreation(creation.isWritedBy(user));
             detail.setWroteFeedback(feedbackOp.isPresent());
 
             List<ContentsResponse> contents = creation.getContents().stream()

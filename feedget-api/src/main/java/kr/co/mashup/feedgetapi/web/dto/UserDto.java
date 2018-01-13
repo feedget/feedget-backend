@@ -13,6 +13,9 @@ public class UserDto {
     @Data
     public static class Response {
 
+        // 유저 ID
+        private String userId;
+
         // 닉네임
         private String nickname;
 
@@ -27,6 +30,7 @@ public class UserDto {
          */
         public static UserDto.Response fromUser(User writer) {
             UserDto.Response userDto = new UserDto.Response();
+            userDto.setUserId(writer.getUuid());
             userDto.setNickname(writer.getNickname());
             userDto.setGrade(writer.getUserGrade());
 

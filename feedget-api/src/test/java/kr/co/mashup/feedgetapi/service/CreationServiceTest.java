@@ -736,7 +736,6 @@ public class CreationServiceTest {
         verify(creationRepository, times(1)).findByCreationId(creationId);
         verify(feedbackRepository, times(1)).findByCreationIdAndWriterId(creationId, userId);
 
-        assertTrue(detailResponses.isWroteCreation());
         assertTrue(detailResponses.isWroteFeedback());
     }
 
@@ -772,7 +771,6 @@ public class CreationServiceTest {
         verify(creationRepository, times(1)).findByCreationId(creationId);
         verify(feedbackRepository, times(1)).findByCreationIdAndWriterId(creationId, userId);
 
-        assertTrue(detailResponses.isWroteCreation());
         assertFalse(detailResponses.isWroteFeedback());
     }
 
