@@ -29,14 +29,16 @@ public class FeedbackRepositoryTest {
     @Autowired
     private FeedbackRepository sut;
 
-    private Feedback feedback;
-
     @Autowired
     private TestEntityManager entityManager;
 
+    private Creation creation;
+
+    private User writer;
+
     @Before
     public void setUp() throws Exception {
-        Creation creation = new Creation();
+        creation = new Creation();
         creation.setTitle("title");
         creation.setDescription("description");
         creation.setCategory(null);
@@ -48,7 +50,7 @@ public class FeedbackRepositoryTest {
         creation.setFeedbackCount(0L);
         entityManager.persistAndFlush(creation);
 
-        User writer = new User();
+        writer = new User();
         writer.setName("test");
         writer.setNickname("test");
         writer.setEmail("test@test.io");
@@ -60,12 +62,12 @@ public class FeedbackRepositoryTest {
         writer.setFeedbackRewardCount(1);
         entityManager.persistAndFlush(writer);
 
-        feedback = new Feedback();
+        Feedback feedback = new Feedback();
         feedback.setDescription("test");
         feedback.setAnonymity(true);
         feedback.setWriter(writer);
         feedback.setCreation(creation);
-        feedback = sut.save(feedback);
+        sut.save(feedback);
     }
 
     @After
@@ -76,8 +78,8 @@ public class FeedbackRepositoryTest {
     @Test
     public void findByCreationIdAndWriterId_피드백_단건_조회() {
         // given : 창작물 ID, 작성자 ID로
-        long creationId = 1L;
-        long writerId = 1L;
+        long creationId = creation.getCreationId();
+        long writerId = writer.getUserId();
 
         // when : 피드백을 조회하면
         Optional<Feedback> feedbackOp = sut.findByCreationIdAndWriterId(creationId, writerId);

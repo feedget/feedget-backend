@@ -41,7 +41,7 @@ public class UserRepositoryTest {
         user.setCurrentPoint(100.0);
         user.setFeedbackWritingCount(3);
         user.setFeedbackRewardCount(3);
-        user = sut.save(user);
+        sut.save(user);
     }
 
     @After

@@ -28,10 +28,10 @@ public class CategoryRepositoryTest {
     private Category category;
 
     @Before
-    public void setup() throws Exception {
+    public void setUp() throws Exception {
         category = new Category();
         category.setName("design");
-        category = sut.save(category);
+        sut.save(category);
     }
 
     @After
