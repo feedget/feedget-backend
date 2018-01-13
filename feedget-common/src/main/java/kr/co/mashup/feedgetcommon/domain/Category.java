@@ -21,7 +21,7 @@ public class Category extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "category_id", columnDefinition = "INT(11)")
+    @Column(name = "category_id")
     private Long categoryId;
 
     // 카테고리 이름

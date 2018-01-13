@@ -1,15 +1,15 @@
 package kr.co.mashup.feedgetapi.web.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import kr.co.mashup.feedgetcommon.domain.Creation;
+import kr.co.mashup.feedgetcommon.domain.Feedback;
 import kr.co.mashup.feedgetcommon.domain.User;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
-import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -51,7 +51,6 @@ public class CreationDto {
         private String title;
 
         // 설명
-        @JsonInclude(JsonInclude.Include.NON_NULL)
         private String description;
 
         // 컨텐츠
@@ -78,7 +77,7 @@ public class CreationDto {
          * @param creation Entity
          * @return
          */
-        public static CreationDto.Response fromCreation(Creation creation) {
+        public static CreationDto.Response newResponse(Creation creation) {
             CreationDto.Response creationDto = new CreationDto.Response();
             creationDto.setCreationId(creation.getCreationId());
             creationDto.setTitle(creation.getTitle());
@@ -110,17 +109,16 @@ public class CreationDto {
         private String title;
 
         // 설명
-        @JsonInclude(JsonInclude.Include.NON_NULL)
         private String description;
 
         // 컨텐츠
         private List<ContentsResponse> contents;
 
         // 마감일
-        private ZonedDateTime dueDate;
+        private Timestamp dueDate;
 
         // 창작물 작성일
-        private ZonedDateTime writedDate;
+        private Timestamp writedDate;
 
         // 보상 포인트
         private double rewardPoint;
@@ -129,20 +127,38 @@ public class CreationDto {
         private Creation.Status status;
 
         // 피드백 갯수
-        private int feedbackCount;
+        private long feedbackCount;
+
+        // 창작물 작성자
+        private UserDto.Response writer;
 
         // 창작물 작성 여부
-        @JsonInclude(JsonInclude.Include.NON_DEFAULT)
         private boolean wroteCreation;
-
-        // 창작물 게시자 닉네임
-        private String nickname;
-
-        // 창작물 게시자 등급
-        private User.UserGrade grade;
 
         // 피드백 작성 여부
         private boolean wroteFeedback;
+
+        public static CreationDto.DetailResponse newDetailResponse(Creation creation, User user, Optional<Feedback> feedbackOp) {
+            CreationDto.DetailResponse detail = new CreationDto.DetailResponse();
+            detail.setCreationId(creation.getCreationId());
+            detail.setTitle(creation.getTitle());
+            detail.setDescription(creation.getDescription());
+            detail.setDueDate(Timestamp.valueOf(creation.getDueDate()));
+            detail.setWritedDate(creation.getCreatedTimestamp());
+            detail.setRewardPoint(creation.getRewardPoint());
+            detail.setStatus(creation.getStatus());
+            detail.setFeedbackCount(creation.getFeedbackCount());
+            detail.setWriter(UserDto.Response.fromUser(creation.getWriter()));
+            detail.setWroteCreation(creation.isWritedBy(user));
+            detail.setWroteFeedback(feedbackOp.isPresent());
+
+            List<ContentsResponse> contents = creation.getContents().stream()
+                    .map(ContentsResponse::fromContent)
+                    .collect(Collectors.toList());
+            detail.setContents(contents);
+
+            return detail;
+        }
     }
 
     @Data

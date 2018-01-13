@@ -23,7 +23,7 @@ public class Creation extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "creation_id", columnDefinition = "INT(11)")
+    @Column(name = "creation_id")
     private Long creationId;
 
     // 제목
@@ -69,7 +69,7 @@ public class Creation extends AbstractEntity<Long> {
     private boolean anonymity;
 
     // 피드백 수
-    @Column(name = "feedback_count", nullable = false, columnDefinition = "INT(11) default 0")
+    @Column(name = "feedback_count", nullable = false, columnDefinition = "BIGINT(20) default 0")
     private Long feedbackCount;
 
     // 피드백 리스트

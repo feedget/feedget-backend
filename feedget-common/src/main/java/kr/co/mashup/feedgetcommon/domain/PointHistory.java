@@ -20,16 +20,16 @@ public class PointHistory extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "point_history_id", columnDefinition = "INT(11)")
+    @Column(name = "point_history_id")
     private Long pointHistoryId;
 
     // Todo: relation mapping 추가
     // 포인트 지급자
-    @Column(name = "giver_id", columnDefinition = "INT(11)", insertable = false, updatable = false)
+    @Column(name = "giver_id", insertable = false, updatable = false)
     private Long giverId;
 
     // 포인트 수여자
-    @Column(name = "giver_id", columnDefinition = "INT(11)", insertable = false, updatable = false)
+    @Column(name = "giver_id", insertable = false, updatable = false)
     private Long receiverId;
 
     // 포인트

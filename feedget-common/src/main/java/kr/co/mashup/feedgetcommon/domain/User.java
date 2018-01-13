@@ -21,7 +21,7 @@ public class User extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "user_id", columnDefinition = "INT(11)")
+    @Column(name = "user_id")
     private Long userId;
 
     // 이름

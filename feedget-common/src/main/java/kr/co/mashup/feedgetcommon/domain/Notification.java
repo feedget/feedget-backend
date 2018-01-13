@@ -20,13 +20,13 @@ public class Notification extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "notification_id", columnDefinition = "INT(11)")
+    @Column(name = "notification_id")
     private Long notificationId;
 
     // Todo: 전송자 추가??
 
     // 알림 대상자
-    @Column(name = "receiver_id", columnDefinition = "INT(11)")
+    @Column(name = "receiver_id")
     private Long receiverId;
 
     // 설명

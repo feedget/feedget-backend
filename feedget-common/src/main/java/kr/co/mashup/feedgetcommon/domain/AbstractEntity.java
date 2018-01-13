@@ -55,17 +55,17 @@ public abstract class AbstractEntity<K extends Serializable> implements Serializ
 
     public abstract int hashCode();
 
-    public long getCreatedTimestamp() {
+    public Timestamp getCreatedTimestamp() {
         if (this.createdAt == null) {
-            return 0;
+            return null;
         }
-        return Timestamp.valueOf(this.createdAt).getTime();
+        return Timestamp.valueOf(this.createdAt);
     }
 
-    public long getUpdatedTimestamp() {
+    public Timestamp getUpdatedTimestamp() {
         if (this.updatedAt == null) {
-            return 0;
+            return null;
         }
-        return Timestamp.valueOf(this.updatedAt).getTime();
+        return Timestamp.valueOf(this.updatedAt);
     }
 }

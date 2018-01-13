@@ -41,7 +41,7 @@ public class CreationRepositoryTest {
     public void setUp() throws Exception {
         category = new Category();
         category.setName("design");
-        category = categoryRepository.save(category);
+        categoryRepository.save(category);
 
         creation = new Creation();
         creation.setTitle("title");
@@ -54,7 +54,7 @@ public class CreationRepositoryTest {
         creation.setAnonymity(true);
         creation.setFeedbackCount(0L);
         creation.setCategory(category);
-        creation = sut.save(creation);
+        sut.save(creation);
     }
 
     @After

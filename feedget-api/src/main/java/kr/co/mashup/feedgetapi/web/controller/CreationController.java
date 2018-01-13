@@ -68,10 +68,12 @@ public class CreationController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping(value = "/{creationId}")
-    public DataResponse<CreationDto.DetailResponse> getCreation(@RequestHeader long userId,
-                                                                @PathVariable(value = "creationId") long creationId) {
+    public DataResponse<CreationDto.DetailResponse> readCreation(@RequestHeader long userId,
+                                                                 @PathVariable(value = "creationId") long creationId) {
+        log.info("readCreation - userId : {}, creationId : {}", userId, creationId);
 
-        return new DataResponse<>(new CreationDto.DetailResponse());
+        CreationDto.DetailResponse detailResponse = creationService.readCreation(userId, creationId);
+        return new DataResponse<>(detailResponse);
     }
 
     @ApiOperation(value = "창작물 추가", notes = "창작물을 추가한다")
