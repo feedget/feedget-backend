@@ -3,6 +3,7 @@ package kr.co.mashup.feedgetcommon.repository;
 import kr.co.mashup.feedgetcommon.domain.Creation;
 import kr.co.mashup.feedgetcommon.domain.Feedback;
 import kr.co.mashup.feedgetcommon.domain.User;
+import kr.co.mashup.feedgetcommon.util.UniqueIdGenerator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,6 +55,7 @@ public class FeedbackRepositoryTest {
         writer.setName("test");
         writer.setNickname("test");
         writer.setEmail("test@test.io");
+        writer.setUuid(UniqueIdGenerator.getStringId());
         writer.setUserGrade(User.UserGrade.BRONZE);
         writer.setTotalPoint(100.0);
         writer.setCurrentPoint(100.0);

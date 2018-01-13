@@ -23,6 +23,9 @@ dependencies {
 //    compile('org.flywaydb:flyway-core')
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'commons-io:commons-io:2.5'
+
+    // uuid generator
+    compile group: 'com.eaio.uuid', name: 'uuid', version: '3.2'
 }
 
 /**

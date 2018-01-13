@@ -36,6 +36,11 @@ public class User extends AbstractEntity<Long> {
     @Column(name = "email", length = 30, nullable = false)
     private String email;
 
+    // uuid(universally unique identifier) - 외부로 노출되는 ID
+    // Todo: 유저 생성시 중복값 체크 로직 추가
+    @Column(name = "uuid", length = 32, nullable = false, unique = true)
+    private String uuid;
+
     // FCM 푸시 메시지 전송을 위한 ID
     @Column(name = "cloud_msg_reg_id", length = 256)
     private String cloudMsgRegId;

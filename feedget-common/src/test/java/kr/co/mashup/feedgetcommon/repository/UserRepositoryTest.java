@@ -1,6 +1,7 @@
 package kr.co.mashup.feedgetcommon.repository;
 
 import kr.co.mashup.feedgetcommon.domain.User;
+import kr.co.mashup.feedgetcommon.util.UniqueIdGenerator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +34,7 @@ public class UserRepositoryTest {
         user.setName("ethan");
         user.setNickname("ethannick");
         user.setEmail("email@mashup.io");
+        user.setUuid(UniqueIdGenerator.getStringId());
         user.setCloudMsgRegId(null);
         user.setUserGrade(User.UserGrade.BRONZE);
         user.setUseVersionCode(100000);
