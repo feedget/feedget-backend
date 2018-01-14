@@ -218,6 +218,6 @@ public class CreationService {
 
         Optional<Feedback> feedbackOp = feedbackRepository.findByCreationIdAndWriterId(creationId, userId);
 
-        return CreationDto.DetailResponse.newDetailResponse(creation, user, feedbackOp);
+        return CreationDto.DetailResponse.newDetailResponse(creation, feedbackOp);
     }
 }

@@ -2,7 +2,6 @@ package kr.co.mashup.feedgetapi.web.dto;
 
 import kr.co.mashup.feedgetcommon.domain.Creation;
 import kr.co.mashup.feedgetcommon.domain.Feedback;
-import kr.co.mashup.feedgetcommon.domain.User;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -34,7 +33,7 @@ public class CreationDto {
         @Size(min = 2)
         private String category;
 
-        // 프로필 공개 여부(공개, 비공개)
+        // 작성자 프로필 익명 여부
         private boolean anonymity;
 
         // 보상 포인트
@@ -68,6 +67,9 @@ public class CreationDto {
         // 피드백 갯수
         private long feedbackCount;
 
+        // 작성자 프로필 익명 여부
+        private boolean anonymity;
+
         // 창작물 작성자
         private UserDto.Response writer;
 
@@ -86,6 +88,7 @@ public class CreationDto {
             creationDto.setRewardPoint(creation.getRewardPoint());
             creationDto.setStatus(creation.getStatus());
             creationDto.setFeedbackCount(creation.getFeedbackCount());
+            creationDto.setAnonymity(creation.isAnonymity());
 
             UserDto.Response writer = UserDto.Response.fromUser(creation.getWriter());
             creationDto.setWriter(writer);
@@ -129,13 +132,16 @@ public class CreationDto {
         // 피드백 갯수
         private long feedbackCount;
 
+        // 작성자 프로필 익명 여부
+        private boolean anonymity;
+
         // 창작물 작성자
         private UserDto.Response writer;
 
         // 피드백 작성 여부
         private boolean wroteFeedback;
 
-        public static CreationDto.DetailResponse newDetailResponse(Creation creation, User user, Optional<Feedback> feedbackOp) {
+        public static CreationDto.DetailResponse newDetailResponse(Creation creation, Optional<Feedback> feedbackOp) {
             CreationDto.DetailResponse detail = new CreationDto.DetailResponse();
             detail.setCreationId(creation.getCreationId());
             detail.setTitle(creation.getTitle());
@@ -145,6 +151,7 @@ public class CreationDto {
             detail.setRewardPoint(creation.getRewardPoint());
             detail.setStatus(creation.getStatus());
             detail.setFeedbackCount(creation.getFeedbackCount());
+            detail.setAnonymity(creation.isAnonymity());
             detail.setWriter(UserDto.Response.fromUser(creation.getWriter()));
             detail.setWroteFeedback(feedbackOp.isPresent());
 
@@ -172,7 +179,7 @@ public class CreationDto {
         @Size(min = 2)
         private String category;
 
-        // 프로필 공개 여부(공개, 비공개)
+        // 작성자 프로필 익명 여부
         private boolean anonymity;
 
         // 보상 포인트

@@ -42,7 +42,7 @@ public class Feedback extends AbstractEntity<Long> {
     @JoinColumn(name = "writer_id", foreignKey = @ForeignKey(name = "fk_feedback_to_writer_id"))
     private User writer;
 
-    // 작성자 프로필 공개 여부 추가
+    // 작성자 프로필 익명 여부
     @Column(name = "anonymity")
     @Type(type = "yes_no")
     private boolean anonymity;
