@@ -377,7 +377,6 @@ public class CreationServiceTest {
         CreationDto.Update dto = new CreationDto.Update();
         dto.setTitle("title");
         dto.setDescription("description");
-        dto.setCategory("design");
         dto.setAnonymity(true);
         dto.setRewardPoint(1000.0);
 
