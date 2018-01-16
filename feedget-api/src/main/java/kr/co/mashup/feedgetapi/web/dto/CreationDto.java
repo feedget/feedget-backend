@@ -160,22 +160,17 @@ public class CreationDto {
     @Data
     public static class Update {
 
-        @NotBlank
-        @Size(min = 5)
         private String title;
 
-        @NotBlank
         private String description;
 
         // 디자인, 회화, 글, 공예, 기타
-        @NotBlank
-        @Size(min = 2)
         private String category;
 
-        // 프로필 공개 여부(공개, 비공개)
-        private boolean anonymity;
+        // 프로필 익명 여부
+        private Boolean anonymity;
 
         // 보상 포인트
-        private double rewardPoint;
+        private Double rewardPoint;
     }
 }

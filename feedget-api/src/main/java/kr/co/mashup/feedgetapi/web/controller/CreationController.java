@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import kr.co.mashup.feedgetapi.exception.ErrorResponse;
 import kr.co.mashup.feedgetapi.service.CreationService;
+import kr.co.mashup.feedgetapi.web.CreationUpdateValidator;
 import kr.co.mashup.feedgetapi.web.dto.CreationDto;
 import kr.co.mashup.feedgetapi.web.dto.DataListResponse;
 import kr.co.mashup.feedgetapi.web.dto.DataResponse;
@@ -35,6 +36,9 @@ public class CreationController {
 
     @Autowired
     private CreationService creationService;
+
+    @Autowired
+    private CreationUpdateValidator creationUpdateValidator;
 
     // Todo: 정렬 추가 - 최신순, 마감빠른순, 포인트 많은 순, 피드백 많은 순, 피드백 적은
     @ApiOperation(value = "창작물 리스트 조회", notes = "창작물 리스트를 조회한다")
@@ -110,10 +114,11 @@ public class CreationController {
     @PutMapping(value = "/{creationId}")
     public ResponseEntity updateCreation(@RequestHeader long userId,
                                          @PathVariable(value = "creationId") long creationId,
-                                         @Valid @RequestBody CreationDto.Update update,
+                                         @RequestBody CreationDto.Update update,
                                          BindingResult result) {
         log.info("updateCreation - userId : {}, creationId : {}, dto : {}", userId, creationId, update);
 
+        creationUpdateValidator.validate(update, result);
         if (result.hasErrors()) {
             ErrorResponse errorRepoonse = new ErrorResponse();
             errorRepoonse.setMessage("질못된 요청입니다");
