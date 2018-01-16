@@ -23,7 +23,7 @@ public class FeedbackDto {
         @Size(min = 5)
         private String description;
 
-        // 프로필 공개 여부(공개, 비공개)
+        // 작성자 프로필 익명 여부
         private boolean anonymity;
     }
 
@@ -45,6 +45,6 @@ public class FeedbackDto {
         // 작성자 등급
         private User.UserGrade grade;
 
-        // Todo: 채택 여부 추가?
+        // Todo: 채택 여부 추가?, 작성자 프로필 익명 여부 추가
     }
 }

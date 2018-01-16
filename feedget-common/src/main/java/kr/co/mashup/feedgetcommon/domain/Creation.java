@@ -63,7 +63,7 @@ public class Creation extends AbstractEntity<Long> {
     @JoinColumn(name = "writer_id", foreignKey = @ForeignKey(name = "fk_creation_to_writer_id"))
     private User writer;
 
-    // 작성자 프로필 공개 여부 추가
+    // 작성자 프로필 익명 여부
     @Column(name = "anonymity")
     @Type(type = "yes_no")
     private boolean anonymity;
@@ -105,14 +105,30 @@ public class Creation extends AbstractEntity<Long> {
         this.contents.remove(content);
     }
 
+    /**
+     * 작성자인지 여부 조회
+     *
+     * @param user 조회할 유저
+     * @return 작성자면 true
+     */
     public boolean isWritedBy(User user) {
         return this.writer.isSameUser(user);
     }
 
+    /**
+     * 피드백이 작성되었는지 여부 조회
+     *
+     * @return 작성되었으면 true
+     */
     public boolean hasFeedback() {
         return this.feedbackCount > 0;
     }
 
+    /**
+     * 마감인지 여부 조회
+     *
+     * @return 마감이면 true
+     */
     public boolean isDeadline() {
         return this.status == Status.DEADLINE;
     }
