@@ -49,9 +49,10 @@ public class CreationController {
     })
     @GetMapping
     public ResponseEntity<DataListResponse> readCreations(@RequestHeader long userId,
-                                                          @PageableDefault(page = 0, size = 20) Pageable pageable,
-                                                          @RequestParam(value = "category", defaultValue = "ALL") String categoryName) {
-        log.info("readCreations - userId : {}, category : {}, pageable : {}", userId, categoryName, pageable);
+                                                          @RequestParam(value = "category", defaultValue = "ALL") String categoryName,
+                                                          @RequestParam(value = "cursor", required = false) Long cursor,
+                                                          @PageableDefault(page = 0, size = 20) Pageable pageable) {
+        log.info("readCreations - userId : {}, category : {}, cursor : {}, pageable : {}", userId, categoryName, cursor, pageable);
 
         Page<CreationDto.Response> creationPage = creationService.readCreations(userId, categoryName, pageable);
 
