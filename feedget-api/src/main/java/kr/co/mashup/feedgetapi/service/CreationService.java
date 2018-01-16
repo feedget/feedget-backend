@@ -113,22 +113,37 @@ public class CreationService {
             throw new InvalidParameterException("forbidden modify");
         }
 
-        // 보상 포인트 수정시 차액은 반환된다
-        // Todo: implement grade change logic
-        boolean result = writer.changePoint(creation.getRewardPoint() - dto.getRewardPoint());
-        if (!result) {
-            throw new InvalidParameterException("exceed current point");
+        if (dto.getTitle() != null) {
+            creation.setTitle(dto.getTitle());
         }
-        userRepository.save(writer);
 
-        Optional<Category> categoryOp = categoryRepository.findByName(dto.getCategory());
-        Category category = categoryOp.orElseThrow(() -> new NotFoundException("not found category"));
+        if (dto.getDescription() != null) {
+            creation.setDescription(dto.getDescription());
+        }
 
-        creation.setTitle(dto.getTitle());
-        creation.setDescription(dto.getDescription());
-        creation.setCategory(category);
-        creation.setRewardPoint(dto.getRewardPoint());
-        creation.setAnonymity(dto.isAnonymity());
+        if (dto.getCategory() != null) {
+            Optional<Category> categoryOp = categoryRepository.findByName(dto.getCategory());
+            Category category = categoryOp.orElseThrow(() -> new NotFoundException("not found category"));
+
+            creation.setCategory(category);
+        }
+
+        if (dto.getAnonymity() != null) {
+            creation.setAnonymity(dto.getAnonymity());
+        }
+
+        if (dto.getRewardPoint() != null) {
+            // 보상 포인트 수정시 차액은 반환된다
+            // Todo: implement grade change logic
+            boolean result = writer.changePoint(creation.getRewardPoint() - dto.getRewardPoint());
+            if (!result) {
+                throw new InvalidParameterException("exceed current point");
+            }
+            userRepository.save(writer);
+
+            creation.setRewardPoint(dto.getRewardPoint());
+        }
+
         creationRepository.save(creation);
     }
 

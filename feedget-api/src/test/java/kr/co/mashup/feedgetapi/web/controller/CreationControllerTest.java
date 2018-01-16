@@ -2,6 +2,7 @@ package kr.co.mashup.feedgetapi.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.mashup.feedgetapi.service.CreationService;
+import kr.co.mashup.feedgetapi.web.CreationUpdateValidator;
 import kr.co.mashup.feedgetapi.web.dto.CreationDto;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,8 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import java.util.Collections;
 
@@ -42,6 +42,9 @@ public class CreationControllerTest {
 
     @Mock
     private CreationService creationService;
+
+    @Spy
+    private CreationUpdateValidator creationUpdateValidator;
 
     @InjectMocks
     private CreationController sut;
