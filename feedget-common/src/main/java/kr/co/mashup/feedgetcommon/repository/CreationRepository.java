@@ -16,16 +16,16 @@ public interface CreationRepository extends JpaRepository<Creation, Long> {
     /**
      * creation ID로 Creation을 조회한다
      *
-     * @param creationId
+     * @param creationId Creation ID
      * @return
      */
     Optional<Creation> findByCreationId(long creationId);
 
     /**
-     * category로 Creation 리스트 조회(페이징)
+     * category로 Creation 리스트 조회(pagenation)
      *
-     * @param category
-     * @param pageable
+     * @param category Category
+     * @param pageable pagenation info
      * @return
      */
     Page<Creation> findByCategory(Category category, Pageable pageable);

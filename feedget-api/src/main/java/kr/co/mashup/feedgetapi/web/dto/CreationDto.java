@@ -94,7 +94,7 @@ public class CreationDto {
             creationDto.setWriter(writer);
 
             List<ContentsResponse> contents = creation.getContents().stream()
-                    .map(ContentsResponse::fromContent)
+                    .map(ContentsResponse::newResponse)
                     .collect(Collectors.toList());
             creationDto.setContents(contents);
 
@@ -156,7 +156,7 @@ public class CreationDto {
             detail.setWroteFeedback(feedbackOp.isPresent());
 
             List<ContentsResponse> contents = creation.getContents().stream()
-                    .map(ContentsResponse::fromContent)
+                    .map(ContentsResponse::newResponse)
                     .collect(Collectors.toList());
             detail.setContents(contents);
 

@@ -4,15 +4,20 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import kr.co.mashup.feedgetapi.service.FeedbackService;
 import kr.co.mashup.feedgetapi.web.dto.DataListResponse;
 import kr.co.mashup.feedgetapi.web.dto.FeedbackDto;
 import kr.co.mashup.feedgetapi.web.dto.Response;
-import kr.co.mashup.feedgetcommon.domain.Feedback;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 피드백 관련 request에 대한 처리
@@ -22,10 +27,11 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/creations/{creationId}/feedbacks")
 @Api(description = "피드백", tags = {"feedbacks"})
+@Slf4j
 public class FeedbackController {
 
-//    @Autowired
-//    private FeedbackService feedbackService;
+    @Autowired
+    private FeedbackService feedbackService;
 
     @ApiOperation(value = "창작물의 피드백 리스트 조회", notes = "창작물의 피드백 리스트를 조회한다")
     @ApiResponses(value = {
@@ -34,16 +40,14 @@ public class FeedbackController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping
-    public DataListResponse<Feedback> getFeedbacks(@RequestParam(value = "page", defaultValue = "0") int page,
-                                                   @RequestParam(value = "size", defaultValue = "20") int size,
-                                                   @PathVariable(value = "creationId") long creationId) {
+    public ResponseEntity<DataListResponse> readFeedbacks(@RequestHeader long userId,
+                                                          @PathVariable(value = "creationId") long creationId,
+                                                          @RequestParam(value = "cursor", required = false) Long cursor,
+                                                          @PageableDefault(page = 0, size = 20) Pageable pageable) {
+        log.info("readFeedbacks - userId : {}, creationId : {}, cursor : {}, pageable : {}", userId, creationId, cursor, pageable);
 
-        List<Feedback> feedbacks = new ArrayList<>();
-        feedbacks.add(new Feedback());
-
-        return new DataListResponse<>(feedbacks);
-
-//        return new DataListResponse<>(feedbackService.readFeedbacks(creationId, page, size));
+        Page<FeedbackDto.Response> feedbackPage = feedbackService.readFeedbacks(userId, creationId, pageable, cursor);
+        return new ResponseEntity<>(new DataListResponse<>(feedbackPage), HttpStatus.OK);
     }
 
     @ApiOperation(value = "창작물의 피드백 추가", notes = "창작물에 피드백을 추가한다")
