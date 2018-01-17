@@ -11,8 +11,6 @@ import kr.co.mashup.feedgetcommon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +42,7 @@ public class FeedbackService {
      * @return
      */
     @Transactional(readOnly = true)
-    public Page<FeedbackDto.Response> readFeedbacks(long userId, long creationId, Pageable pageable, Long cursor) {
+    public List<FeedbackDto.Response> readFeedbacks(long userId, long creationId, Pageable pageable, Long cursor) {
         Optional<User> userOp = userRepository.findByUserId(userId);
         User user = userOp.orElseThrow(() -> new NotFoundException("not found user"));
 
@@ -81,7 +79,6 @@ public class FeedbackService {
             }
         }
 
-        Pageable resultPageable = new PageRequest(feedbackPage.getNumber(), feedbackPage.getSize());
-        return new PageImpl<>(content, resultPageable, feedbackPage.getTotalElements());
+        return content;
     }
 }

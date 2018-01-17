@@ -9,8 +9,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
@@ -19,6 +17,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -58,9 +57,9 @@ public class FeedbackControllerTest {
         long creationId = 1L;
         Pageable pageable = new PageRequest(0, 10);
 
-        Page<FeedbackDto.Response> feedbackPage = new PageImpl<>(Collections.emptyList());
+        List<FeedbackDto.Response> feedbacks = Collections.emptyList();
 
-        when(feedbackService.readFeedbacks(eq(userId), eq(creationId), any(), anyLong())).thenReturn(feedbackPage);
+        when(feedbackService.readFeedbacks(eq(userId), eq(creationId), any(), anyLong())).thenReturn(feedbacks);
         ArgumentCaptor<Pageable> pageableArg = ArgumentCaptor.forClass(Pageable.class);
 
         // when : 피드백 리스트를 조회하면

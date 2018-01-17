@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -76,7 +77,7 @@ public class FeedbackServiceTest {
         when(feedbackRepository.findByCreationIdAndSelectionIsTrue(creationId)).thenReturn(Optional.of(feedback));
 
         // when : 피드백 리스트를 조회하면
-        Page<FeedbackDto.Response> feedbackPage = sut.readFeedbacks(userId, creationId, pageable, cursor);
+        List<FeedbackDto.Response> feedbacks = sut.readFeedbacks(userId, creationId, pageable, cursor);
 
         // then : 피드백 리스트가 조회된다
         verify(userRepository, times(1)).findByUserId(userId);
@@ -115,7 +116,7 @@ public class FeedbackServiceTest {
         when(feedbackRepository.findByCreationIdAndSelectionIsFalse(creationId, pageable)).thenReturn(page);
 
         // when : 피드백 리스트를 조회하면
-        Page<FeedbackDto.Response> feedbackPage = sut.readFeedbacks(userId, creationId, pageable, cursor);
+        List<FeedbackDto.Response> feedbacks = sut.readFeedbacks(userId, creationId, pageable, cursor);
 
         // then : 피드백 리스트가 조회된다
         verify(userRepository, times(1)).findByUserId(userId);
@@ -139,7 +140,7 @@ public class FeedbackServiceTest {
         when(userRepository.findByUserId(userId)).thenReturn(Optional.empty());
 
         // when : 피드백 리스트를 조회하면
-        Page<FeedbackDto.Response> feedbackPage = sut.readFeedbacks(userId, creationId, pageable, cursor);
+        List<FeedbackDto.Response> feedbacks = sut.readFeedbacks(userId, creationId, pageable, cursor);
 
         // then : 유저가 없어 피드백 리스트가 조회되지 않는다
     }
@@ -162,7 +163,7 @@ public class FeedbackServiceTest {
         when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.empty());
 
         // when : 피드백 리스트를 조회하면
-        Page<FeedbackDto.Response> feedbackPage = sut.readFeedbacks(userId, creationId, pageable, cursor);
+        List<FeedbackDto.Response> feedbacks = sut.readFeedbacks(userId, creationId, pageable, cursor);
 
         // then : 창작물이 없어 피드백 리스트가 조회되지 않는다
     }
@@ -188,7 +189,7 @@ public class FeedbackServiceTest {
         when(feedbackRepository.findByCreationIdAndWriterId(creationId, userId)).thenReturn(Optional.empty());
 
         // when : 피드백 리스트를 조회하면
-        Page<FeedbackDto.Response> feedbackPage = sut.readFeedbacks(userId, creationId, pageable, cursor);
+        List<FeedbackDto.Response> feedbacks = sut.readFeedbacks(userId, creationId, pageable, cursor);
 
         // then : 자신의 피드백이 없어 피드백 리스트가 조회되지 않는다
     }
