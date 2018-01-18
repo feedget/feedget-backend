@@ -39,9 +39,8 @@ public class FeedbackContent extends AbstractEntity<Long> {
     @Column(name = "type", length = 20)
     private ContentType type;
 
-    // Todo: 클라우드 스토리지 이용시 사용 고려
-//    @Column(length = 255, nullable = false)
-//    private String url;
+    @Column(length = 255, nullable = false)
+    private String url;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "feedback_id", foreignKey = @ForeignKey(name = "fk_content_to_feedback_id"))

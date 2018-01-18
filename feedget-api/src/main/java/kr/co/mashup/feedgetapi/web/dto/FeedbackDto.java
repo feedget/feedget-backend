@@ -1,12 +1,12 @@
 package kr.co.mashup.feedgetapi.web.dto;
 
-import kr.co.mashup.feedgetcommon.domain.User;
+import kr.co.mashup.feedgetcommon.domain.Feedback;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 피드백의 데이터 전달을 담당한다
@@ -39,12 +39,29 @@ public class FeedbackDto {
         // 컨텐츠
         private List<ContentsResponse> contents;
 
-        // 작성자 닉네임
-        private String nickname;
+        // 피드백 작성자
+        private UserDto.Response writer;
 
-        // 작성자 등급
-        private User.UserGrade grade;
+        // 작성자 프로필 익명 여부
+        private boolean anonymity;
 
-        // Todo: 채택 여부 추가?, 작성자 프로필 익명 여부 추가
+        // 피드백 채택 여부
+        private boolean selection;
+
+        public static FeedbackDto.Response newResponse(Feedback feedback) {
+            FeedbackDto.Response response = new FeedbackDto.Response();
+            response.setFeedbackId(feedback.getFeedbackId());
+            response.setDescription(feedback.getDescription());
+            response.setWriter(UserDto.Response.fromUser(feedback.getWriter()));
+            response.setAnonymity(feedback.isAnonymity());
+            response.setSelection(feedback.isSelection());
+
+            List<ContentsResponse> contents = feedback.getContents().stream()
+                    .map(ContentsResponse::newResponse)
+                    .collect(Collectors.toList());
+            response.setContents(contents);
+            
+            return response;
+        }
     }
 }

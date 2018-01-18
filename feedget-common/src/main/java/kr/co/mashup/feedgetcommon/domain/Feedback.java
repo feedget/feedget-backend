@@ -56,6 +56,20 @@ public class Feedback extends AbstractEntity<Long> {
     @JoinColumn(name = "creation_id", foreignKey = @ForeignKey(name = "fk_feedback_to_creation_id"))
     private Creation creation;
 
-    // Todo: 채택 여부 추가??
+    // 피드백 채택 여부
+    @Column(name = "selection")
+    @Type(type = "yes_no")
+    private boolean selection;
+
     // Todo: 감사인사 추가
+
+    /**
+     * 작성자인지 여부 조회
+     *
+     * @param user 조회할 유저
+     * @return 작성자면 true
+     */
+    public boolean isWritedBy(User user) {
+        return this.writer.isSameUser(user);
+    }
 }
