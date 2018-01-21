@@ -57,7 +57,7 @@ public class FeedbackRepositoryTest {
         entityManager.persistAndFlush(creation);
 
         writer = new User();
-        writer.setName("test");
+        writer.setRealName("test");
         writer.setNickname("test");
         writer.setEmail("test@test.io");
         writer.setUuid(UniqueIdGenerator.getStringId());
@@ -70,7 +70,7 @@ public class FeedbackRepositoryTest {
         entityManager.persistAndFlush(writer);
 
         User otherUser = new User();
-        otherUser.setName("test");
+        otherUser.setRealName("test");
         otherUser.setNickname("test");
         otherUser.setEmail("test@test.io");
         otherUser.setUuid(UniqueIdGenerator.getStringId());

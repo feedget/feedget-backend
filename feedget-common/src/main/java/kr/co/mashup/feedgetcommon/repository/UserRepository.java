@@ -13,8 +13,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
     /**
      * user ID로 User를 조회한다
      *
-     * @param userId
+     * @param userId 유저 ID
      * @return
      */
     Optional<User> findByUserId(long userId);
+
+    /**
+     * email로 User를 조회한다
+     *
+     * @param email email
+     * @return
+     */
+    Optional<User> findByEmail(String email);
 }

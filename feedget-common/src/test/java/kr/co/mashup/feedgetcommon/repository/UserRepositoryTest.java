@@ -28,12 +28,14 @@ public class UserRepositoryTest {
 
     private User user;
 
+    private static final String USER_EMAIL = "email@mashup.io";
+
     @Before
     public void setUp() throws Exception {
         user = new User();
-        user.setName("ethan");
+        user.setRealName("ethan");
         user.setNickname("ethannick");
-        user.setEmail("email@mashup.io");
+        user.setEmail(USER_EMAIL);
         user.setUuid(UniqueIdGenerator.getStringId());
         user.setCloudMsgRegId(null);
         user.setUserGrade(User.UserGrade.BRONZE);
@@ -58,6 +60,18 @@ public class UserRepositoryTest {
 
         // when : 유저를 조회하면
         Optional<User> userOp = sut.findByUserId(userId);
+
+        // then : 유저가 조회된다
+        assertTrue(userOp.isPresent());
+    }
+
+    @Test
+    public void findByEmail_이메일로_유저_단건_조회_성공() {
+        // given : 이메일로
+        String userEmail = USER_EMAIL;
+
+        // when : 유저를 조회하면
+        Optional<User> userOp = sut.findByEmail(userEmail);
 
         // then : 유저가 조회된다
         assertTrue(userOp.isPresent());
