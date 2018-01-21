@@ -57,9 +57,9 @@ public class FeedbackRepositoryTest {
         entityManager.persistAndFlush(creation);
 
         writer = new User();
-        writer.setName("test");
+        writer.setRealName("test");
         writer.setNickname("test");
-        writer.setEmail("test@test.io");
+        writer.setEmail("testUser1@test.io");
         writer.setUuid(UniqueIdGenerator.getStringId());
         writer.setUserGrade(User.UserGrade.BRONZE);
         writer.setTotalPoint(100.0);
@@ -70,9 +70,9 @@ public class FeedbackRepositoryTest {
         entityManager.persistAndFlush(writer);
 
         User otherUser = new User();
-        otherUser.setName("test");
+        otherUser.setRealName("test");
         otherUser.setNickname("test");
-        otherUser.setEmail("test@test.io");
+        otherUser.setEmail("testUser2@test.io");
         otherUser.setUuid(UniqueIdGenerator.getStringId());
         otherUser.setUserGrade(User.UserGrade.BRONZE);
         otherUser.setTotalPoint(100.0);

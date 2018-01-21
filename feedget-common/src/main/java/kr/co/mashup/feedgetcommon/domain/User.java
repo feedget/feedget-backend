@@ -24,16 +24,16 @@ public class User extends AbstractEntity<Long> {
     @Column(name = "user_id")
     private Long userId;
 
-    // 이름
-    @Column(name = "name", length = 20, nullable = false)
-    private String name;
+    // 실명
+    @Column(name = "real_name", length = 20, nullable = false)
+    private String realName;
 
     // 닉네임
     @Column(name = "nickname", length = 20, nullable = false)
     private String nickname;
 
     // 이메일
-    @Column(name = "email", length = 30, nullable = false)
+    @Column(name = "email", length = 30, nullable = false, unique = true)
     private String email;
 
     // uuid(universally unique identifier) - 외부로 노출되는 ID
@@ -87,7 +87,7 @@ public class User extends AbstractEntity<Long> {
     // 가입한 oauth type
     @Enumerated(EnumType.STRING)  // enum 이름을 DB에 저장
     @Column(name = "oauth_type", length = 20)
-    private OauthType oAuthType;
+    private OAuthType oAuthType;
 
     // 유저가 작성한 피드백
     @OneToMany(mappedBy = "writer")
@@ -100,9 +100,9 @@ public class User extends AbstractEntity<Long> {
     /**
      * oauth type 관리
      */
-    public enum OauthType {
+    public enum OAuthType {
         KAKAO,
-        FB
+        FB;
     }
 
     /**
@@ -130,5 +130,21 @@ public class User extends AbstractEntity<Long> {
             return false;
         }
         return true;
+    }
+
+    public User(String realName, String nickname, String email, String uuid, String oAuthToken, OAuthType oAuthType) {
+        this.realName = realName;
+        this.nickname = nickname;
+        this.email = email;
+        this.uuid = uuid;
+        this.userGrade = UserGrade.BRONZE;
+        this.useVersionCode = 10000;
+        this.totalPoint = 0d;
+        this.currentPoint = 0d;
+        this.periodPoint = 0d;
+        this.feedbackWritingCount = 0;
+        this.feedbackRewardCount = 0;
+        this.oAuthToken = oAuthToken;
+        this.oAuthType = oAuthType;
     }
 }
