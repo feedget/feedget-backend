@@ -1,5 +1,6 @@
 package kr.co.mashup.feedgetapi.service;
 
+import kr.co.mashup.feedgetapi.exception.NotFoundException;
 import kr.co.mashup.feedgetapi.web.dto.UserDto;
 import kr.co.mashup.feedgetcommon.domain.User;
 import kr.co.mashup.feedgetcommon.repository.UserRepository;
@@ -59,5 +60,20 @@ public class UserService {
         // Todo: access token 발급
 
         return "accessToken";
+    }
+
+    /**
+     * 유저의 닉네임 수정
+     *
+     * @param userId 유저 ID
+     * @param dto    수정할 닉네임 데이터
+     */
+    @Transactional
+    public void modifyUserNickname(long userId, UserDto.UpdateNickname dto) {
+        Optional<User> userOp = userRepository.findByUserId(userId);
+        User user = userOp.orElseThrow(() -> new NotFoundException("not found user"));
+
+        user.changeNickname(dto.getNickname());
+        userRepository.save(user);
     }
 }

@@ -63,4 +63,13 @@ public class UserDto {
             return userDto;
         }
     }
+
+    @Data
+    public static class UpdateNickname {
+
+        @NotBlank
+        @Size(min = 2, max = 10)
+        private String nickname;
+
+    }
 }
