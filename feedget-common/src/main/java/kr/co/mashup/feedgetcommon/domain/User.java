@@ -147,4 +147,8 @@ public class User extends AbstractEntity<Long> {
         this.oAuthToken = oAuthToken;
         this.oAuthType = oAuthType;
     }
+
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

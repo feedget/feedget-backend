@@ -1,5 +1,6 @@
 package kr.co.mashup.feedgetapi.service;
 
+import kr.co.mashup.feedgetapi.exception.NotFoundException;
 import kr.co.mashup.feedgetapi.web.dto.UserDto;
 import kr.co.mashup.feedgetcommon.domain.User;
 import kr.co.mashup.feedgetcommon.repository.UserRepository;
@@ -76,5 +77,41 @@ public class UserServiceTest {
         // then : signIn이 성공된다
         verify(userRepository, times(1)).findByEmail("test@mashup.co.kr");
         verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    public void modifyUserNickname_유저_닉네임_수정_성공() {
+        // given : 유저 ID, 수정할 닉네임 정보로
+        long userId = 1L;
+        UserDto.UpdateNickname dto = new UserDto.UpdateNickname();
+        dto.setNickname("123456");
+
+        when(userRepository.findByUserId(userId)).thenReturn(Optional.of(new User()));
+
+        // when : 닉네임을 수정하면
+        sut.modifyUserNickname(userId, dto);
+
+        // then : 닉네임이 수정된다
+        verify(userRepository, times(1)).findByUserId(userId);
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
+
+    @Test
+    public void modifyUserNickname_유저_닉네임_수정_유저가_없어서_실패() {
+        expectedException.expect(NotFoundException.class);
+        expectedException.expectMessage("not found user");
+
+        // given : 유저 ID, 수정할 닉네임 정보로
+        long userId = 1L;
+        UserDto.UpdateNickname dto = new UserDto.UpdateNickname();
+        dto.setNickname("123456");
+
+        when(userRepository.findByUserId(userId)).thenReturn(Optional.empty());
+
+        // when : 닉네임을 수정하면
+        sut.modifyUserNickname(userId, dto);
+
+        // then : 존재하지 않는 유저라 닉네임이 수정되지 않는다
     }
 }
