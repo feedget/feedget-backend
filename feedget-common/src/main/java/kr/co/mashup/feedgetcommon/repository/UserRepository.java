@@ -25,4 +25,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return
      */
     Optional<User> findByEmail(String email);
+
+    /**
+     * UUID로 User를 조회한다
+     *
+     * @param uuid UUID
+     * @return
+     */
+    Optional<User> findByUuid(String uuid);
 }

@@ -194,13 +194,13 @@ public class TokenManager {
 
     /******* private claim *******/
     /**
-     * token에서 유저 ID 추출
+     * token에서 유저의 UUID 추출
      *
      * @param token
      * @return
      */
-    public long getUserId(String token) {
+    public String getUserUuid(String token) {
         Claims claims = getClaims(token);
-        return claims.get(CLAIM_KEY_USER_ID, Long.class);
+        return claims.get(CLAIM_KEY_USER_ID, String.class);
     }
 }
