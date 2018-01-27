@@ -5,17 +5,14 @@ import kr.co.mashup.feedgetapi.exception.NotFoundException;
 import kr.co.mashup.feedgetapi.security.JwtProperties;
 import kr.co.mashup.feedgetapi.security.TokenManager;
 import kr.co.mashup.feedgetapi.web.controller.UserController;
-import kr.co.mashup.feedgetapi.web.dto.Response;
 import kr.co.mashup.feedgetcommon.domain.User;
 import kr.co.mashup.feedgetcommon.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -59,10 +56,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        // Todo: 배포할 경우 제거
-//        if (ArrayUtils.contains(environment.getActiveProfiles(), "localhost")) {
-//            return super.preHandle(request, response, handler);
-//        }
+        if (ArrayUtils.contains(environment.getActiveProfiles(), "localhost")) {
+            return super.preHandle(request, response, handler);
+        }
 
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         if (isAuthNotRequiredController(handlerMethod)) {
@@ -79,7 +75,6 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
         if (authHeader == null
                 || !StringUtils.startsWith(authHeader, HEADER_PREFIX)) {
-            // 401은 인증 실패, 403은 인가 실패라고 볼 수 있음
             // https://www.experts-exchange.com/questions/28944344/Spring-boot-return-JSON-from-an-interceptor.html
             throw new InvalidTokenException("Missing or invalid Authorization header");
         }
@@ -114,11 +109,5 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         }
 
         return false;
-    }
-
-    @ExceptionHandler({NotFoundException.class})
-    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
-    public Response handleNotFoundException(NotFoundException ex, HttpServletResponse resp) {
-        return new Response(ex.getStatus(), ex.getMessage());
     }
 }
