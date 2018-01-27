@@ -5,6 +5,7 @@ import kr.co.mashup.feedgetapi.exception.InvalidTokenException;
 import kr.co.mashup.feedgetcommon.domain.User;
 import kr.co.mashup.feedgetcommon.util.UniqueIdGenerator;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * token 관련 비즈니스 로직 담당
+ *
  * Created by ethan.kim on 2018. 1. 21..
  */
 @Service
@@ -38,61 +41,39 @@ public class TokenManager {
      * token 검증
      * 1. signature가 같은지
      * 2. 만료된 토큰인지
+     * 3. issuer가 같은지
      *
      * @param token
      * @return 정상 토큰이면 true
+     * @throws InvalidTokenException 비정상 토큰일 때(만료, signature가 다르다, issuer가 다르다)
      */
-    public boolean validateToken(String token) {
-        // Todo: 만료된 토큰, 이상한 토큰일 경우 Exception 발생...
-
-        // Todo: issuer 검증 추가?
-
-        return !validateExpiredToken(token);
-    }
-
-    /**
-     * 만료된 토큰인지 검증
-     *
-     * @param token access token
-     * @return 만료되었으면 true
-     */
-    private boolean validateExpiredToken(String token) {
-        // Todo: 만료되었으면 ExpiredJwtException 발생 -> 굳이 날짜 확인을 할 필요가 없을듯...
-
-        final Date expirationAt = getExpirationAt(token);
-        return expirationAt.before(new Date());
-    }
-
-    /**
-     * token에서 만료일 추출
-     *
-     * @param token token
-     * @return
-     */
-    private Date getExpirationAt(String token) {
-        // Todo: 제거?
+    public boolean validateToken(String token) throws InvalidTokenException {
         Claims claims = getClaims(token);
-        return claims.getExpiration();
+
+        if (!StringUtils.equals(claims.getIssuer(), jwtProperties.getIssuer())) {
+            throw new InvalidTokenException("invalid token");
+        }
+
+        return true;
     }
 
     /**
      * token에서 claims 추출
      *
      * @param token token
-     * @return
+     * @return claims
+     * @throws InvalidTokenException 만료된 토큰이거나 signature가 다른 토큰일 때
      */
-    private Claims getClaims(String token) {
+    private Claims getClaims(String token) throws InvalidTokenException {
         try {
             return Jwts.parser()
                     .setSigningKey(jwtProperties.getSignature())
                     .parseClaimsJws(token)
                     .getBody();
-        } catch (SignatureException e) {
-            // Todo: exception catch 합칠까...?
-            throw new InvalidTokenException("invalid signature");
-        } catch (ExpiredJwtException e) {
-            throw new InvalidTokenException("expired token");
+        } catch (SignatureException | ExpiredJwtException e) {
+            throw new InvalidTokenException("invalid token");
         } catch (Exception e) {
+            log.error("invalid token {}", token, e);
             throw new InvalidTokenException("invalid token");
         }
     }

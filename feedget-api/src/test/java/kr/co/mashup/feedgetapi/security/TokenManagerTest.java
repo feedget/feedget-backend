@@ -78,7 +78,7 @@ public class TokenManagerTest {
     @Test
     public void validateToken_만료된_access_token이라_검증_실패() {
         expectedException.expect(InvalidTokenException.class);
-        expectedException.expectMessage("expired token");
+        expectedException.expectMessage("invalid token");
 
         // given : 만료된 토큰으로
         String expiredAccessToken = generateExpiredAccessToken();
@@ -92,7 +92,7 @@ public class TokenManagerTest {
     @Test
     public void validateToken_signature가_다른_토큰이라_검증_실패() {
         expectedException.expect(InvalidTokenException.class);
-        expectedException.expectMessage("invalid signature");
+        expectedException.expectMessage("invalid token");
 
         // given : signature가_다른 토큰으로
         String invalidSignatureAccessToken = jwtBuilder
@@ -117,7 +117,7 @@ public class TokenManagerTest {
     public void validateToken_토큰_검증_issuer가_다른_토큰이라_실패() {
         // Todo: 로직 구현
         expectedException.expect(InvalidTokenException.class);
-        expectedException.expectMessage("invalid signature");
+        expectedException.expectMessage("invalid token");
 
         // given : issuer가 다른 token으로
         String invalidIssuerAccessToken = jwtBuilder
@@ -219,7 +219,7 @@ public class TokenManagerTest {
     @Test
     public void refreshAccessToken_만료된_access_token이라_갱신_실패() {
         expectedException.expect(InvalidTokenException.class);
-        expectedException.expectMessage("expired token");
+        expectedException.expectMessage("invalid token");
 
         // given : 만료된 access token으로
         String expiredAccessToken = generateExpiredAccessToken();
@@ -261,7 +261,7 @@ public class TokenManagerTest {
     @Test
     public void refreshRefreshToken_만료된_refresh_token이라_갱신_실패() {
         expectedException.expect(InvalidTokenException.class);
-        expectedException.expectMessage("expired token");
+        expectedException.expectMessage("invalid token");
 
         // given : 만료된 refresh token으로
         String token = jwtBuilder
@@ -297,7 +297,7 @@ public class TokenManagerTest {
     @Test
     public void getUserUuid_만료된_access_token이라_uuid_조회_실패() {
         expectedException.expect(InvalidTokenException.class);
-        expectedException.expectMessage("expired token");
+        expectedException.expectMessage("invalid token");
 
         // given : 만료된 access token으로
         String expiredAccessToken = generateExpiredAccessToken();

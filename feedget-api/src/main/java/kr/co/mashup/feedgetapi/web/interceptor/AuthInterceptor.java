@@ -1,6 +1,5 @@
 package kr.co.mashup.feedgetapi.web.interceptor;
 
-import kr.co.mashup.feedgetapi.exception.BaseException;
 import kr.co.mashup.feedgetapi.exception.InvalidTokenException;
 import kr.co.mashup.feedgetapi.exception.NotFoundException;
 import kr.co.mashup.feedgetapi.security.JwtProperties;
@@ -17,16 +16,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 /**
+ * Todo: logging interceptor 추가 - http://www.baeldung.com/spring-mvc-handlerinterceptor
  * Controller 에서 체크해야할 request 의 정합성을 체크한다
  * <p>
  * Created by ethan.kim on 2018. 1. 23..
@@ -82,26 +80,21 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         if (authHeader == null
                 || !StringUtils.startsWith(authHeader, HEADER_PREFIX)) {
             // 401은 인증 실패, 403은 인가 실패라고 볼 수 있음
+            // https://www.experts-exchange.com/questions/28944344/Spring-boot-return-JSON-from-an-interceptor.html
             throw new InvalidTokenException("Missing or invalid Authorization header");
         }
 
         log.info("authorization header : {}", authHeader);
 
-        final String token = StringUtils.substring(authHeader, HEADER_PREFIX.length());  // the part after "Bearer "
-        if (!tokenManager.validateToken(token)) {
-            throw new InvalidTokenException("Invaild token");
-        }
+        // the part after "Bearer "
+        final String token = StringUtils.substring(authHeader, HEADER_PREFIX.length());
+        tokenManager.validateToken(token);
 
         String uuid = tokenManager.getUserUuid(token);
-
         Optional<User> userOp = userRepository.findByUuid(uuid);
         User user = userOp.orElseThrow(() -> new NotFoundException("user not found"));
 
-        // Todo: header에 userID 셋팅 or header로 userID를 사용하는 곳의 코드 수정
-        // Todo: remove logic user not found exception thorwn in service layer
-        // Todo: logging interceptor 추가 - http://www.baeldung.com/spring-mvc-handlerinterceptor
-
-        request.setAttribute("userId", user.getUserId());
+        request.setAttribute("userId", user);
 
         return super.preHandle(request, response, handler);
     }
@@ -128,5 +121,4 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     public Response handleNotFoundException(NotFoundException ex, HttpServletResponse resp) {
         return new Response(ex.getStatus(), ex.getMessage());
     }
-
 }
