@@ -1,10 +1,7 @@
 package kr.co.mashup.feedgetapi.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
-import kr.co.mashup.feedgetapi.exception.InvalidParameterException;
+import io.jsonwebtoken.*;
+import kr.co.mashup.feedgetapi.exception.InvalidTokenException;
 import kr.co.mashup.feedgetcommon.domain.User;
 import kr.co.mashup.feedgetcommon.util.UniqueIdGenerator;
 import lombok.extern.slf4j.Slf4j;
@@ -23,16 +20,16 @@ import java.util.Map;
 public class TokenManager {
 
     /*** REGISTERED CLAIM ***/
-    private static final String SUB_ACCESS_TOKEN = "access_token";
-    private static final String SUB_REFRESH_TOKEN = "refresh_token";
+    public static final String SUB_ACCESS_TOKEN = "access_token";
+    public static final String SUB_REFRESH_TOKEN = "refresh_token";
 
-    private static final String AUDIENCE_UNKNOWN = "unknown";
-    private static final String AUDIENCE_WEB = "web";
-    private static final String AUDIENCE_MOBILE = "mobile";
-    private static final String AUDIENCE_TABLET = "tablet";
+    public static final String AUDIENCE_UNKNOWN = "unknown";
+    public static final String AUDIENCE_WEB = "web";
+    public static final String AUDIENCE_MOBILE = "mobile";
+    public static final String AUDIENCE_TABLET = "tablet";
 
     /*** private CLAIM ***/
-    private static final String CLAIM_KEY_USER_ID = "user_id";
+    public static final String CLAIM_KEY_USER_ID = "user_id";
 
     @Autowired
     private JwtProperties jwtProperties;
@@ -43,10 +40,14 @@ public class TokenManager {
      * 2. 만료된 토큰인지
      *
      * @param token
-     * @return
+     * @return 정상 토큰이면 true
      */
     public boolean validateToken(String token) {
-        return validateExpiredToken(token);
+        // Todo: 만료된 토큰, 이상한 토큰일 경우 Exception 발생...
+
+        // Todo: issuer 검증 추가?
+
+        return !validateExpiredToken(token);
     }
 
     /**
@@ -56,6 +57,8 @@ public class TokenManager {
      * @return 만료되었으면 true
      */
     private boolean validateExpiredToken(String token) {
+        // Todo: 만료되었으면 ExpiredJwtException 발생 -> 굳이 날짜 확인을 할 필요가 없을듯...
+
         final Date expirationAt = getExpirationAt(token);
         return expirationAt.before(new Date());
     }
@@ -67,6 +70,7 @@ public class TokenManager {
      * @return
      */
     private Date getExpirationAt(String token) {
+        // Todo: 제거?
         Claims claims = getClaims(token);
         return claims.getExpiration();
     }
@@ -84,9 +88,12 @@ public class TokenManager {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (SignatureException e) {
-            log.info("invalid signature");
-            // Todo: throw exception? 다른 exception으로 변경
-            throw new InvalidParameterException();
+            // Todo: exception catch 합칠까...?
+            throw new InvalidTokenException("invalid signature");
+        } catch (ExpiredJwtException e) {
+            throw new InvalidTokenException("expired token");
+        } catch (Exception e) {
+            throw new InvalidTokenException("invalid token");
         }
     }
 
@@ -96,7 +103,7 @@ public class TokenManager {
      * @param claims
      * @return
      */
-    public String generateToken(Map<String, Object> claims, long expiration) {
+    private String generateToken(Map<String, Object> claims, long expiration) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date())
@@ -114,7 +121,7 @@ public class TokenManager {
      * @param expiration 만료시간
      * @return
      */
-    public String generateToken(Map<String, Object> claims, String subject, Date expiration) {
+    private String generateToken(Map<String, Object> claims, String subject, Date expiration) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)  // sub - 제목
@@ -194,7 +201,7 @@ public class TokenManager {
 
     /******* private claim *******/
     /**
-     * token에서 유저의 UUID 추출
+     * token에서 유저의 UUID 조회
      *
      * @param token
      * @return
