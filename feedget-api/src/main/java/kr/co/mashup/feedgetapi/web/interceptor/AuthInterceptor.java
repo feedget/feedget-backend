@@ -3,7 +3,7 @@ package kr.co.mashup.feedgetapi.web.interceptor;
 import kr.co.mashup.feedgetapi.exception.InvalidTokenException;
 import kr.co.mashup.feedgetapi.security.JwtProperties;
 import kr.co.mashup.feedgetapi.security.TokenManager;
-import kr.co.mashup.feedgetapi.web.controller.UserController;
+import kr.co.mashup.feedgetapi.web.controller.SignInController;
 import kr.co.mashup.feedgetcommon.domain.User;
 import kr.co.mashup.feedgetcommon.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -94,7 +94,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     }
 
     /**
-     * 적용 대상이 아니면 true
+     * Interceptor 적용 대상이 아니면 true
      *
      * @param handler
      * @return
@@ -102,8 +102,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     private boolean isAuthNotRequiredController(HandlerMethod handler) {
         Object controllerClass = handler.getBean();
 
-        // Todo: interceptor 적용 여부를 나누기 위해 UserController에서 로그인 로직 분리
-        if (controllerClass instanceof UserController) {
+        if (controllerClass instanceof SignInController) {
             return true;
         }
 

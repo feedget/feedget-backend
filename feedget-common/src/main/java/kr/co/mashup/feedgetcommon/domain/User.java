@@ -80,11 +80,11 @@ public class User extends AbstractEntity<Long> {
 
     // Todo: 다른 social login 지원시 entity 분리 고려
     // Todo: 필요없을 시 제거
-    // 카톡, FB access token
+    // OAuth Access Token(카톡, FB)
     @Column(name = "oauth_token", length = 256)
     private String oAuthToken;
 
-    // 가입한 oauth type
+    // 가입한 OAuth Type
     @Enumerated(EnumType.STRING)  // enum 이름을 DB에 저장
     @Column(name = "oauth_type", length = 20)
     private OAuthType oAuthType;

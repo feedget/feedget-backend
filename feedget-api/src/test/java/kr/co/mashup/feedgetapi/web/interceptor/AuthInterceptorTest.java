@@ -89,7 +89,7 @@ public class AuthInterceptorTest {
         // given : develop profile, 토큰 검증이 불필요한 request URI로
         String[] activeProfiles = {"develop"};
 
-        MockHttpServletRequest request = new MockHttpServletRequest(HttpMethod.POST.toString(), "/users/sign-in");
+        MockHttpServletRequest request = new MockHttpServletRequest(HttpMethod.POST.toString(), "/sign-in");
         MockHttpServletResponse response = new MockHttpServletResponse();
         HandlerExecutionChain hec = handlerMapping.getHandler(request);
 
