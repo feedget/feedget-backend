@@ -322,7 +322,7 @@ public class TokenManagerTest {
                 .setIssuer(jwtProperties.getIssuer())
                 .setIssuedAt(new Date())
                 .setNotBefore(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + 10000000))
                 .signWith(SignatureAlgorithm.HS512, jwtProperties.getSignature())
                 .compact();
     }
@@ -341,7 +341,7 @@ public class TokenManagerTest {
                 .setIssuer(jwtProperties.getIssuer())
                 .setIssuedAt(new Date())
                 .setNotBefore(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + 30000000))
                 .signWith(SignatureAlgorithm.HS512, jwtProperties.getSignature())
                 .compact();
     }
@@ -360,7 +360,7 @@ public class TokenManagerTest {
                 .setIssuer(jwtProperties.getIssuer())
                 .setIssuedAt(new Date())
                 .setNotBefore(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() - 1000))
+                .setExpiration(new Date(System.currentTimeMillis() - 20000000))
                 .signWith(SignatureAlgorithm.HS512, jwtProperties.getSignature())
                 .compact();
     }
