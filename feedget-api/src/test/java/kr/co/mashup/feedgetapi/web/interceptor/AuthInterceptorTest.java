@@ -157,8 +157,8 @@ public class AuthInterceptorTest {
 
     @Test
     public void preHandle_존재하지_않는_유저라_통과_실패() throws Exception {
-        expectedException.expect(NotFoundException.class);
-        expectedException.expectMessage("user not found");
+        expectedException.expect(InvalidTokenException.class);
+        expectedException.expectMessage("invalid token");
 
         // given : develop profile, 토큰 검증이 필요한 request URI, 정상 header로
         String[] activeProfiles = {"develop"};

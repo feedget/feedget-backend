@@ -1,7 +1,6 @@
 package kr.co.mashup.feedgetapi.web.interceptor;
 
 import kr.co.mashup.feedgetapi.exception.InvalidTokenException;
-import kr.co.mashup.feedgetapi.exception.NotFoundException;
 import kr.co.mashup.feedgetapi.security.JwtProperties;
 import kr.co.mashup.feedgetapi.security.TokenManager;
 import kr.co.mashup.feedgetapi.web.controller.UserController;
@@ -87,7 +86,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
         String uuid = tokenManager.getUserUuid(token);
         Optional<User> userOp = userRepository.findByUuid(uuid);
-        User user = userOp.orElseThrow(() -> new NotFoundException("user not found"));
+        User user = userOp.orElseThrow(() -> new InvalidTokenException("invalid token"));
 
         request.setAttribute("userId", user);
 
