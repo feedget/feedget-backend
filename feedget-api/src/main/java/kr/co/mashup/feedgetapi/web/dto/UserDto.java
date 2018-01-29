@@ -16,27 +16,6 @@ import javax.validation.constraints.Size;
 public class UserDto {
 
     @Data
-    public static class SignIn {
-
-        @NotBlank
-        private String realName;
-
-        @NotBlank
-        @Size(min = 2, max = 10)
-        private String nickname;
-
-        @NotBlank
-        @Email
-        private String email;
-
-        @NotBlank
-        private String oAuthToken;
-
-        @NotNull
-        private User.OAuthType oAuthType;
-    }
-
-    @Data
     public static class Response {
 
         // 유저 ID

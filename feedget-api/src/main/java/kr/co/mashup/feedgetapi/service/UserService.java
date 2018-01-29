@@ -1,6 +1,8 @@
 package kr.co.mashup.feedgetapi.service;
 
 import kr.co.mashup.feedgetapi.exception.NotFoundException;
+import kr.co.mashup.feedgetapi.security.TokenManager;
+import kr.co.mashup.feedgetapi.web.dto.SignInDto;
 import kr.co.mashup.feedgetapi.web.dto.UserDto;
 import kr.co.mashup.feedgetcommon.domain.User;
 import kr.co.mashup.feedgetcommon.repository.UserRepository;
@@ -13,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 /**
+ * 유저 관련 비즈니스 로직 처리
+ * <p>
  * Created by ethan.kim on 2018. 1. 18..
  */
 @Service
@@ -22,18 +26,20 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    private final TokenManager tokenManager;
+
     /**
      * sign in
      * 1. validate oauth token
      * 2. find user by email
-     * 3. not exist user -> save user
-     * 4. generate access token
+     * 2-1. not exist user -> save user
+     * 4. generate access token, refresh token
      *
      * @param dto
      * @return
      */
     @Transactional
-    public String signInUser(UserDto.SignIn dto) {
+    public SignInDto.Response signInUser(SignInDto.Create dto) {
         validateUser(dto);
 
         Optional<User> userOp = userRepository.findByEmail(dto.getEmail());
@@ -41,25 +47,30 @@ public class UserService {
 
         // Todo: add signIn history
 
-        return generateAccessToken(createdUser);
+        SignInDto.Response response = new SignInDto.Response();
+        response.setAccessToken(tokenManager.generateAccessToken(createdUser));
+        response.setRefreshToken(tokenManager.generateRefreshToken(createdUser));
+
+        return response;
     }
 
-    private User signUpUser(UserDto.SignIn dto) {
+    /**
+     * Sign Up
+     * User 데이터를 저장한다
+     *
+     * @param dto
+     * @return
+     */
+    private User signUpUser(SignInDto.Create dto) {
         // Todo: add signUp history
         User user = new User(dto.getRealName(), dto.getNickname(), dto.getEmail(), UniqueIdGenerator.getStringId(), dto.getOAuthToken(), dto.getOAuthType());
         return userRepository.save(user);
     }
 
-    private void validateUser(UserDto.SignIn dto) {
+    private void validateUser(SignInDto.Create dto) {
         // Todo: validate oauth token in dto
         // 1. oauth provider로 request
         // 2. email 등 정보랑 같은지 확인
-    }
-
-    private String generateAccessToken(User user) {
-        // Todo: access token 발급
-
-        return "accessToken";
     }
 
     /**
