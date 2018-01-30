@@ -48,7 +48,7 @@ public class CreationController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping
-    public ResponseEntity<DataListResponse> readCreations(@RequestHeader long userId,
+    public ResponseEntity<DataListResponse> readCreations(@RequestAttribute long userId,
                                                           @RequestParam(value = "category", defaultValue = "ALL") String categoryName,
                                                           @RequestParam(value = "cursor", required = false) Long cursor,
                                                           @PageableDefault(page = 0, size = 20) Pageable pageable) {
@@ -73,7 +73,7 @@ public class CreationController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping(value = "/{creationId}")
-    public DataResponse<CreationDto.DetailResponse> readCreation(@RequestHeader long userId,
+    public DataResponse<CreationDto.DetailResponse> readCreation(@RequestAttribute long userId,
                                                                  @PathVariable(value = "creationId") long creationId) {
         log.info("readCreation - userId : {}, creationId : {}", userId, creationId);
 
@@ -88,7 +88,7 @@ public class CreationController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping
-    public ResponseEntity createCreation(@RequestHeader long userId,  // Todo: 유저 ID 셋팅
+    public ResponseEntity createCreation(@RequestAttribute long userId,
                                          @Valid @RequestBody CreationDto.Create create,
                                          BindingResult result) {
         log.info("createCreation - userId : {}, dto : {}", userId, create);
@@ -101,7 +101,6 @@ public class CreationController {
             return new ResponseEntity<>(errorRepoonse, HttpStatus.BAD_REQUEST);
         }
 
-//        ParameterUtil.checkParameterEmpty();
         long creationId = creationService.addCreation(userId, create);
         return new ResponseEntity<>(new DataResponse<>(creationId), HttpStatus.CREATED);
     }
@@ -113,7 +112,7 @@ public class CreationController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PutMapping(value = "/{creationId}")
-    public ResponseEntity updateCreation(@RequestHeader long userId,
+    public ResponseEntity updateCreation(@RequestAttribute long userId,
                                          @PathVariable(value = "creationId") long creationId,
                                          @RequestBody CreationDto.Update update,
                                          BindingResult result) {
@@ -139,7 +138,7 @@ public class CreationController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @DeleteMapping(value = "/{creationId}")
-    public ResponseEntity deleteCreation(@RequestHeader long userId,
+    public ResponseEntity deleteCreation(@RequestAttribute long userId,
                                          @PathVariable(value = "creationId") long creationId) {
         log.info("deleteCreation - userId : {}, creationId : {}", userId, creationId);
 

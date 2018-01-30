@@ -74,7 +74,7 @@ public class CreationControllerTest {
 
         // when : 창작물을 추가하면
         MvcResult result = mockMvc.perform(post("/creations")
-                .header("userId", userId)
+                .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
@@ -98,7 +98,7 @@ public class CreationControllerTest {
 
         // when : 창작물을 추가하면
         MvcResult result = mockMvc.perform(post("/creations")
-                .header("userId", userId)
+                .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
@@ -122,7 +122,7 @@ public class CreationControllerTest {
 
         // when : 창작물을 추가하면
         MvcResult result = mockMvc.perform(post("/creations")
-                .header("userId", userId)
+                .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
@@ -146,7 +146,7 @@ public class CreationControllerTest {
 
         // when : 창작물을 추가하면
         MvcResult result = mockMvc.perform(post("/creations")
-                .header("userId", userId)
+                .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
@@ -171,7 +171,7 @@ public class CreationControllerTest {
 
         // when : 창작물을 수정하면
         MvcResult result = mockMvc.perform(put("/creations/{creationId}", creationId)
-                .header("userId", userId)
+                .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
@@ -265,7 +265,7 @@ public class CreationControllerTest {
 
         // when : 창작물을 삭제하면
         MvcResult result = mockMvc.perform(delete("/creations/{creationId}", creationId)
-                .header("userId", userId)
+                .requestAttr("userId", userId)
         ).andExpect(status().isOk())
                 .andReturn();
 
@@ -287,7 +287,7 @@ public class CreationControllerTest {
 
         // when : 창작물 리스트를 조회하면
         MvcResult result = mockMvc.perform(get("/creations")
-                .header("userId", userId)
+                .requestAttr("userId", userId)
                 .param("category", category)
                 .param("page", String.valueOf(0))
                 .param("size", String.valueOf(10))
@@ -307,7 +307,7 @@ public class CreationControllerTest {
 
         // when : 창작물을 조회하면
         MvcResult result = mockMvc.perform(get("/creations/{creationId}", creationId)
-                .header("userId", userId)
+                .requestAttr("userId", userId)
         ).andExpect(status().isOk())
                 .andReturn();
 

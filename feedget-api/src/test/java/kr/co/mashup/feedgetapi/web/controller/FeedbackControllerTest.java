@@ -64,7 +64,7 @@ public class FeedbackControllerTest {
 
         // when : 피드백 리스트를 조회하면
         MvcResult result = mockMvc.perform(get("/creations/{creationId}/feedbacks", creationId)
-                .header("userId", userId)
+                .requestAttr("userId", userId)
                 .param("cursor", String.valueOf(1))
                 .param("page", String.valueOf(0))
                 .param("size", String.valueOf(10))

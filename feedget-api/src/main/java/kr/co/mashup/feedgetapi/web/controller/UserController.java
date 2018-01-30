@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import kr.co.mashup.feedgetapi.exception.ErrorResponse;
 import kr.co.mashup.feedgetapi.service.UserService;
-import kr.co.mashup.feedgetapi.web.dto.DataResponse;
 import kr.co.mashup.feedgetapi.web.dto.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,7 @@ public class UserController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PatchMapping(value = "/nickname")
-    public ResponseEntity updateUserNickname(@RequestHeader long userId,
+    public ResponseEntity updateUserNickname(@RequestAttribute long userId,
                                              @RequestBody @Valid UserDto.UpdateNickname updateNickname,
                                              BindingResult result) {
         log.info("updateUserNickname - dto : {}", updateNickname);

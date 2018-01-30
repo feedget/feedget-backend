@@ -57,7 +57,7 @@ public class UserControllerTest {
 
         // when : 닉네임을 수정하면
         MvcResult result = mockMvc.perform(patch("/users/nickname")
-                .header("userId", userId)
+                .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))

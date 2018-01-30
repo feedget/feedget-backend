@@ -41,7 +41,7 @@ public class FeedbackController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping
-    public ResponseEntity<DataListResponse> readFeedbacks(@RequestHeader long userId,
+    public ResponseEntity<DataListResponse> readFeedbacks(@RequestAttribute long userId,
                                                           @PathVariable(value = "creationId") long creationId,
                                                           @RequestParam(value = "cursor", required = false) Long cursor,
                                                           @PageableDefault(page = 0, size = 50) Pageable pageable) {
@@ -58,8 +58,8 @@ public class FeedbackController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping
-    public Response createFeedback(@PathVariable(value = "creationId") long creationId,
-                                   @RequestHeader long userId,  // Todo: 유저 ID 셋팅
+    public Response createFeedback(@RequestAttribute long userId,
+                                   @PathVariable(value = "creationId") long creationId,
                                    @Valid @RequestBody FeedbackDto feedbackDto) {
 //        feedbackService.addFeedback(userId, creationId, feedbackDto);
 
