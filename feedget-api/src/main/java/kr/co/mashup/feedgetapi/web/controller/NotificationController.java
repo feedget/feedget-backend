@@ -6,10 +6,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import kr.co.mashup.feedgetapi.web.dto.DataListResponse;
 import kr.co.mashup.feedgetapi.web.dto.NotificationDto;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 
@@ -31,7 +28,7 @@ public class NotificationController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping
-    public DataListResponse<NotificationDto.Response> getNotifications(@RequestHeader long userId) {
+    public DataListResponse<NotificationDto.Response> getNotifications(@RequestAttribute long userId) {
 
         // Todo: implement read notifications logic
 

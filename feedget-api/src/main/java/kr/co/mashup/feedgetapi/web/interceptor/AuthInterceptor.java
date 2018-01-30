@@ -88,7 +88,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         Optional<User> userOp = userRepository.findByUuid(uuid);
         User user = userOp.orElseThrow(() -> new InvalidTokenException("invalid token"));
 
-        request.setAttribute("userId", user);
+        request.setAttribute("userId", user.getUserId());
 
         return super.preHandle(request, response, handler);
     }
