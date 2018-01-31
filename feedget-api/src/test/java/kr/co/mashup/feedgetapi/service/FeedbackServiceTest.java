@@ -1,5 +1,6 @@
 package kr.co.mashup.feedgetapi.service;
 
+import kr.co.mashup.feedgetapi.exception.InvalidParameterException;
 import kr.co.mashup.feedgetapi.exception.NotFoundException;
 import kr.co.mashup.feedgetapi.web.dto.FeedbackDto;
 import kr.co.mashup.feedgetcommon.domain.Creation;
@@ -62,7 +63,7 @@ public class FeedbackServiceTest {
 
         Feedback feedback = new Feedback();
         feedback.setFeedbackId(1L);
-        feedback.setDescription("description");
+        feedback.setContent("description");
         feedback.setWriter(user);
         feedback.setAnonymity(true);
         feedback.setSelection(true);
@@ -102,7 +103,7 @@ public class FeedbackServiceTest {
 
         Feedback feedback = new Feedback();
         feedback.setFeedbackId(1L);
-        feedback.setDescription("description");
+        feedback.setContent("description");
         feedback.setWriter(user);
         feedback.setAnonymity(true);
         feedback.setSelection(true);
@@ -192,5 +193,142 @@ public class FeedbackServiceTest {
         List<FeedbackDto.Response> feedbacks = sut.readFeedbacks(userId, creationId, pageable, cursor);
 
         // then : 자신의 피드백이 없어 피드백 리스트가 조회되지 않는다
+    }
+
+    @Test
+    public void addFeedback_창작물에_피드백_추가_성공() {
+        // given : 유저 ID, 창작물 ID, 추가할 피드백 데이터로
+        long userId = 1L;
+        long creationId = 1L;
+        FeedbackDto.Create dto = new FeedbackDto.Create();
+        dto.setContent("feedback content");
+        dto.setAnonymity(true);
+
+        User user = new User();
+        user.setUserId(userId);
+
+        User otherUser = new User();
+        otherUser.setUserId(2L);
+
+        Creation creation = new Creation();
+        creation.setCreationId(creationId);
+        creation.setWriter(otherUser);
+
+        when(userRepository.findByUserId(userId)).thenReturn(Optional.of(user));
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.of(creation));
+        when(feedbackRepository.findByCreationIdAndWriterId(creationId, userId)).thenReturn(Optional.empty());
+
+        // when : 창작물에 피드백을 추가하면
+        sut.addFeedback(userId, creationId, dto);
+
+        // then : 피드백이 추가된다
+        verify(feedbackRepository, times(1)).save(any(Feedback.class));
+    }
+
+    @Test
+    public void addFeedback_존재하지_않는_유저라_창작물에_피드백_추가_실패() {
+        expectedException.expect(NotFoundException.class);
+        expectedException.expectMessage("not found writer");
+
+        // given : 유저 ID, 창작물 ID, 추가할 피드백 데이터로
+        long userId = 1L;
+        long creationId = 1L;
+        FeedbackDto.Create dto = new FeedbackDto.Create();
+        dto.setContent("feedback content");
+        dto.setAnonymity(true);
+
+        when(userRepository.findByUserId(userId)).thenReturn(Optional.empty());
+
+        // when : 창작물에 피드백을 추가하면
+        sut.addFeedback(userId, creationId, dto);
+
+        // then : 존재하지 않는 유저라 피드백이 추가되지 않는다
+    }
+
+    @Test
+    public void addFeedback_존재하지_않는_창작물이라_창작물에_피드백_추가_실패() {
+        expectedException.expect(NotFoundException.class);
+        expectedException.expectMessage("not found creation");
+
+        // given : 유저 ID, 창작물 ID, 추가할 피드백 데이터로
+        long userId = 1L;
+        long creationId = 1L;
+        FeedbackDto.Create dto = new FeedbackDto.Create();
+        dto.setContent("feedback content");
+        dto.setAnonymity(true);
+
+        User user = new User();
+        user.setUserId(userId);
+
+        when(userRepository.findByUserId(userId)).thenReturn(Optional.of(user));
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.empty());
+
+        // when : 창작물에 피드백을 추가하면
+        sut.addFeedback(userId, creationId, dto);
+
+        // then : 존재하지 않는 창작물이라 피드백이 추가되지 않는다
+    }
+
+    @Test
+    public void addFeedback_창작물_작성자라_창작물에_피드백_추가_실패() {
+        expectedException.expect(InvalidParameterException.class);
+        expectedException.expectMessage("forbiden write feedback");
+
+        // given : 유저 ID, 창작물 ID, 추가할 피드백 데이터로
+        long userId = 1L;
+        long creationId = 1L;
+        FeedbackDto.Create dto = new FeedbackDto.Create();
+        dto.setContent("feedback content");
+        dto.setAnonymity(true);
+
+        User user = new User();
+        user.setUserId(userId);
+
+        Creation creation = new Creation();
+        creation.setCreationId(creationId);
+        creation.setWriter(user);
+
+        when(userRepository.findByUserId(userId)).thenReturn(Optional.of(user));
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.of(creation));
+
+        // when : 창작물에 피드백을 추가하면
+        sut.addFeedback(userId, creationId, dto);
+
+        // then : 창작물 작성자라 피드백이 추가되지 않는다
+    }
+
+    @Test
+    public void addFeedback_이미_피드백을_작성해서_창작물에_피드백_추가_실패() {
+        expectedException.expect(InvalidParameterException.class);
+        expectedException.expectMessage("exceed write feedback");
+
+        // given : 유저 ID, 창작물 ID, 추가할 피드백 데이터로
+        long userId = 1L;
+        long creationId = 1L;
+        FeedbackDto.Create dto = new FeedbackDto.Create();
+        dto.setContent("feedback content");
+        dto.setAnonymity(true);
+
+        User user = new User();
+        user.setUserId(userId);
+
+        User otherUser = new User();
+        otherUser.setUserId(2L);
+
+        Creation creation = new Creation();
+        creation.setCreationId(creationId);
+        creation.setWriter(otherUser);
+
+        Feedback feedback = new Feedback();
+        feedback.setWriter(user);
+
+        when(userRepository.findByUserId(userId)).thenReturn(Optional.of(user));
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.of(creation));
+        when(feedbackRepository.findByCreationIdAndWriterId(creationId, userId)).thenReturn(Optional.of(feedback));
+
+        // when : 창작물에 피드백을 추가하면
+        sut.addFeedback(userId, creationId, dto);
+
+        // then : 이미 피드백을 작성해서 피드백이 추가되지 않는다
     }
 }
