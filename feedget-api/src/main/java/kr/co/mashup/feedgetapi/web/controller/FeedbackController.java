@@ -27,8 +27,8 @@ import java.util.List;
  * Created by ethan.kim on 2017. 12. 21..
  */
 @RestController
-@RequestMapping(value = "/creations/{creationId}/feedbacks")
-@Api(description = "피드백", tags = {"feedbacks"})
+@RequestMapping(value = "/creations/{creationId}/feedback")
+@Api(description = "피드백", tags = {"feedback"})
 @Slf4j
 public class FeedbackController {
 
@@ -43,13 +43,13 @@ public class FeedbackController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping
-    public ResponseEntity<DataListResponse> readFeedbacks(@RequestAttribute long userId,
+    public ResponseEntity<DataListResponse> readFeedbackList(@RequestAttribute long userId,
                                                           @PathVariable(value = "creationId") long creationId,
                                                           @RequestParam(value = "cursor", required = false) Long cursor,
                                                           @PageableDefault(page = 0, size = 50) Pageable pageable) {
         log.info("readFeedbacks - userId : {}, creationId : {}, cursor : {}, pageable : {}", userId, creationId, cursor, pageable);
 
-        List<FeedbackDto.Response> feedbacks = feedbackService.readFeedbacks(userId, creationId, pageable, cursor);
+        List<FeedbackDto.Response> feedbacks = feedbackService.readFeedbackList(userId, creationId, pageable, cursor);
         return new ResponseEntity<>(new DataListResponse<>(feedbacks), HttpStatus.OK);
     }
 

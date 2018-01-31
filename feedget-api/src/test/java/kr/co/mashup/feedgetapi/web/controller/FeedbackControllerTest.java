@@ -69,11 +69,11 @@ public class FeedbackControllerTest {
 
         List<FeedbackDto.Response> feedbacks = Collections.emptyList();
 
-        when(feedbackService.readFeedbacks(eq(userId), eq(creationId), any(), anyLong())).thenReturn(feedbacks);
+        when(feedbackService.readFeedbackList(eq(userId), eq(creationId), any(), anyLong())).thenReturn(feedbacks);
         ArgumentCaptor<Pageable> pageableArg = ArgumentCaptor.forClass(Pageable.class);
 
         // when : 피드백 리스트를 조회하면
-        MvcResult result = mockMvc.perform(get("/creations/{creationId}/feedbacks", creationId)
+        MvcResult result = mockMvc.perform(get("/creations/{creationId}/feedback", creationId)
                 .requestAttr("userId", userId)
                 .param("cursor", String.valueOf(1))
                 .param("page", String.valueOf(0))
@@ -82,7 +82,7 @@ public class FeedbackControllerTest {
                 .andReturn();
 
         // then : 피드백 리스트가 조회된다
-        verify(feedbackService, times(1)).readFeedbacks(eq(userId), eq(creationId), pageableArg.capture(), anyLong());
+        verify(feedbackService, times(1)).readFeedbackList(eq(userId), eq(creationId), pageableArg.capture(), anyLong());
         assertEquals(pageableArg.getValue(), pageable);
     }
 
@@ -96,7 +96,7 @@ public class FeedbackControllerTest {
         dto.setAnonymity(true);
 
         // when : 창작물에 피드백을 추가하면
-        MvcResult result = mockMvc.perform(post("/creations/{creationId}/feedbacks", creationId)
+        MvcResult result = mockMvc.perform(post("/creations/{creationId}/feedback", creationId)
                 .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -118,7 +118,7 @@ public class FeedbackControllerTest {
         dto.setAnonymity(true);
 
         // when : 창작물에 피드백을 추가하면
-        MvcResult result = mockMvc.perform(post("/creations/{creationId}/feedbacks", creationId)
+        MvcResult result = mockMvc.perform(post("/creations/{creationId}/feedback", creationId)
                 .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -138,7 +138,7 @@ public class FeedbackControllerTest {
         long feedbackId = 1L;
 
         // when : 창작물의 피드백을 삭제하면
-        MvcResult result = mockMvc.perform(delete("/creations/{creationId}/feedbacks/{feedbackId}", creationId, feedbackId)
+        MvcResult result = mockMvc.perform(delete("/creations/{creationId}/feedback/{feedbackId}", creationId, feedbackId)
                 .requestAttr("userId", userId)
         ).andExpect(status().isOk())
                 .andReturn();

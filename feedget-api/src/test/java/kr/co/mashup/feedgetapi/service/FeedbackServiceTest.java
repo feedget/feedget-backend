@@ -49,7 +49,7 @@ public class FeedbackServiceTest {
     private FeedbackService sut;
 
     @Test
-    public void readFeedbacks_피드백_리스트_조회_0page_조회_성공() {
+    public void readFeedbackList_피드백_리스트_조회_0page_조회_성공() {
         // given : 유저 ID, 창작물 ID, 페이지 정보, 커서로
         long userId = 1L;
         long creationId = 1L;
@@ -78,7 +78,7 @@ public class FeedbackServiceTest {
         when(feedbackRepository.findByCreationIdAndSelectionIsTrue(creationId)).thenReturn(Optional.of(feedback));
 
         // when : 피드백 리스트를 조회하면
-        List<FeedbackDto.Response> feedbacks = sut.readFeedbacks(userId, creationId, pageable, cursor);
+        List<FeedbackDto.Response> feedbackList = sut.readFeedbackList(userId, creationId, pageable, cursor);
 
         // then : 피드백 리스트가 조회된다
         verify(userRepository, times(1)).findByUserId(userId);
@@ -89,7 +89,7 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void readFeedbacks_피드백_리스트_조회_1page_조회_성공() {
+    public void readFeedbackList_피드백_리스트_조회_1page_조회_성공() {
         // given : 유저 ID, 창작물 ID, 페이지 정보, 커서로
         long userId = 1L;
         long creationId = 1L;
@@ -117,7 +117,7 @@ public class FeedbackServiceTest {
         when(feedbackRepository.findByCreationIdAndSelectionIsFalse(creationId, pageable)).thenReturn(page);
 
         // when : 피드백 리스트를 조회하면
-        List<FeedbackDto.Response> feedbacks = sut.readFeedbacks(userId, creationId, pageable, cursor);
+        List<FeedbackDto.Response> readFeedbackList = sut.readFeedbackList(userId, creationId, pageable, cursor);
 
         // then : 피드백 리스트가 조회된다
         verify(userRepository, times(1)).findByUserId(userId);
@@ -128,7 +128,7 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void readFeedbacks_피드백_리스트_조회_유저가_없어_실패() {
+    public void readFeedbackList_피드백_리스트_조회_유저가_없어_실패() {
         expectedException.expect(NotFoundException.class);
         expectedException.expectMessage("not found user");
 
@@ -141,13 +141,13 @@ public class FeedbackServiceTest {
         when(userRepository.findByUserId(userId)).thenReturn(Optional.empty());
 
         // when : 피드백 리스트를 조회하면
-        List<FeedbackDto.Response> feedbacks = sut.readFeedbacks(userId, creationId, pageable, cursor);
+        List<FeedbackDto.Response> readFeedbackList = sut.readFeedbackList(userId, creationId, pageable, cursor);
 
         // then : 유저가 없어 피드백 리스트가 조회되지 않는다
     }
 
     @Test
-    public void readFeedbacks_피드백_리스트_조회_창작물이_없어_실패() {
+    public void readFeedbackList_피드백_리스트_조회_창작물이_없어_실패() {
         expectedException.expect(NotFoundException.class);
         expectedException.expectMessage("not found creation");
 
@@ -164,13 +164,13 @@ public class FeedbackServiceTest {
         when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.empty());
 
         // when : 피드백 리스트를 조회하면
-        List<FeedbackDto.Response> feedbacks = sut.readFeedbacks(userId, creationId, pageable, cursor);
+        List<FeedbackDto.Response> feedbackList = sut.readFeedbackList(userId, creationId, pageable, cursor);
 
         // then : 창작물이 없어 피드백 리스트가 조회되지 않는다
     }
 
     @Test
-    public void readFeedbacks_피드백_리스트_조회_자신의_피드백이_없어서_실패() {
+    public void readFeedbackList_피드백_리스트_조회_자신의_피드백이_없어서_실패() {
         expectedException.expect(NotFoundException.class);
         expectedException.expectMessage("not found feedback");
 
@@ -190,7 +190,7 @@ public class FeedbackServiceTest {
         when(feedbackRepository.findByCreationIdAndWriterId(creationId, userId)).thenReturn(Optional.empty());
 
         // when : 피드백 리스트를 조회하면
-        List<FeedbackDto.Response> feedbacks = sut.readFeedbacks(userId, creationId, pageable, cursor);
+        List<FeedbackDto.Response> readFeedbackList = sut.readFeedbackList(userId, creationId, pageable, cursor);
 
         // then : 자신의 피드백이 없어 피드백 리스트가 조회되지 않는다
     }

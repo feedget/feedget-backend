@@ -43,7 +43,7 @@ public class FeedbackService {
      * @return
      */
     @Transactional(readOnly = true)
-    public List<FeedbackDto.Response> readFeedbacks(long userId, long creationId, Pageable pageable, Long cursor) {
+    public List<FeedbackDto.Response> readFeedbackList(long userId, long creationId, Pageable pageable, Long cursor) {
         Optional<User> userOp = userRepository.findByUserId(userId);
         User user = userOp.orElseThrow(() -> new NotFoundException("not found user"));
 
