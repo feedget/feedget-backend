@@ -26,8 +26,8 @@ public class Feedback extends AbstractEntity<Long> {
     private Long feedbackId;
 
     // 피드백 내용
-    @Column(name = "description", nullable = false)
-    private String description;
+    @Column(name = "content", nullable = false)
+    private String content;
 
     // 컨텐츠 정보 - 최대 3개
     @OneToMany(mappedBy = "feedback")

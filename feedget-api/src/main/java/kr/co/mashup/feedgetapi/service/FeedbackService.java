@@ -1,5 +1,6 @@
 package kr.co.mashup.feedgetapi.service;
 
+import kr.co.mashup.feedgetapi.exception.InvalidParameterException;
 import kr.co.mashup.feedgetapi.exception.NotFoundException;
 import kr.co.mashup.feedgetapi.web.dto.FeedbackDto;
 import kr.co.mashup.feedgetcommon.domain.Creation;
@@ -80,5 +81,44 @@ public class FeedbackService {
         }
 
         return content;
+    }
+
+    /**
+     * 창작물에 피드백 추가
+     *
+     * @param userId
+     * @param creationId
+     * @param dto
+     */
+    @Transactional
+    public void addFeedback(long userId, long creationId, FeedbackDto.Create dto) {
+        Optional<User> writerOp = userRepository.findByUserId(userId);
+        User writer = writerOp.orElseThrow(() -> new NotFoundException("not found writer"));
+
+        Optional<Creation> creationOp = creationRepository.findByCreationId(creationId);
+        Creation creation = creationOp.orElseThrow(() -> new NotFoundException("not found creation"));
+
+        // 자신이 게시한 창작물일 경우 피드백을 작성할 수 없다
+        if (creation.isWritedBy(writer)) {
+            // Todo: exception 수정
+            throw new InvalidParameterException("forbiden write feedback");
+        }
+
+        // 창작물당 피드백은 1개만 작성할 수 있다
+        Optional<Feedback> feedbackOp = feedbackRepository.findByCreationIdAndWriterId(creationId, userId);
+        if (feedbackOp.isPresent()) {
+            // Todo: exception 수정
+            throw new InvalidParameterException("exceed write feedback");
+        }
+
+        Feedback feedback = new Feedback();
+        feedback.setContent(dto.getContent());
+        feedback.setAnonymity(dto.isAnonymity());
+        feedback.setSelection(false);
+        feedback.setWriter(writer);
+        feedback.setCreation(creation);
+        feedbackRepository.save(feedback);
+
+        // Todo: 피드백이 작성되면 창작물 게시자는 push로 알림을 받는다
     }
 }

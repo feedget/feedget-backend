@@ -6,7 +6,7 @@ import lombok.*;
 import javax.persistence.*;
 
 /**
- * 피드백의 내용물
+ * 피드백의 내용물  Todo: attached content로 변경?
  * <p>
  * Created by ethan.kim on 2017. 12. 19..
  */

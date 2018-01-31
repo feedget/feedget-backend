@@ -30,4 +30,10 @@ public class ExceptionHandlerAdvice {
     public Response notFoundException(NotFoundException ex) {
         return new Response(ex.getStatus(), ex.getMessage());
     }
+
+    @ExceptionHandler(InvalidParameterException.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    public Response invalidParameterException(InvalidParameterException ex) {
+        return new Response(ex.getStatus(), ex.getMessage());
+    }
 }

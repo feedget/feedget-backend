@@ -56,6 +56,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         if (ArrayUtils.contains(environment.getActiveProfiles(), "localhost")) {
+            request.setAttribute("userId", 1L);
             return super.preHandle(request, response, handler);
         }
 
