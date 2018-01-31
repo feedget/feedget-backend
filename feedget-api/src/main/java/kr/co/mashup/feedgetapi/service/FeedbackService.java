@@ -81,4 +81,27 @@ public class FeedbackService {
 
         return content;
     }
+
+    /**
+     * 창작물에 피드백 추가
+     *
+     * @param userId
+     * @param creationId
+     * @param dto
+     */
+    @Transactional
+    public void addFeedback(long userId, long creationId, FeedbackDto.Create dto) {
+        Optional<User> writerOp = userRepository.findByUserId(userId);
+        User writer = writerOp.orElseThrow(() -> new NotFoundException("not found writer"));
+
+        Optional<Creation> creationOp = creationRepository.findByCreationId(creationId);
+        Creation creation = creationOp.orElseThrow(() -> new NotFoundException("not found creation"));
+
+        Feedback feedback = new Feedback();
+        feedback.setContent(dto.getContent());
+        feedback.setAnonymity(dto.isAnonymity());
+        feedback.setSelection(false);
+        feedback.setWriterId(userId);
+        feedback.setCreationId(creationId);
+    }
 }

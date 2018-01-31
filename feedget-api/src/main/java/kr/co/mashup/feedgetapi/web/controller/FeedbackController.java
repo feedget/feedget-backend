@@ -4,8 +4,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import kr.co.mashup.feedgetapi.exception.ErrorResponse;
 import kr.co.mashup.feedgetapi.service.FeedbackService;
 import kr.co.mashup.feedgetapi.web.dto.DataListResponse;
+import kr.co.mashup.feedgetapi.web.dto.DataResponse;
 import kr.co.mashup.feedgetapi.web.dto.FeedbackDto;
 import kr.co.mashup.feedgetapi.web.dto.Response;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -58,12 +61,21 @@ public class FeedbackController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping
-    public Response createFeedback(@RequestAttribute long userId,
-                                   @PathVariable(value = "creationId") long creationId,
-                                   @Valid @RequestBody FeedbackDto feedbackDto) {
-//        feedbackService.addFeedback(userId, creationId, feedbackDto);
+    public ResponseEntity createFeedback(@RequestAttribute long userId,
+                                         @PathVariable(value = "creationId") long creationId,
+                                         @Valid @RequestBody FeedbackDto.Create create,
+                                         BindingResult result) {
 
-        return Response.created();
+        if (result.hasErrors()) {
+            ErrorResponse errorRepoonse = new ErrorResponse();
+            errorRepoonse.setMessage("질못된 요청입니다");
+            errorRepoonse.setCode("bad request");
+            // Todo: BindingResult안에 들어 있는 에러 정보 사용
+            return new ResponseEntity<>(errorRepoonse, HttpStatus.BAD_REQUEST);
+        }
+
+        feedbackService.addFeedback(userId, creationId, create);
+        return new ResponseEntity<>(Response.created(), HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "창작물의 피드백 삭제", notes = "창작물에 피드백을 삭제한다")

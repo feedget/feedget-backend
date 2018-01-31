@@ -21,7 +21,7 @@ public class FeedbackDto {
         // 피드백 내용
         @NotBlank
         @Size(min = 5)
-        private String description;
+        private String content;
 
         // 작성자 프로필 익명 여부
         private boolean anonymity;
@@ -34,7 +34,7 @@ public class FeedbackDto {
         private long feedbackId;
 
         // 피드백 내용
-        private String description;
+        private String content;
 
         // 컨텐츠
         private List<ContentsResponse> contents;
@@ -51,7 +51,7 @@ public class FeedbackDto {
         public static FeedbackDto.Response newResponse(Feedback feedback) {
             FeedbackDto.Response response = new FeedbackDto.Response();
             response.setFeedbackId(feedback.getFeedbackId());
-            response.setDescription(feedback.getDescription());
+            response.setContent(feedback.getContent());
             response.setWriter(UserDto.Response.fromUser(feedback.getWriter()));
             response.setAnonymity(feedback.isAnonymity());
             response.setSelection(feedback.isSelection());
