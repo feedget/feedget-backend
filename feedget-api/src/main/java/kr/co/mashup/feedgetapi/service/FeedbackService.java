@@ -86,9 +86,9 @@ public class FeedbackService {
     /**
      * 창작물에 피드백 추가
      *
-     * @param userId
-     * @param creationId
-     * @param dto
+     * @param userId     작성자 ID
+     * @param creationId 창작물 ID
+     * @param dto        추가할 피드백 데이터
      */
     @Transactional
     public void addFeedback(long userId, long creationId, FeedbackDto.Create dto) {
@@ -101,7 +101,7 @@ public class FeedbackService {
         // 자신이 게시한 창작물일 경우 피드백을 작성할 수 없다
         if (creation.isWritedBy(writer)) {
             // Todo: exception 수정
-            throw new InvalidParameterException("forbiden write feedback");
+            throw new InvalidParameterException("forbidden write feedback");
         }
 
         // 창작물당 피드백은 1개만 작성할 수 있다
@@ -120,5 +120,29 @@ public class FeedbackService {
         feedbackRepository.save(feedback);
 
         // Todo: 피드백이 작성되면 창작물 게시자는 push로 알림을 받는다
+    }
+
+    /**
+     * 창작물의 피드백 제거
+     *
+     * @param userId     작성자 ID
+     * @param creationId 창작물 ID
+     * @param feedbackId 피드백 ID
+     */
+    @Transactional
+    public void removeFeedback(long userId, long creationId, long feedbackId) {
+        Optional<Feedback> feedbackOp = feedbackRepository.findByCreationIdAndWriterId(creationId, userId);
+        Feedback feedback = feedbackOp.orElseThrow(() -> new NotFoundException("not found feedback"));
+
+        Optional<Creation> creationOp = creationRepository.findByCreationId(creationId);
+        Creation creation = creationOp.orElseThrow(() -> new NotFoundException("not found creation"));
+
+        // 창작물 마감 후 삭제 불가
+        if (creation.isDeadline()) {
+            // Todo: exception 수정
+            throw new InvalidParameterException("forbidden remove feedback");
+        }
+
+        feedbackRepository.delete(feedbackId);
     }
 }

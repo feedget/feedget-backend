@@ -27,8 +27,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -129,5 +128,22 @@ public class FeedbackControllerTest {
 
         // then : 피드백 내용이 짧아 피드백이 추가되지 않는다
         verify(feedbackService, never()).addFeedback(userId, creationId, dto);
+    }
+
+    @Test
+    public void deleteFeedback_창작물의_피드백_삭제_성공() throws Exception {
+        // given : 유저 ID, 창작물 ID, 피드백 ID로
+        long userId = 1L;
+        long creationId = 1L;
+        long feedbackId = 1L;
+
+        // when : 창작물의 피드백을 삭제하면
+        MvcResult result = mockMvc.perform(delete("/creations/{creationId}/feedbacks/{feedbackId}", creationId, feedbackId)
+                .requestAttr("userId", userId)
+        ).andExpect(status().isOk())
+                .andReturn();
+
+        // then : 창작물의 피드백이 삭제된다
+        verify(feedbackService, times(1)).removeFeedback(userId, creationId, feedbackId);
     }
 }

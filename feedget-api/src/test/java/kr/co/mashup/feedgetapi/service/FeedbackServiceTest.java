@@ -272,7 +272,7 @@ public class FeedbackServiceTest {
     @Test
     public void addFeedback_창작물_작성자라_창작물에_피드백_추가_실패() {
         expectedException.expect(InvalidParameterException.class);
-        expectedException.expectMessage("forbiden write feedback");
+        expectedException.expectMessage("forbidden write feedback");
 
         // given : 유저 ID, 창작물 ID, 추가할 피드백 데이터로
         long userId = 1L;
@@ -330,5 +330,106 @@ public class FeedbackServiceTest {
         sut.addFeedback(userId, creationId, dto);
 
         // then : 이미 피드백을 작성해서 피드백이 추가되지 않는다
+    }
+
+    @Test
+    public void removeFeedback_창작물의_피드백_제거_성공() {
+        // given : 유저 ID, 창작물 ID, 피드백 ID로
+        long userId = 1L;
+        long creationId = 1L;
+        long feedbackId = 1L;
+
+        User user = new User();
+        user.setUserId(userId);
+
+        Feedback feedback = new Feedback();
+        feedback.setWriter(user);
+
+        Creation creation = new Creation();
+        creation.setCreationId(creationId);
+        creation.setStatus(Creation.Status.PROCEEDING);
+
+        when(feedbackRepository.findByCreationIdAndWriterId(creationId, userId)).thenReturn(Optional.of(feedback));
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.of(creation));
+
+        // when : 창작물의 피드백을 제거하면
+        sut.removeFeedback(userId, creationId, feedbackId);
+
+        // then : 피드백이 제거된다
+        verify(feedbackRepository, times(1)).delete(feedbackId);
+    }
+
+
+    @Test
+    public void removeFeedback_작성하지_않은_피드백이라_창작물의_피드백_제거_실패() {
+        expectedException.expect(NotFoundException.class);
+        expectedException.expectMessage("not found feedback");
+
+        // given : 유저 ID, 창작물 ID, 피드백 ID로
+        long userId = 1L;
+        long creationId = 1L;
+        long feedbackId = 1L;
+
+        when(feedbackRepository.findByCreationIdAndWriterId(creationId, userId)).thenReturn(Optional.empty());
+
+        // when : 창작물의 피드백을 제거하면
+        sut.removeFeedback(userId, creationId, feedbackId);
+
+        // then : 작성하지 않은 피드백이라 피드백이 제거되지 않는다
+        verify(feedbackRepository, times(1)).delete(feedbackId);
+    }
+
+    @Test
+    public void removeFeedback_존재하지_않은_창작물이라_창작물의_피드백_제거_실패() {
+        expectedException.expect(NotFoundException.class);
+        expectedException.expectMessage("not found creation");
+
+        // given : 유저 ID, 창작물 ID, 피드백 ID로
+        long userId = 1L;
+        long creationId = 1L;
+        long feedbackId = 1L;
+
+        User user = new User();
+        user.setUserId(userId);
+
+        Feedback feedback = new Feedback();
+        feedback.setWriter(user);
+
+        when(feedbackRepository.findByCreationIdAndWriterId(creationId, userId)).thenReturn(Optional.of(feedback));
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.empty());
+
+        // when : 창작물의 피드백을 제거하면
+        sut.removeFeedback(userId, creationId, feedbackId);
+
+        // then : 존재하지 않은 창작물이라 피드백이 제거되지 않는다
+    }
+
+    @Test
+    public void removeFeedback_마감된_창작물이라_창작물의_피드백_제거_실패() {
+        expectedException.expect(InvalidParameterException.class);
+        expectedException.expectMessage("forbidden remove feedback");
+
+        // given : 유저 ID, 창작물 ID, 피드백 ID로
+        long userId = 1L;
+        long creationId = 1L;
+        long feedbackId = 1L;
+
+        User user = new User();
+        user.setUserId(userId);
+
+        Creation creation = new Creation();
+        creation.setCreationId(creationId);
+        creation.setStatus(Creation.Status.DEADLINE);
+
+        Feedback feedback = new Feedback();
+        feedback.setWriter(user);
+
+        when(feedbackRepository.findByCreationIdAndWriterId(creationId, userId)).thenReturn(Optional.of(feedback));
+        when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.of(creation));
+
+        // when : 창작물의 피드백을 제거하면
+        sut.removeFeedback(userId, creationId, feedbackId);
+
+        // then : 마감된 창작물이라 피드백이 제거되지 않는다
     }
 }
