@@ -84,7 +84,7 @@ public class FeedbackRepositoryTest {
 
         Feedback feedback;
         feedback = new Feedback();
-        feedback.setDescription("test");
+        feedback.setContent("test");
         feedback.setAnonymity(true);
         feedback.setWriter(writer);
         feedback.setCreation(creation);
@@ -93,7 +93,7 @@ public class FeedbackRepositoryTest {
 
         for (int i = 0; i < LOOP_COUNT; i++) {
             feedback = new Feedback();
-            feedback.setDescription("test");
+            feedback.setContent("test");
             feedback.setAnonymity(true);
             feedback.setWriter(otherUser);
             feedback.setCreation(creation);
