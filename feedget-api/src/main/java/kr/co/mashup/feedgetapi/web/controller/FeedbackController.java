@@ -7,7 +7,6 @@ import io.swagger.annotations.ApiResponses;
 import kr.co.mashup.feedgetapi.exception.ErrorResponse;
 import kr.co.mashup.feedgetapi.service.FeedbackService;
 import kr.co.mashup.feedgetapi.web.dto.DataListResponse;
-import kr.co.mashup.feedgetapi.web.dto.DataResponse;
 import kr.co.mashup.feedgetapi.web.dto.FeedbackDto;
 import kr.co.mashup.feedgetapi.web.dto.Response;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +27,8 @@ import java.util.List;
  * Created by ethan.kim on 2017. 12. 21..
  */
 @RestController
-@RequestMapping(value = "/creations/{creationId}/feedbacks")
-@Api(description = "피드백", tags = {"feedbacks"})
+@RequestMapping(value = "/creations/{creationId}/feedback")
+@Api(description = "피드백", tags = {"feedback"})
 @Slf4j
 public class FeedbackController {
 
@@ -44,17 +43,17 @@ public class FeedbackController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping
-    public ResponseEntity<DataListResponse> readFeedbacks(@RequestAttribute long userId,
+    public ResponseEntity<DataListResponse> readFeedbackList(@RequestAttribute long userId,
                                                           @PathVariable(value = "creationId") long creationId,
                                                           @RequestParam(value = "cursor", required = false) Long cursor,
                                                           @PageableDefault(page = 0, size = 50) Pageable pageable) {
         log.info("readFeedbacks - userId : {}, creationId : {}, cursor : {}, pageable : {}", userId, creationId, cursor, pageable);
 
-        List<FeedbackDto.Response> feedbacks = feedbackService.readFeedbacks(userId, creationId, pageable, cursor);
+        List<FeedbackDto.Response> feedbacks = feedbackService.readFeedbackList(userId, creationId, pageable, cursor);
         return new ResponseEntity<>(new DataListResponse<>(feedbacks), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "창작물의 피드백 추가", notes = "창작물에 피드백을 추가한다")
+    @ApiOperation(value = "창작물에 피드백 추가", notes = "창작물에 피드백을 추가한다")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "추가 성공"),
             @ApiResponse(code = 400, message = "잘못된 요청(필수 파라미터 누락)"),
@@ -78,18 +77,21 @@ public class FeedbackController {
         return new ResponseEntity<>(Response.created(), HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "창작물의 피드백 삭제", notes = "창작물에 피드백을 삭제한다")
+    @ApiOperation(value = "창작물의 피드백 삭제", notes = "창작물의 피드백을 삭제한다")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "삭제 성공"),
+            @ApiResponse(code = 200, message = "삭제 성공"),
             @ApiResponse(code = 400, message = "잘못된 요청(필수 파라미터 누락)"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @DeleteMapping(value = "/{feedbackId}")
-    public void deleteFeedback(@PathVariable long feedbackId) {
+    public ResponseEntity deleteFeedback(@RequestAttribute long userId,
+                                         @PathVariable(value = "creationId") long creationId,
+                                         @PathVariable(value = "feedbackId") long feedbackId) {
+        log.info("deleteFeedback - userId : {}, creationId : {}, feedbackId : {}", userId, creationId, feedbackId);
 
+        feedbackService.removeFeedback(userId, creationId, feedbackId);
+        return ResponseEntity.ok().build();
     }
 
-
     // Todo: 피드백 채택하기
-
 }

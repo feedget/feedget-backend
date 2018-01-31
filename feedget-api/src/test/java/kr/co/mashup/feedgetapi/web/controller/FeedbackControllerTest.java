@@ -27,8 +27,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -70,11 +69,11 @@ public class FeedbackControllerTest {
 
         List<FeedbackDto.Response> feedbacks = Collections.emptyList();
 
-        when(feedbackService.readFeedbacks(eq(userId), eq(creationId), any(), anyLong())).thenReturn(feedbacks);
+        when(feedbackService.readFeedbackList(eq(userId), eq(creationId), any(), anyLong())).thenReturn(feedbacks);
         ArgumentCaptor<Pageable> pageableArg = ArgumentCaptor.forClass(Pageable.class);
 
         // when : 피드백 리스트를 조회하면
-        MvcResult result = mockMvc.perform(get("/creations/{creationId}/feedbacks", creationId)
+        MvcResult result = mockMvc.perform(get("/creations/{creationId}/feedback", creationId)
                 .requestAttr("userId", userId)
                 .param("cursor", String.valueOf(1))
                 .param("page", String.valueOf(0))
@@ -83,7 +82,7 @@ public class FeedbackControllerTest {
                 .andReturn();
 
         // then : 피드백 리스트가 조회된다
-        verify(feedbackService, times(1)).readFeedbacks(eq(userId), eq(creationId), pageableArg.capture(), anyLong());
+        verify(feedbackService, times(1)).readFeedbackList(eq(userId), eq(creationId), pageableArg.capture(), anyLong());
         assertEquals(pageableArg.getValue(), pageable);
     }
 
@@ -97,7 +96,7 @@ public class FeedbackControllerTest {
         dto.setAnonymity(true);
 
         // when : 창작물에 피드백을 추가하면
-        MvcResult result = mockMvc.perform(post("/creations/{creationId}/feedbacks", creationId)
+        MvcResult result = mockMvc.perform(post("/creations/{creationId}/feedback", creationId)
                 .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -119,7 +118,7 @@ public class FeedbackControllerTest {
         dto.setAnonymity(true);
 
         // when : 창작물에 피드백을 추가하면
-        MvcResult result = mockMvc.perform(post("/creations/{creationId}/feedbacks", creationId)
+        MvcResult result = mockMvc.perform(post("/creations/{creationId}/feedback", creationId)
                 .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -129,5 +128,22 @@ public class FeedbackControllerTest {
 
         // then : 피드백 내용이 짧아 피드백이 추가되지 않는다
         verify(feedbackService, never()).addFeedback(userId, creationId, dto);
+    }
+
+    @Test
+    public void deleteFeedback_창작물의_피드백_삭제_성공() throws Exception {
+        // given : 유저 ID, 창작물 ID, 피드백 ID로
+        long userId = 1L;
+        long creationId = 1L;
+        long feedbackId = 1L;
+
+        // when : 창작물의 피드백을 삭제하면
+        MvcResult result = mockMvc.perform(delete("/creations/{creationId}/feedback/{feedbackId}", creationId, feedbackId)
+                .requestAttr("userId", userId)
+        ).andExpect(status().isOk())
+                .andReturn();
+
+        // then : 창작물의 피드백이 삭제된다
+        verify(feedbackService, times(1)).removeFeedback(userId, creationId, feedbackId);
     }
 }
