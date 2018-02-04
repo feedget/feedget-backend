@@ -3,7 +3,9 @@ package kr.co.mashup.feedgetapi.web.dto;
 import kr.co.mashup.feedgetcommon.domain.Feedback;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,12 +58,28 @@ public class FeedbackDto {
             response.setAnonymity(feedback.isAnonymity());
             response.setSelection(feedback.isSelection());
 
-            List<ContentsResponse> contents = feedback.getContents().stream()
+            List<ContentsResponse> contents = feedback.getAttachedContents().stream()
                     .map(ContentsResponse::newResponse)
                     .collect(Collectors.toList());
             response.setContents(contents);
-            
+
             return response;
         }
+    }
+
+    /**
+     * 첨부 컨텐츠
+     */
+    @Data
+    public static class AttachedContent {
+
+        @NotBlank
+        @Size(min = 5, max = 6)
+        private String contentsType;
+
+        // 컨텐츠는 3개까지 게시할 수 있다
+        @NotNull
+        @Size(max = 3)
+        private List<MultipartFile> files;
     }
 }

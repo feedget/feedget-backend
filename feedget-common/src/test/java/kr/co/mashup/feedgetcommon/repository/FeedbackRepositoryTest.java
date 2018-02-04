@@ -42,6 +42,8 @@ public class FeedbackRepositoryTest {
 
     private User writer;
 
+    private long creataedFeedbackId;
+
     @Before
     public void setUp() throws Exception {
         creation = new Creation();
@@ -90,6 +92,7 @@ public class FeedbackRepositoryTest {
         feedback.setCreation(creation);
         feedback.setSelection(true);
         sut.save(feedback);
+        creataedFeedbackId = feedback.getFeedbackId();
 
         for (int i = 0; i < LOOP_COUNT; i++) {
             feedback = new Feedback();
@@ -144,5 +147,17 @@ public class FeedbackRepositoryTest {
         assertThat(feedbackPage.getContent())
                 .isNotEmpty()
                 .hasSize(LOOP_COUNT);
+    }
+
+    @Test
+    public void findByFeedbackId_피드백_단건_조회() {
+        // given : 피드백 ID로
+        long feedbackId = creataedFeedbackId;
+
+        // when : 피드백을 조회하면
+        Optional<Feedback> feedbackOp = sut.findByFeedbackId(feedbackId);
+
+        // then : 피드백이 조회된다
+        assertTrue(feedbackOp.isPresent());
     }
 }

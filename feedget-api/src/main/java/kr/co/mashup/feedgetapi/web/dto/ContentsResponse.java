@@ -1,7 +1,7 @@
 package kr.co.mashup.feedgetapi.web.dto;
 
 import kr.co.mashup.feedgetcommon.domain.CreationContent;
-import kr.co.mashup.feedgetcommon.domain.FeedbackContent;
+import kr.co.mashup.feedgetcommon.domain.FeedbackAttachedContent;
 import lombok.Data;
 
 /**
@@ -28,14 +28,14 @@ public class ContentsResponse {
     }
 
     /**
-     * make Response from FeedbackContent
+     * make Response from FeedbackAttachedContent
      *
-     * @param content FeedbackContent
+     * @param content FeedbackAttachedContent
      * @return
      */
-    public static ContentsResponse newResponse(FeedbackContent content) {
+    public static ContentsResponse newResponse(FeedbackAttachedContent content) {
         ContentsResponse contentDto = new ContentsResponse();
-        contentDto.setContentId(content.getFeedbackContentId());
+        contentDto.setContentId(content.getFeedbackAttachedContentId());
         contentDto.setUrl(content.getUrl());
         return contentDto;
     }

@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString(exclude = {})
+@ToString(exclude = {"attachedContents"})
 @EqualsAndHashCode(callSuper = false, of = "feedbackId")
 public class Feedback extends AbstractEntity<Long> {
 
@@ -29,9 +29,9 @@ public class Feedback extends AbstractEntity<Long> {
     @Column(name = "content", nullable = false)
     private String content;
 
-    // 컨텐츠 정보 - 최대 3개
-    @OneToMany(mappedBy = "feedback")
-    private List<FeedbackContent> contents;
+    // 첨부 컨텐츠 - 최대 3개
+    @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FeedbackAttachedContent> attachedContents;
 
     // 작성자 ID(read only)
     @Column(name = "writer_id", nullable = false, insertable = false, updatable = false)
@@ -71,5 +71,24 @@ public class Feedback extends AbstractEntity<Long> {
      */
     public boolean isWritedBy(User user) {
         return this.writer.isSameUser(user);
+    }
+
+    /**
+     * 컨텐츠 추가
+     *
+     * @param content 추가할 컨텐츠
+     */
+    public void addAttachedContent(FeedbackAttachedContent content) {
+        this.attachedContents.add(content);
+    }
+
+    /**
+     * Creation의 피드백인지 조회
+     *
+     * @param creationId
+     * @return
+     */
+    public boolean fromCreation(long creationId) {
+        return this.creationId == creationId;
     }
 }
