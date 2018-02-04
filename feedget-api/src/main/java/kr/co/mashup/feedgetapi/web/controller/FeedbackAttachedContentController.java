@@ -32,18 +32,18 @@ public class FeedbackAttachedContentController {
 
     private final ContentsService contentsService;
 
-    @ApiOperation(value = "피드백의 첨부 컨텐츠 추가")
+    @ApiOperation(value = "피드백의 첨부 컨텐츠 추가", notes = "피드백에 컨텐츠(이미지..)를 첨부한다")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "추가 성공"),
             @ApiResponse(code = 400, message = "잘못된 요청(필수 파라미터 누락)"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping
-    public ResponseEntity createFeedbackContents(@PathVariable(value = "creationId") long creationId,
-                                                 @PathVariable(value = "feedbackId") long feedbackId,
-                                                 @Valid FeedbackDto.AttachedContent dto,
-                                                 BindingResult result) {
-        log.info("createFeedbackContents - creationId : {}, feedbackId : {}, content : {}", creationId, feedbackId, dto);
+    public ResponseEntity createFeedbackAttachedContents(@PathVariable(value = "creationId") long creationId,
+                                                         @PathVariable(value = "feedbackId") long feedbackId,
+                                                         @Valid FeedbackDto.AttachedContent dto,
+                                                         BindingResult result) {
+        log.info("createFeedbackAttachedContents - creationId : {}, feedbackId : {}, content : {}", creationId, feedbackId, dto);
 
         if (result.hasErrors()) {
             ErrorResponse errorResponse = new ErrorResponse();
@@ -57,17 +57,17 @@ public class FeedbackAttachedContentController {
         return new ResponseEntity<>(Response.created(), HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "피드백의 첨부 컨텐츠 삭제")
+    @ApiOperation(value = "피드백의 첨부 컨텐츠 삭제", notes = "피드백에 첨부된 컨텐츠를 삭제한다")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "삭제 성공"),
             @ApiResponse(code = 400, message = "잘못된 요청(필수 파라미터 누락)"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @DeleteMapping
-    public ResponseEntity deleteFeedbackContents(@PathVariable(value = "creationId") long creationId,
-                                                 @PathVariable(value = "feedbackId") long feedbackId,
-                                                 @RequestParam(value = "contentId") List<Long> contentIds) {
-        log.info("deleteFeedbackContents - creationId : {}, feedbackId : {}, contentIds : {}", creationId, feedbackId, contentIds);
+    public ResponseEntity deleteFeedbackAttachedContents(@PathVariable(value = "creationId") long creationId,
+                                                         @PathVariable(value = "feedbackId") long feedbackId,
+                                                         @RequestParam(value = "contentId") List<Long> contentIds) {
+        log.info("deleteFeedbackAttachedContents - creationId : {}, feedbackId : {}, contentIds : {}", creationId, feedbackId, contentIds);
 
         contentsService.removeFeedbackAttachedContents(creationId, feedbackId, contentIds);
         return ResponseEntity.ok().build();

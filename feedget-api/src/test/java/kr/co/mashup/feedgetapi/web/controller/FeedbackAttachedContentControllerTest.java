@@ -46,7 +46,7 @@ public class FeedbackAttachedContentControllerTest {
     }
 
     @Test
-    public void createFeedbackContents_피드백의_컨텐츠_추가_성공() throws Exception {
+    public void createFeedbackAttachedContents_피드백의_컨텐츠_추가_성공() throws Exception {
         // given : 창작물 ID, 피드백 ID, 컨텐츠 파일 1개로
         long creationId = 1L;
         long feedbackId = 1L;
@@ -64,7 +64,7 @@ public class FeedbackAttachedContentControllerTest {
     }
 
     @Test
-    public void createFeedbackContents_컨텐츠_파일이_없어서_피드백의_컨텐츠_추가_실패() throws Exception {
+    public void createFeedbackAttachedContents_컨텐츠_파일이_없어서_피드백의_컨텐츠_추가_실패() throws Exception {
         // given : 창작물 ID, 피드백 ID, 컨텐츠 파일 1개로
         long creationId = 1L;
         long feedbackId = 1L;
@@ -81,7 +81,7 @@ public class FeedbackAttachedContentControllerTest {
     }
 
     @Test
-    public void createFeedbackContents_컨텐츠_파일이_4개이상이면_피드백의_컨텐츠_추가_실패() throws Exception {
+    public void createFeedbackAttachedContents_컨텐츠_파일이_3개초과면_피드백의_컨텐츠_추가_실패() throws Exception {
         // given : 창작물 ID, 피드백 ID, 컨텐츠 파일 4개로
         long creationId = 1L;
         long feedbackId = 1L;
@@ -102,7 +102,7 @@ public class FeedbackAttachedContentControllerTest {
     }
 
     @Test
-    public void deleteFeedbackContents_피드백의_컨텐츠_제거_성공() throws Exception {
+    public void deleteFeedbackAttachedContents_피드백의_컨텐츠_제거_성공() throws Exception {
         // given : 창작물 ID, 피드백 ID, 제거할 컨텐츠 ID 리스트로
         long creationId = 1L;
         long feedbackId = 1L;
@@ -121,7 +121,7 @@ public class FeedbackAttachedContentControllerTest {
     }
 
     @Test
-    public void deleteFeedbackContents_제거할_컨텐츠_ID가_없어서_피드백의_컨텐츠_제거_실패() throws Exception {
+    public void deleteFeedbackAttachedContents_제거할_컨텐츠_ID가_없으면_피드백의_컨텐츠_제거_실패() throws Exception {
         // given : 창작물 ID, 피드백 ID
         long creationId = 1L;
         long feedbackId = 1L;

@@ -5,10 +5,10 @@ import kr.co.mashup.feedgetapi.common.util.CodeGenerator;
 import kr.co.mashup.feedgetapi.common.util.FileUtil;
 import kr.co.mashup.feedgetapi.exception.InvalidParameterException;
 import kr.co.mashup.feedgetapi.exception.NotFoundException;
-import kr.co.mashup.feedgetapi.web.dto.ContentsDto;
+import kr.co.mashup.feedgetapi.web.dto.CreationDto;
 import kr.co.mashup.feedgetapi.web.dto.FeedbackDto;
 import kr.co.mashup.feedgetcommon.domain.Creation;
-import kr.co.mashup.feedgetcommon.domain.CreationContent;
+import kr.co.mashup.feedgetcommon.domain.CreationAttachedContent;
 import kr.co.mashup.feedgetcommon.domain.Feedback;
 import kr.co.mashup.feedgetcommon.domain.FeedbackAttachedContent;
 import kr.co.mashup.feedgetcommon.domain.code.ContentType;
@@ -41,13 +41,13 @@ public class ContentsService {
     private final StorageProperties storageProperties;
 
     /**
-     * 창작물의 컨텐츠 추가
+     * 창작물의 첨부 컨텐츠 추가
      *
      * @param creationId
      * @param dto
      */
     @Transactional
-    public void addContents(long creationId, ContentsDto dto) {
+    public void addCreationAttachedContents(long creationId, CreationDto.AttachedContent dto) {
         ContentType contentType = ContentType.fromString(dto.getContentsType());
         List<MultipartFile> files = dto.getFiles();
 
@@ -63,14 +63,14 @@ public class ContentsService {
                         String fileName = CodeGenerator.generateFileName(file.getOriginalFilename());
                         FileUtil.upload(file, FileUtil.getImageUploadPath(storageProperties.getPath(), creationId), fileName);
 
-                        CreationContent content = new CreationContent();
+                        CreationAttachedContent content = new CreationAttachedContent();
                         content.setFileName(fileName);
                         content.setOriginalFileName(file.getOriginalFilename());
                         content.setSize(file.getSize());
                         content.setType(contentType);
                         content.setCreation(creation);
                         content.setUrl(FileUtil.getImageUrl(storageProperties.getUri(), creation.getCreationId(), fileName));
-                        creation.addContent(content);
+                        creation.addAttachedContent(content);
                     });
 
         } else if (contentType == ContentType.AUDIO) {
@@ -79,27 +79,27 @@ public class ContentsService {
     }
 
     /**
-     * 창작물의 컨텐츠 제거
+     * 창작물의 첨부 컨텐츠 제거
      *
      * @param creationId
      * @param contentIds
      */
     @Transactional
-    public void removeContents(long creationId, List<Long> contentIds) {
+    public void removeCreationAttachedContents(long creationId, List<Long> contentIds) {
         Optional<Creation> creationOp = creationRepository.findByCreationId(creationId);
         Creation creation = creationOp.orElseThrow(() -> new NotFoundException("not found creation"));
 
         // Todo: fetch join으로 수정?
-        List<CreationContent> contents = creation.getContents();
-        CopyOnWriteArrayList<CreationContent> removeContents = new CopyOnWriteArrayList<>(contents);
+        List<CreationAttachedContent> contents = creation.getContents();
+        CopyOnWriteArrayList<CreationAttachedContent> removeContents = new CopyOnWriteArrayList<>(contents);
         removeContents.stream()
-                .filter(content -> contentIds.contains(content.getCreationContentId()))
+                .filter(content -> contentIds.contains(content.getCreationAttachedContentId()))
                 .forEach(content -> {
                     // 파일 제거
                     String filePath = FileUtil.getImageUploadPath(storageProperties.getPath(), creationId) + "/" + content.getFileName();
                     FileUtil.deleteFile(filePath);
 
-                    creation.removeContent(content);
+                    creation.removeAttachedContent(content);
                 });
     }
 

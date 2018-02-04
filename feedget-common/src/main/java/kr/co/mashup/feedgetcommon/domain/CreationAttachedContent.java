@@ -11,34 +11,37 @@ import javax.persistence.*;
  * Created by ethan.kim on 2017. 12. 19..
  */
 @Entity
-@Table(name = "creation_content")
+@Table(name = "creation_attached_content")
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode(callSuper = false, of = "creationContentId")
-public class CreationContent extends AbstractEntity<Long> {
+@EqualsAndHashCode(callSuper = false, of = "creationAttachedContentId")
+public class CreationAttachedContent extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "creation_content_id")
-    private Long creationContentId;
+    @Column(name = "creation_attached_content_id")
+    private Long creationAttachedContentId;
 
-    //Todo: length 조정. 중복방지용, 36byte(32글자 + 확장자)
-    @Column(name = "file_name", length = 255, nullable = false, unique = true)
-    private String fileName;  // 업로드한 이미지 파일 이름(서버에서 중복되지 않게 재생성)
+    // 파일 이름(중복되지 않게 생성)
+    // uuid - 36, timestamp - 10, 확장자(.jpeg) - 5 -> 51
+    @Column(name = "file_name", length = 52, nullable = false, unique = true)
+    private String fileName;
 
-    // Todo: length 조정. 260byte(window 최대 256글자 + 확장자)
+    // 파일 원본 이름(linux limit 255byte)
     @Column(name = "original_file_name", length = 255, nullable = false)
-    private String originalFileName;  // 업로드한 이미지 파일 원본 이름
+    private String originalFileName;
 
+    // 파일 사이즈
     @Column(name = "size", columnDefinition = "INT(11) default 0")
-    private Long size;  // 파일 사이즈
+    private Long size;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", length = 20)
     private ContentType type;
 
+    // 경로 + filename
     @Column(length = 255, nullable = false)
     private String url;
 

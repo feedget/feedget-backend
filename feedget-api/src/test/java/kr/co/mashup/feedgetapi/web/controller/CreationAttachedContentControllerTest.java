@@ -1,7 +1,7 @@
 package kr.co.mashup.feedgetapi.web.controller;
 
 import kr.co.mashup.feedgetapi.service.ContentsService;
-import kr.co.mashup.feedgetapi.web.dto.ContentsDto;
+import kr.co.mashup.feedgetapi.web.dto.CreationDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created by ethan.kim on 2018. 1. 1..
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ContentsControllerTest {
+public class CreationAttachedContentControllerTest {
 
     private MockMvc mockMvc;
 
@@ -36,7 +36,7 @@ public class ContentsControllerTest {
     private ContentsService contentsService;
 
     @InjectMocks
-    private ContentsController sut;
+    private CreationAttachedContentController sut;
 
     @Before
     public void setUp() throws Exception {
@@ -46,7 +46,7 @@ public class ContentsControllerTest {
     }
 
     @Test
-    public void createContents_창작물의_컨텐츠_추가_성공() throws Exception {
+    public void createCreationAttachedContents_창작물의_컨텐츠_추가_성공() throws Exception {
         // given : 창작물 ID, 컨텐츠 파일1개로
         long creationId = 1L;
         MockMultipartFile file = new MockMultipartFile("files", "filename.jpg", "image/jpeg", "some image".getBytes());
@@ -59,11 +59,11 @@ public class ContentsControllerTest {
                 .andReturn();
 
         // then : 컨텐츠가 추가된다
-        verify(contentsService, times(1)).addContents(eq(creationId), any(ContentsDto.class));
+        verify(contentsService, times(1)).addCreationAttachedContents(eq(creationId), any(CreationDto.AttachedContent.class));
     }
 
     @Test
-    public void createContents_창작물의_컨텐츠_추가_컨텐츠_파일이_없으면_실패() throws Exception {
+    public void createCreationAttachedContents_컨텐츠_파일이_없으면_창작물의_컨텐츠_추가_실패() throws Exception {
         // given : 창작물 ID로
         long creationId = 1L;
         MockMultipartFile file = new MockMultipartFile("files", "filename.jpg", "image/jpeg", "some image".getBytes());
@@ -75,11 +75,11 @@ public class ContentsControllerTest {
                 .andReturn();
 
         // then : 컨텐츠가 추가되지 않는다
-        verify(contentsService, never()).addContents(eq(creationId), any(ContentsDto.class));
+        verify(contentsService, never()).addCreationAttachedContents(eq(creationId), any(CreationDto.AttachedContent.class));
     }
 
     @Test
-    public void createContents_창작물의_컨텐츠_추가_컨텐츠_파일이_10개이상이면_실패() throws Exception {
+    public void createCreationAttachedContents_컨텐츠_파일이_10개초과면_창작물의_컨텐츠_추가_실패() throws Exception {
         // given : 창작물 ID, 컨텐츠파일 11로
         long creationId = 1L;
         MockMultipartFile file = new MockMultipartFile("files", "filename.jpg", "image/jpeg", "some image".getBytes());
@@ -102,11 +102,11 @@ public class ContentsControllerTest {
                 .andReturn();
 
         // then : 컨텐츠가 추가되지 않는다
-        verify(contentsService, never()).addContents(eq(creationId), any(ContentsDto.class));
+        verify(contentsService, never()).addCreationAttachedContents(eq(creationId), any(CreationDto.AttachedContent.class));
     }
 
     @Test
-    public void deleteContents_창작물의_컨텐츠_제거_성공() throws Exception {
+    public void deleteCreationAttachedContents_창작물의_컨텐츠_제거_성공() throws Exception {
         // given : 창작물 ID, 제거할 컨텐츠 ID 리스트로
         long creationId = 1L;
         List<Long> contentIds = Arrays.asList(1L, 2L, 3L);
@@ -120,11 +120,11 @@ public class ContentsControllerTest {
                 .andReturn();
 
         // then : 컨텐츠가 제거된다
-        verify(contentsService, times(1)).removeContents(creationId, contentIds);
+        verify(contentsService, times(1)).removeCreationAttachedContents(creationId, contentIds);
     }
 
     @Test
-    public void deleteContents_창작물의_컨텐츠_제거_제거할_컨텐츠_ID가_없어서_실패() throws Exception {
+    public void deleteCreationAttachedContents_제거할_컨텐츠_ID가_없으면_창작물의_컨텐츠_제거_실패() throws Exception {
         // given : 창작물 ID
         long creationId = 1L;
 
@@ -134,6 +134,6 @@ public class ContentsControllerTest {
                 .andReturn();
 
         // then : 컨텐츠가 제거되지 않는다
-        verify(contentsService, never()).removeContents(eq(creationId), anyListOf(Long.class));
+        verify(contentsService, never()).removeCreationAttachedContents(eq(creationId), anyListOf(Long.class));
     }
 }
