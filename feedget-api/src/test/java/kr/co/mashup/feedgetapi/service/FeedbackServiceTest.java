@@ -67,7 +67,7 @@ public class FeedbackServiceTest {
         feedback.setWriter(user);
         feedback.setAnonymity(true);
         feedback.setSelection(true);
-        feedback.setContents(Collections.emptyList());
+        feedback.setAttachedContents(Collections.emptyList());
 
         Page<Feedback> page = new PageImpl<>(Collections.emptyList(), pageable, 0);
 
@@ -107,7 +107,7 @@ public class FeedbackServiceTest {
         feedback.setWriter(user);
         feedback.setAnonymity(true);
         feedback.setSelection(true);
-        feedback.setContents(Collections.emptyList());
+        feedback.setAttachedContents(Collections.emptyList());
 
         Page<Feedback> page = new PageImpl<>(Collections.emptyList(), pageable, 0);
 

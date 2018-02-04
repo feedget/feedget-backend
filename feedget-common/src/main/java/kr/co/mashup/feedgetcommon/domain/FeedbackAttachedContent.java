@@ -6,39 +6,42 @@ import lombok.*;
 import javax.persistence.*;
 
 /**
- * 피드백의 내용물  Todo: attached content로 변경?
+ * 피드백의 첨부 컨텐츠
  * <p>
  * Created by ethan.kim on 2017. 12. 19..
  */
 @Entity
-@Table(name = "feedback_content")
+@Table(name = "feedback_attached_content")
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode(callSuper = false, of = "feedbackContentId")
-public class FeedbackContent extends AbstractEntity<Long> {
+@EqualsAndHashCode(callSuper = false, of = "feedbackAttachedContentId")
+public class FeedbackAttachedContent extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "feedback_content_id")
-    private Long feedbackContentId;
+    @Column(name = "feedback_attached_content_id")
+    private Long feedbackAttachedContentId;
 
-    //Todo: length 조정. 중복방지용, 36byte(32글자 + 확장자)
+    // 파일 이름(중복되지 않게 생성)
+    // uuid - 36, timestamp - 10, 확장자(.jpeg) - 5 -> 51
     @Column(name = "file_name", length = 255, nullable = false, unique = true)
-    private String fileName;  // 업로드한 이미지 파일 이름(서버에서 중복되지 않게 재생성)
+    private String fileName;
 
-    // Todo: length 조정. 260byte(window 최대 256글자 + 확장자)
+    // 파일 원본 이름(linux limit 255byte)
     @Column(name = "original_file_name", length = 255, nullable = false)
-    private String originalFileName;  // 업로드한 이미지 파일 원본 이름
+    private String originalFileName;
 
+    // 파일 사이즈
     @Column(name = "size", columnDefinition = "INT(11) default 0")
-    private Long size;  // 파일 사이즈
+    private Long size;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", length = 20)
     private ContentType type;
 
+    // 경로 + filename
     @Column(length = 255, nullable = false)
     private String url;
 
