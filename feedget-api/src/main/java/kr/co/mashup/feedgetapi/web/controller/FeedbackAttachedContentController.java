@@ -57,7 +57,6 @@ public class FeedbackAttachedContentController {
         return new ResponseEntity<>(Response.created(), HttpStatus.CREATED);
     }
 
-
     @ApiOperation(value = "피드백의 첨부 컨텐츠 삭제")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "삭제 성공"),
@@ -70,7 +69,7 @@ public class FeedbackAttachedContentController {
                                                  @RequestParam(value = "contentId") List<Long> contentIds) {
         log.info("deleteFeedbackContents - creationId : {}, feedbackId : {}, contentIds : {}", creationId, feedbackId, contentIds);
 
-        // Todo: implements
+        contentsService.removeFeedbackAttachedContents(creationId, feedbackId, contentIds);
         return ResponseEntity.ok().build();
     }
 }

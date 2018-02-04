@@ -8,6 +8,7 @@ import kr.co.mashup.feedgetapi.web.dto.FeedbackDto;
 import kr.co.mashup.feedgetcommon.domain.Creation;
 import kr.co.mashup.feedgetcommon.domain.CreationContent;
 import kr.co.mashup.feedgetcommon.domain.Feedback;
+import kr.co.mashup.feedgetcommon.domain.FeedbackAttachedContent;
 import kr.co.mashup.feedgetcommon.repository.CreationRepository;
 import kr.co.mashup.feedgetcommon.repository.FeedbackRepository;
 import org.junit.Rule;
@@ -243,7 +244,7 @@ public class ContentsServiceTest {
     }
 
     @Test
-    public void addFeedbackAttachedContents_다른_창작물이라_피드백의_첨부_컨텐츠_추가_실패() throws Exception {
+    public void addFeedbackAttachedContents_다른_창작물의_피드백이라_피드백의_첨부_컨텐츠_추가_실패() throws Exception {
         expectedException.expect(InvalidParameterException.class);
         expectedException.expectMessage("forbidden request");
 
@@ -267,5 +268,82 @@ public class ContentsServiceTest {
         sut.addFeedbackAttachedContents(creationId, feedbackId, dto);
 
         // then : 창작물 ID가 달라 추가되지 않는다
+    }
+
+    @Test
+    public void removeFeedbackAttachedContents_피드백의_첨부_컨텐츠_제거_성공() {
+        // given : 창작물 ID, 피드백 ID, 컨텐츠 ID 리스트로
+        long creationId = 1L;
+        long feedbackId = 1L;
+        List<Long> contentIds = Arrays.asList(1L, 2L, 3L);
+
+        List<FeedbackAttachedContent> contents = new ArrayList<>();
+        for (long i = 1; i <= 3; i++) {
+            FeedbackAttachedContent content = new FeedbackAttachedContent();
+            content.setFeedbackAttachedContentId(i);
+            contents.add(content);
+        }
+
+        Feedback feedback = new Feedback();
+        feedback.setFeedbackId(feedbackId);
+        feedback.setCreationId(creationId);
+        feedback.setAttachedContents(contents);
+
+        when(feedbackRepository.findByFeedbackId(feedbackId)).thenReturn(Optional.of(feedback));
+
+        // when : 피드백의 컨텐츠를 제거하면
+        sut.removeFeedbackAttachedContents(creationId, feedbackId, contentIds);
+
+        // then : 피드백의 컨텐츠가 제거된다
+        verify(feedbackRepository, times(1)).findByFeedbackId(feedbackId);
+        verify(storageProperties, atLeastOnce()).getPath();
+    }
+
+    @Test
+    public void removeFeedbackAttachedContents_존재하지_않은_피드백이라_피드백의_첨부_컨텐츠_제거_실패() throws Exception {
+        expectedException.expect(NotFoundException.class);
+        expectedException.expectMessage("not found feedback");
+
+        // given : 창작물 ID, 피드백 ID, 컨텐츠 ID 리스트로
+        long creationId = 1L;
+        long feedbackId = 1L;
+        List<Long> contentIds = Arrays.asList(1L, 2L, 3L);
+
+        when(feedbackRepository.findByFeedbackId(feedbackId)).thenReturn(Optional.empty());
+
+        // when : 피드백의 컨텐츠를 제거하면
+        sut.removeFeedbackAttachedContents(creationId, feedbackId, contentIds);
+
+        // then : 피드백의 컨텐츠가 제거되지 않는다
+    }
+
+    @Test
+    public void removeFeedbackAttachedContents_다른_창작물의_피드백이라_피드백의_첨부_컨텐츠_제거_실패() throws Exception {
+        expectedException.expect(InvalidParameterException.class);
+        expectedException.expectMessage("forbidden request");
+
+        // given : 창작물 ID, 피드백 ID, 컨텐츠 ID 리스트로
+        long creationId = 1L;
+        long feedbackId = 1L;
+        List<Long> contentIds = Arrays.asList(1L, 2L, 3L);
+
+        List<FeedbackAttachedContent> contents = new ArrayList<>();
+        for (long i = 1; i <= 3; i++) {
+            FeedbackAttachedContent content = new FeedbackAttachedContent();
+            content.setFeedbackAttachedContentId(i);
+            contents.add(content);
+        }
+
+        Feedback feedback = new Feedback();
+        feedback.setFeedbackId(feedbackId);
+        feedback.setCreationId(2L);
+        feedback.setAttachedContents(contents);
+
+        when(feedbackRepository.findByFeedbackId(feedbackId)).thenReturn(Optional.of(feedback));
+
+        // when : 피드백의 컨텐츠를 제거하면
+        sut.removeFeedbackAttachedContents(creationId, feedbackId, contentIds);
+
+        // then : 피드백의 컨텐츠가 제거되지 않는다
     }
 }

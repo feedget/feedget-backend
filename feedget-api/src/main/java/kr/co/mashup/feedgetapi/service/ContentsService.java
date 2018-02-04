@@ -163,22 +163,25 @@ public class ContentsService {
      * @param contentIds
      */
     @Transactional
-    // Todo: 로직 수정
     public void removeFeedbackAttachedContents(long creationId, long feedbackId, List<Long> contentIds) {
-        Optional<Creation> creationOp = creationRepository.findByCreationId(creationId);
-        Creation creation = creationOp.orElseThrow(() -> new NotFoundException("not found creation"));
+        Optional<Feedback> feedbackOp = feedbackRepository.findByFeedbackId(feedbackId);
+        Feedback feedback = feedbackOp.orElseThrow(() -> new NotFoundException("not found feedback"));
+
+        if (!feedback.fromCreation(creationId)) {
+            throw new InvalidParameterException("forbidden request");
+        }
 
         // Todo: fetch join으로 수정?
-        List<CreationContent> contents = creation.getContents();
-        CopyOnWriteArrayList<CreationContent> removeContents = new CopyOnWriteArrayList<>(contents);
+        List<FeedbackAttachedContent> contents = feedback.getAttachedContents();
+        CopyOnWriteArrayList<FeedbackAttachedContent> removeContents = new CopyOnWriteArrayList<>(contents);
         removeContents.stream()
-                .filter(content -> contentIds.contains(content.getCreationContentId()))
+                .filter(content -> contentIds.contains(content.getFeedbackAttachedContentId()))
                 .forEach(content -> {
                     // 파일 제거
-                    String filePath = FileUtil.getImageUploadPath(storageProperties.getPath(), creationId) + "/" + content.getFileName();
+                    String filePath = String.format("%s/creations/%d/feedback/%d/%s", storageProperties.getPath(), creationId, feedbackId, content.getFileName());
                     FileUtil.deleteFile(filePath);
 
-                    creation.removeContent(content);
+                    feedback.removeAttachedContent(content);
                 });
     }
 }
