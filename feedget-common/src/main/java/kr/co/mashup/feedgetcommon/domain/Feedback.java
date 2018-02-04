@@ -83,6 +83,13 @@ public class Feedback extends AbstractEntity<Long> {
     }
 
     /**
+     * 컨텐츠 제거
+     */
+    public void removeAttachedContent(FeedbackAttachedContent content) {
+        this.attachedContents.remove(content);
+    }
+
+    /**
      * Creation의 피드백인지 조회
      *
      * @param creationId

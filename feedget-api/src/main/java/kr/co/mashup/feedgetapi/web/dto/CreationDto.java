@@ -4,7 +4,9 @@ import kr.co.mashup.feedgetcommon.domain.Creation;
 import kr.co.mashup.feedgetcommon.domain.Feedback;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.List;
@@ -181,5 +183,21 @@ public class CreationDto {
 
         // 보상 포인트
         private Double rewardPoint;
+    }
+
+    /**
+     * 첨부 컨텐츠
+     */
+    @Data
+    public static class AttachedContent {
+
+        @NotBlank
+        @Size(min = 5, max = 6)
+        private String contentsType;
+
+        // 컨텐츠는 10개까지 게시할 수 있다
+        @NotNull
+        @Size(max = 10)
+        private List<MultipartFile> files;
     }
 }

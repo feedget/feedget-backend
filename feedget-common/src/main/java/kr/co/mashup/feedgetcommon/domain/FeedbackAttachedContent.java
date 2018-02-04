@@ -26,7 +26,7 @@ public class FeedbackAttachedContent extends AbstractEntity<Long> {
 
     // 파일 이름(중복되지 않게 생성)
     // uuid - 36, timestamp - 10, 확장자(.jpeg) - 5 -> 51
-    @Column(name = "file_name", length = 255, nullable = false, unique = true)
+    @Column(name = "file_name", length = 52, nullable = false, unique = true)
     private String fileName;
 
     // 파일 원본 이름(linux limit 255byte)
