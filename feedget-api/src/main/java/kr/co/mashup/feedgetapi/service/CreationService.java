@@ -63,6 +63,8 @@ public class CreationService {
         }
         userRepository.save(writer);
 
+        // Todo: save point history
+
         Optional<Category> categoryOp = categoryRepository.findByName(dto.getCategory());
         Category category = categoryOp.orElseThrow(() -> new NotFoundException("not found category"));
 
@@ -140,6 +142,7 @@ public class CreationService {
                 throw new InvalidParameterException("exceed current point");
             }
             userRepository.save(writer);
+            // Todo: save point history
 
             creation.setRewardPoint(dto.getRewardPoint());
         }
@@ -181,6 +184,7 @@ public class CreationService {
         // Todo: implement grade change logic
         writer.changePoint(creation.getRewardPoint());
         userRepository.save(writer);
+        // Todo: save point history
 
         creationRepository.delete(creationId);
     }

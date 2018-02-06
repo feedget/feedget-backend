@@ -5,9 +5,11 @@ import kr.co.mashup.feedgetapi.exception.NotFoundException;
 import kr.co.mashup.feedgetapi.web.dto.FeedbackDto;
 import kr.co.mashup.feedgetcommon.domain.Creation;
 import kr.co.mashup.feedgetcommon.domain.Feedback;
+import kr.co.mashup.feedgetcommon.domain.PointHistory;
 import kr.co.mashup.feedgetcommon.domain.User;
 import kr.co.mashup.feedgetcommon.repository.CreationRepository;
 import kr.co.mashup.feedgetcommon.repository.FeedbackRepository;
+import kr.co.mashup.feedgetcommon.repository.PointHistoryRepository;
 import kr.co.mashup.feedgetcommon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +35,8 @@ public class FeedbackService {
     private final UserRepository userRepository;
 
     private final CreationRepository creationRepository;
+
+    private final PointHistoryRepository pointHistoryRepository;
 
     /**
      * 피드백 리스트 조회
@@ -119,6 +123,7 @@ public class FeedbackService {
         feedback.setCreation(creation);
         feedbackRepository.save(feedback);
 
+        // Todo: feedback 작성시 기본 포인트 지급
         // Todo: 피드백이 작성되면 창작물 게시자는 push로 알림을 받는다
     }
 
@@ -144,5 +149,51 @@ public class FeedbackService {
         }
 
         feedbackRepository.delete(feedbackId);
+    }
+
+
+    /*
+     * 창작물을 게시한 유저는 채택된 피드백에 대해 감사인사를 작성할 수 있다
+     * 채택된 피드백을 작성한 유저는 push로 보상 포인트 지급 알림을 받는다
+     */
+    @Transactional
+    public void selectFeedback(long userId, long creationId, long feedbackId) {
+        Optional<Feedback> feedbackOp = feedbackRepository.findByFeedbackId(feedbackId);
+        Feedback feedback = feedbackOp.orElseThrow(() -> new NotFoundException("not found feedback"));
+
+        if(!feedback.fromCreation(creationId)) {
+            // Todo: exception 수정
+            throw new InvalidParameterException("forbidden request");
+        }
+
+        Optional<User> creationWriterOp = userRepository.findByUserId(userId);
+        User creationWriter = creationWriterOp.orElseThrow(() -> new NotFoundException("not found writer"));
+
+        // 채택하는 사람이 창작물 게시자인지 확인
+        Creation creation = feedback.getCreation();
+        if (!creation.isWritedBy(creationWriter)) {
+            // Todo: exception 수정
+            throw new InvalidParameterException("forbidden request");
+        }
+
+        feedback.setSelection(true);
+        feedbackRepository.save(feedback);
+
+        // 피드백 작성자에게 보상 포인트 지급
+        User feedbackWriter = feedback.getWriter();
+        feedbackWriter.changePoint(creation.getRewardPoint());
+        userRepository.save(feedbackWriter);
+
+        // save history
+        PointHistory pointHistory = new PointHistory();
+        pointHistory.setGiverId(creationWriter.getUserId());
+        pointHistory.setReceiverId(feedbackWriter.getUserId());
+        pointHistory.setPoint(creation.getRewardPoint());
+        pointHistory.setType(PointHistory.Type.FEEDBACK_REWARD);
+        pointHistoryRepository.save(pointHistory);
+
+        // Todo: 피드백 작성자에게 푸시로 보상지급 알림
+
+        // Todo: 감사인사 저장
     }
 }

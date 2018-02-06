@@ -41,7 +41,7 @@ public class PointHistory extends AbstractEntity<Long> {
     private Type type;
 
     // 포인트 타입
-    enum Type {
+    public enum Type {
         // 피드백 기본 포인트
         FEEDBACK_BASIC,
 
