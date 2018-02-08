@@ -440,10 +440,12 @@ public class FeedbackServiceTest {
 
     @Test
     public void selectFeedback_피드백_채택_성공() {
-        // given : 창작물 작성자 ID, 창작물 ID, 피드백 ID로
+        // given : 창작물 작성자 ID, 창작물 ID, 피드백 ID, 채택 데이터로
         long creationWriterId = 1L;
         long creationId = 1L;
         long feedbackId = 1L;
+        FeedbackDto.Selection dto = new FeedbackDto.Selection();
+        dto.setSelectionComment("comment");
 
         User creationWriter = new User();
         creationWriter.setUserId(creationWriterId);
@@ -458,6 +460,7 @@ public class FeedbackServiceTest {
         creation.setCreationId(creationId);
         creation.setWriter(creationWriter);
         creation.setRewardPoint(10.0);
+        creation.setStatus(Creation.Status.DEADLINE);
 
         Feedback feedback = new Feedback();
         feedback.setWriter(feedbackWriter);
@@ -468,7 +471,7 @@ public class FeedbackServiceTest {
         when(userRepository.findByUserId(creationWriterId)).thenReturn(Optional.of(creationWriter));
 
         // when : 피드백을 채택하면
-        sut.selectFeedback(creationWriterId, creationId, feedbackId);
+        sut.selectFeedback(creationWriterId, creationId, feedbackId, dto);
 
         // then : 피드백이 채택된다
         verify(feedbackRepository, times(1)).findByFeedbackId(feedbackId);
@@ -483,15 +486,17 @@ public class FeedbackServiceTest {
         expectedException.expect(NotFoundException.class);
         expectedException.expectMessage("not found feedback");
 
-        // given : 창작물 작성자 ID, 창작물 ID, 피드백 ID로
+        // given : 창작물 작성자 ID, 창작물 ID, 피드백 ID, 채택 데이터로
         long creationWriterId = 1L;
         long creationId = 1L;
         long feedbackId = 1L;
+        FeedbackDto.Selection dto = new FeedbackDto.Selection();
+        dto.setSelectionComment("comment");
 
         when(feedbackRepository.findByFeedbackId(feedbackId)).thenReturn(Optional.empty());
 
         // when : 피드백을 채택하면
-        sut.selectFeedback(creationWriterId, creationId, feedbackId);
+        sut.selectFeedback(creationWriterId, creationId, feedbackId, dto);
 
         // then : 존재하지 않은 피드백이라 피드백 채택에 실패한다
     }
@@ -501,10 +506,12 @@ public class FeedbackServiceTest {
         expectedException.expect(InvalidParameterException.class);
         expectedException.expectMessage("forbidden request");
 
-        // given : 창작물 작성자 ID, 창작물 ID, 피드백 ID로
+        // given : 창작물 작성자 ID, 창작물 ID, 피드백 ID, 채택 데이터로
         long creationWriterId = 1L;
         long creationId = 1L;
         long feedbackId = 1L;
+        FeedbackDto.Selection dto = new FeedbackDto.Selection();
+        dto.setSelectionComment("comment");
 
         User feedbackWriter = new User();
         feedbackWriter.setUserId(2L);
@@ -519,7 +526,7 @@ public class FeedbackServiceTest {
         when(feedbackRepository.findByFeedbackId(feedbackId)).thenReturn(Optional.of(feedback));
 
         // when : 피드백을 채택하면
-        sut.selectFeedback(creationWriterId, creationId, feedbackId);
+        sut.selectFeedback(creationWriterId, creationId, feedbackId, dto);
 
         // then : 요청한 창작물의 피드백이 아니라 피드백 채택에 실패한다
     }
@@ -529,10 +536,12 @@ public class FeedbackServiceTest {
         expectedException.expect(NotFoundException.class);
         expectedException.expectMessage("not found writer");
 
-        // given : 창작물 작성자 ID, 창작물 ID, 피드백 ID로
+        // given : 창작물 작성자 ID, 창작물 ID, 피드백 ID, 채택 데이터로
         long creationWriterId = 1L;
         long creationId = 1L;
         long feedbackId = 1L;
+        FeedbackDto.Selection dto = new FeedbackDto.Selection();
+        dto.setSelectionComment("comment");
 
         User feedbackWriter = new User();
         feedbackWriter.setUserId(2L);
@@ -548,9 +557,50 @@ public class FeedbackServiceTest {
         when(userRepository.findByUserId(creationWriterId)).thenReturn(Optional.empty());
 
         // when : 피드백을 채택하면
-        sut.selectFeedback(creationWriterId, creationId, feedbackId);
+        sut.selectFeedback(creationWriterId, creationId, feedbackId, dto);
 
         // then : 존재하지 않은 창작물 작성자라 피드백 채택에 실패한다
+    }
+
+    @Test
+    public void selectFeedback_마감된_창작물이_아니라_피드백_채택_실패() {
+        expectedException.expect(InvalidParameterException.class);
+        expectedException.expectMessage("forbidden request");
+
+        // given : 창작물 작성자 ID, 창작물 ID, 피드백 ID, 채택 데이터로
+        long creationWriterId = 1L;
+        long creationId = 1L;
+        long feedbackId = 1L;
+        FeedbackDto.Selection dto = new FeedbackDto.Selection();
+        dto.setSelectionComment("comment");
+
+        User creationWriter = new User();
+        creationWriter.setUserId(creationWriterId);
+
+        User feedbackWriter = new User();
+        feedbackWriter.setUserId(2L);
+        feedbackWriter.setCurrentPoint(10.0);
+        feedbackWriter.setTotalPoint(10.0);
+        feedbackWriter.setPeriodPoint(10.0);
+
+        Creation creation = new Creation();
+        creation.setCreationId(creationId);
+        creation.setWriter(creationWriter);
+        creation.setRewardPoint(10.0);
+        creation.setStatus(Creation.Status.PROCEEDING);
+
+        Feedback feedback = new Feedback();
+        feedback.setWriter(feedbackWriter);
+        feedback.setCreationId(creationId);
+        feedback.setCreation(creation);
+
+        when(feedbackRepository.findByFeedbackId(feedbackId)).thenReturn(Optional.of(feedback));
+        when(userRepository.findByUserId(creationWriterId)).thenReturn(Optional.of(creationWriter));
+
+        // when : 피드백을 채택하면
+        sut.selectFeedback(creationWriterId, creationId, feedbackId, dto);
+
+        // then : 마감된 창작물이 아니라 피드백 채택에 실패한다
     }
 
     @Test
@@ -558,10 +608,12 @@ public class FeedbackServiceTest {
         expectedException.expect(InvalidParameterException.class);
         expectedException.expectMessage("forbidden request");
 
-        // given : 창작물 작성자 ID, 창작물 ID, 피드백 ID로
+        // given : 창작물 작성자 ID, 창작물 ID, 피드백 ID, 채택 데이터로
         long creationWriterId = 1L;
         long creationId = 1L;
         long feedbackId = 1L;
+        FeedbackDto.Selection dto = new FeedbackDto.Selection();
+        dto.setSelectionComment("comment");
 
         User creationWriter = new User();
         creationWriter.setUserId(creationWriterId);
@@ -581,12 +633,13 @@ public class FeedbackServiceTest {
         feedback.setWriter(feedbackWriter);
         feedback.setCreationId(creationId);
         feedback.setCreation(creation);
+        creation.setStatus(Creation.Status.DEADLINE);
 
         when(feedbackRepository.findByFeedbackId(feedbackId)).thenReturn(Optional.of(feedback));
         when(userRepository.findByUserId(creationWriterId)).thenReturn(Optional.of(creationWriter));
 
         // when : 피드백을 채택하면
-        sut.selectFeedback(creationWriterId, creationId, feedbackId);
+        sut.selectFeedback(creationWriterId, creationId, feedbackId, dto);
 
         // then : 창작물 작성자가 아니라 피드백 채택에 실패한다
     }

@@ -151,18 +151,20 @@ public class FeedbackService {
         feedbackRepository.delete(feedbackId);
     }
 
-
-    /*
-     * Todo: 마감된것만 채택 가능...?
-     * 창작물을 게시한 유저는 채택된 피드백에 대해 감사인사를 작성할 수 있다
-     * 채택된 피드백을 작성한 유저는 push로 보상 포인트 지급 알림을 받는다
+    /**
+     * 창작물의 피드백 채택
+     *
+     * @param userId     창작물 작성자 ID
+     * @param creationId 창작물 ID
+     * @param feedbackId 피드백 ID
+     * @param dto
      */
     @Transactional
-    public void selectFeedback(long userId, long creationId, long feedbackId) {
+    public void selectFeedback(long userId, long creationId, long feedbackId, FeedbackDto.Selection dto) {
         Optional<Feedback> feedbackOp = feedbackRepository.findByFeedbackId(feedbackId);
         Feedback feedback = feedbackOp.orElseThrow(() -> new NotFoundException("not found feedback"));
 
-        if(!feedback.fromCreation(creationId)) {
+        if (!feedback.fromCreation(creationId)) {
             // Todo: exception 수정
             throw new InvalidParameterException("forbidden request");
         }
@@ -172,12 +174,18 @@ public class FeedbackService {
 
         // 채택하는 사람이 창작물 게시자인지 확인
         Creation creation = feedback.getCreation();
+        if (!creation.isDeadline()) {
+            // Todo: exception 수정
+            throw new InvalidParameterException("forbidden request");
+        }
+
         if (!creation.isWritedBy(creationWriter)) {
             // Todo: exception 수정
             throw new InvalidParameterException("forbidden request");
         }
 
         feedback.setSelection(true);
+        feedback.setSelectionComment(dto.getSelectionComment());
         feedbackRepository.save(feedback);
 
         // 피드백 작성자에게 보상 포인트 지급
@@ -194,7 +202,5 @@ public class FeedbackService {
         pointHistoryRepository.save(pointHistory);
 
         // Todo: 피드백 작성자에게 푸시로 보상지급 알림
-
-        // Todo: 피드백에 감사인사 저장
     }
 }

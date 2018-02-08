@@ -61,7 +61,9 @@ public class Feedback extends AbstractEntity<Long> {
     @Type(type = "yes_no")
     private boolean selection;
 
-    // Todo: 감사인사 추가
+    // 피드백 채택 의견
+    @Column(name = "selection_comment", length = 255)
+    private String selectionComment;
 
     /**
      * 작성자인지 여부 조회

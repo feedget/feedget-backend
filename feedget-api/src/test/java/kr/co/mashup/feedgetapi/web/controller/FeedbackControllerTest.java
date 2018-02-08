@@ -150,22 +150,45 @@ public class FeedbackControllerTest {
 
     @Test
     public void selectFeedback_창작물의_피드백_채택_성공() throws Exception {
-        // given : 유저 ID, 창작물 ID, 피드백 ID로
+        // given : 창작물 작성자 ID, 창작물 ID, 피드백 ID, 채택 데이터로
         long userId = 1L;
         long creationId = 1L;
         long feedbackId = 1L;
+        FeedbackDto.Selection dto = new FeedbackDto.Selection();
+        dto.setSelectionComment("comment");
 
         // when : 창작물의 피드백을 채택하면
         MvcResult result = mockMvc.perform(put("/creations/{creationId}/feedback/{feedbackId}/selection", creationId, feedbackId)
                         .requestAttr("userId", userId)
-//                .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(dto)
-// )
+                .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
         ).andExpect(status().isOk())
                 .andReturn();
 
         // then : 피드백이 채택된다
-        verify(feedbackService, times(1)).selectFeedback(userId, creationId, feedbackId);
+        verify(feedbackService, times(1)).selectFeedback(userId, creationId, feedbackId, dto);
+    }
+
+    @Test
+    public void selectFeedback_채택_의견이_짧아_창작물의_피드백_채택_실패() throws Exception {
+        // given : 창작물 작성자 ID, 창작물 ID, 피드백 ID, 채택 데이터로
+        long userId = 1L;
+        long creationId = 1L;
+        long feedbackId = 1L;
+        FeedbackDto.Selection dto = new FeedbackDto.Selection();
+        dto.setSelectionComment("co");
+
+        // when : 창작물의 피드백을 채택하면
+        MvcResult result = mockMvc.perform(put("/creations/{creationId}/feedback/{feedbackId}/selection", creationId, feedbackId)
+                .requestAttr("userId", userId)
+                .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        ).andExpect(status().isBadRequest())
+                .andReturn();
+
+        // then : 채택 의견이 짧아 피드백이 채택되지 않는다
+        verify(feedbackService, never()).selectFeedback(userId, creationId, feedbackId, dto);
     }
 }

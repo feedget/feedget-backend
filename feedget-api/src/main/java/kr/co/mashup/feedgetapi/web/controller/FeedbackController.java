@@ -102,10 +102,20 @@ public class FeedbackController {
     @PutMapping(value = "/{feedbackId}/selection")
     public ResponseEntity selectFeedback(@RequestAttribute long userId,
                                          @PathVariable(value = "creationId") long creationId,
-                                         @PathVariable(value = "feedbackId") long feedbackId) {
-        log.info("selectFeedback - userId : {}, creationId : {}, feedbackId : {}", userId, creationId, feedbackId);
+                                         @PathVariable(value = "feedbackId") long feedbackId,
+                                         @RequestBody @Valid FeedbackDto.Selection selection,
+                                         BindingResult result) {
+        log.info("selectFeedback - userId : {}, creationId : {}, feedbackId : {}, dto : {}", userId, creationId, feedbackId, selection);
 
-        feedbackService.selectFeedback(userId, creationId, feedbackId);
+        if (result.hasErrors()) {
+            ErrorResponse errorRepoonse = new ErrorResponse();
+            errorRepoonse.setMessage("질못된 요청입니다");
+            errorRepoonse.setCode("bad request");
+            // Todo: BindingResult안에 들어 있는 에러 정보 사용
+            return new ResponseEntity<>(errorRepoonse, HttpStatus.BAD_REQUEST);
+        }
+
+        feedbackService.selectFeedback(userId, creationId, feedbackId, selection);
         return ResponseEntity.ok().build();
     }
 }
