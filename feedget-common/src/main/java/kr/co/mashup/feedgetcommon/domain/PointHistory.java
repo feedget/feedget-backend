@@ -29,7 +29,7 @@ public class PointHistory extends AbstractEntity<Long> {
     private Long giverId;
 
     // 포인트 수여자
-    @Column(name = "giver_id", insertable = false, updatable = false)
+    @Column(name = "receiver_id", insertable = false, updatable = false)
     private Long receiverId;
 
     // 포인트

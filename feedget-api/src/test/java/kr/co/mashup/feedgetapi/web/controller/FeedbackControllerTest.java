@@ -2,6 +2,7 @@ package kr.co.mashup.feedgetapi.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.mashup.feedgetapi.service.FeedbackService;
+import kr.co.mashup.feedgetapi.web.dto.CreationDto;
 import kr.co.mashup.feedgetapi.web.dto.FeedbackDto;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -145,5 +146,26 @@ public class FeedbackControllerTest {
 
         // then : 창작물의 피드백이 삭제된다
         verify(feedbackService, times(1)).removeFeedback(userId, creationId, feedbackId);
+    }
+
+    @Test
+    public void selectFeedback_창작물의_피드백_채택_성공() throws Exception {
+        // given : 유저 ID, 창작물 ID, 피드백 ID로
+        long userId = 1L;
+        long creationId = 1L;
+        long feedbackId = 1L;
+
+        // when : 창작물의 피드백을 채택하면
+        MvcResult result = mockMvc.perform(put("/creations/{creationId}/feedback/{feedbackId}/selection", creationId, feedbackId)
+                        .requestAttr("userId", userId)
+//                .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(objectMapper.writeValueAsString(dto)
+// )
+        ).andExpect(status().isOk())
+                .andReturn();
+
+        // then : 피드백이 채택된다
+        verify(feedbackService, times(1)).selectFeedback(userId, creationId, feedbackId);
     }
 }

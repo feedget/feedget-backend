@@ -153,6 +153,7 @@ public class FeedbackService {
 
 
     /*
+     * Todo: 마감된것만 채택 가능...?
      * 창작물을 게시한 유저는 채택된 피드백에 대해 감사인사를 작성할 수 있다
      * 채택된 피드백을 작성한 유저는 push로 보상 포인트 지급 알림을 받는다
      */
@@ -194,6 +195,6 @@ public class FeedbackService {
 
         // Todo: 피드백 작성자에게 푸시로 보상지급 알림
 
-        // Todo: 감사인사 저장
+        // Todo: 피드백에 감사인사 저장
     }
 }
