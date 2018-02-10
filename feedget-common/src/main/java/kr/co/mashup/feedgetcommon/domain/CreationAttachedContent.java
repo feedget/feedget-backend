@@ -6,7 +6,7 @@ import lombok.*;
 import javax.persistence.*;
 
 /**
- * 창작물의 내용물
+ * 창작물에 첨부된 컨텐츠
  * <p>
  * Created by ethan.kim on 2017. 12. 19..
  */
