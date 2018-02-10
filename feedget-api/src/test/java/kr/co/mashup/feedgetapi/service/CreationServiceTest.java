@@ -68,6 +68,7 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
+        writer.setTotalPointAmount(100.0);
         writer.setCurrentPointAmount(100.0);
         writer.setPeriodPointAmount(100.0);
 
@@ -125,6 +126,7 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
+        writer.setTotalPointAmount(5.0);
         writer.setCurrentPointAmount(5.0);
         writer.setPeriodPointAmount(5.0);
 
@@ -152,6 +154,7 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
+        writer.setTotalPointAmount(100.0);
         writer.setCurrentPointAmount(100.0);
         writer.setPeriodPointAmount(100.0);
 
@@ -178,6 +181,7 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
+        writer.setTotalPointAmount(100.0);
         writer.setCurrentPointAmount(100.0);
         writer.setPeriodPointAmount(100.0);
 
@@ -382,6 +386,7 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
+        writer.setTotalPointAmount(100.0);
         writer.setCurrentPointAmount(100.0);
         writer.setPeriodPointAmount(100.0);
 
@@ -446,6 +451,7 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
+        writer.setTotalPointAmount(100.0);
         writer.setCurrentPointAmount(100.0);
         writer.setPeriodPointAmount(100.0);
 
