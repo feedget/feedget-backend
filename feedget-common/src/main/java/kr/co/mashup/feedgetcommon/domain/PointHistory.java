@@ -24,17 +24,17 @@ public class PointHistory extends AbstractEntity<Long> {
     private Long pointHistoryId;
 
     // Todo: relation mapping 추가
-    // 포인트 지급자
+    // 포인트 지급자 ID
     @Column(name = "giver_id", insertable = false, updatable = false)
     private Long giverId;
 
-    // 포인트 수여자
+    // 포인트 수여자 ID
     @Column(name = "receiver_id", insertable = false, updatable = false)
     private Long receiverId;
 
-    // 포인트
-    @Column(name = "point", nullable = false, columnDefinition = "DECIMAL(12,2) default 0")
-    private Double point;
+    // 포인트 금액
+    @Column(name = "point_amount", nullable = false, columnDefinition = "DECIMAL(12,2) default 0")
+    private Double pointAmount;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "type", length = 20)

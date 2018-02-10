@@ -30,7 +30,7 @@ public class PointHistoryRepositoryTest {
         pointHistory = new PointHistory();
         pointHistory.setGiverId(1L);
         pointHistory.setReceiverId(2L);
-        pointHistory.setPoint(100.0);
+        pointHistory.setPointAmount(100.0);
         pointHistory.setType(PointHistory.Type.FEEDBACK_REWARD);
         sut.save(pointHistory);
     }
