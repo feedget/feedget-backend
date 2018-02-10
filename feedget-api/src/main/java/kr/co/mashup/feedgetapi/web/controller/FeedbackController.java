@@ -93,5 +93,29 @@ public class FeedbackController {
         return ResponseEntity.ok().build();
     }
 
-    // Todo: 피드백 채택하기
+    @ApiOperation(value = "창작물의 피드백 채택", notes = "창작물의 피드백 중 1개를 채택하여 보상을 지급한다")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "선정 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청(필수 파라미터 누락)"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    @PutMapping(value = "/{feedbackId}/selection")
+    public ResponseEntity selectFeedback(@RequestAttribute long userId,
+                                         @PathVariable(value = "creationId") long creationId,
+                                         @PathVariable(value = "feedbackId") long feedbackId,
+                                         @RequestBody @Valid FeedbackDto.Selection selection,
+                                         BindingResult result) {
+        log.info("selectFeedback - userId : {}, creationId : {}, feedbackId : {}, dto : {}", userId, creationId, feedbackId, selection);
+
+        if (result.hasErrors()) {
+            ErrorResponse errorRepoonse = new ErrorResponse();
+            errorRepoonse.setMessage("질못된 요청입니다");
+            errorRepoonse.setCode("bad request");
+            // Todo: BindingResult안에 들어 있는 에러 정보 사용
+            return new ResponseEntity<>(errorRepoonse, HttpStatus.BAD_REQUEST);
+        }
+
+        feedbackService.selectFeedback(userId, creationId, feedbackId, selection);
+        return ResponseEntity.ok().build();
+    }
 }

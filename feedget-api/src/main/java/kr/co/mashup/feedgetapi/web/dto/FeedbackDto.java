@@ -50,6 +50,9 @@ public class FeedbackDto {
         // 피드백 채택 여부
         private boolean selection;
 
+        // 피드백 채택 의견
+        private String selectionComment;
+
         public static FeedbackDto.Response newResponse(Feedback feedback) {
             FeedbackDto.Response response = new FeedbackDto.Response();
             response.setFeedbackId(feedback.getFeedbackId());
@@ -57,6 +60,7 @@ public class FeedbackDto {
             response.setWriter(UserDto.Response.fromUser(feedback.getWriter()));
             response.setAnonymity(feedback.isAnonymity());
             response.setSelection(feedback.isSelection());
+            response.setSelectionComment(feedback.getSelectionComment());
 
             List<ContentsResponse> contents = feedback.getAttachedContents().stream()
                     .map(ContentsResponse::newResponse)
@@ -73,13 +77,26 @@ public class FeedbackDto {
     @Data
     public static class AttachedContent {
 
+        // 컨텐츠 타입
         @NotBlank
         @Size(min = 5, max = 6)
         private String contentsType;
 
-        // 컨텐츠는 3개까지 게시할 수 있다
+        // 컨텐츠 파일 - 컨텐츠는 3개까지 게시할 수 있다
         @NotNull
         @Size(max = 3)
         private List<MultipartFile> files;
+    }
+
+    /**
+     * 피드백 채택
+     */
+    @Data
+    public static class Selection {
+
+        // 피드백 채택 의견
+        @NotBlank
+        @Size(min = 3, max = 255)
+        private String selectionComment;
     }
 }

@@ -29,7 +29,7 @@ public class PointHistory extends AbstractEntity<Long> {
     private Long giverId;
 
     // 포인트 수여자
-    @Column(name = "giver_id", insertable = false, updatable = false)
+    @Column(name = "receiver_id", insertable = false, updatable = false)
     private Long receiverId;
 
     // 포인트
@@ -41,7 +41,7 @@ public class PointHistory extends AbstractEntity<Long> {
     private Type type;
 
     // 포인트 타입
-    enum Type {
+    public enum Type {
         // 피드백 기본 포인트
         FEEDBACK_BASIC,
 
