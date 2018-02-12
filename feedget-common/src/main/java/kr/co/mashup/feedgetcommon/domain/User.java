@@ -24,6 +24,11 @@ public class User extends AbstractEntity<Long> {
     @Column(name = "user_id")
     private Long userId;
 
+    // uuid(universally unique identifier) - 외부로 노출되는 ID
+    // Todo: 유저 생성시 중복값 체크 로직 추가
+    @Column(name = "uuid", length = 32, nullable = false, unique = true)
+    private String uuid;
+
     // 실명
     @Column(name = "real_name", length = 20, nullable = false)
     private String realName;
@@ -36,12 +41,7 @@ public class User extends AbstractEntity<Long> {
     @Column(name = "email", length = 30, nullable = false, unique = true)
     private String email;
 
-    // uuid(universally unique identifier) - 외부로 노출되는 ID
-    // Todo: 유저 생성시 중복값 체크 로직 추가
-    @Column(name = "uuid", length = 32, nullable = false, unique = true)
-    private String uuid;
-
-    // FCM 푸시 메시지 전송을 위한 ID
+    // cloud messaging(FCM) 전송 ID
     @Column(name = "cloud_msg_reg_id", length = 256)
     private String cloudMsgRegId;
 
@@ -50,29 +50,29 @@ public class User extends AbstractEntity<Long> {
     @Column(name = "user_grade_cd", length = 20, nullable = false, columnDefinition = "varchar(20) default 'BRONZE'")
     private UserGrade userGrade;
 
-    // 해당 사용자가 사용하고 있는 앱의 버전코드
+    // 유저가 사용하고 있는 앱의 버전 코드
     @Column(name = "use_version_code", columnDefinition = "int(11) default '0'")
     private int useVersionCode;
 
-    // 획득한 총 point
-    @Column(name = "total_point", nullable = false, columnDefinition = "decimal(12,2) default '0.00'")
-    private Double totalPoint;
+    // 획득한 포인트 총액
+    @Column(name = "total_point_amount", nullable = false, columnDefinition = "decimal(12,2) default '0.00'")
+    private Double totalPointAmount;
 
-    // 보유 포인트
-    @Column(name = "current_point", nullable = false, columnDefinition = "decimal(12,2) default '0.00'")
-    private Double currentPoint;
+    // 현재 보유 포인트 금액
+    @Column(name = "current_point_amount", nullable = false, columnDefinition = "decimal(12,2) default '0.00'")
+    private Double currentPointAmount;
 
-    // 일정 기간동안 획득 포인트  Todo: 필요 없을시 제거
-    @Column(name = "period_point", nullable = false, columnDefinition = "decimal(12,2) default '0.00'")
-    private Double periodPoint;
+    // 일정 기간동안 획득한 포인트 금액  Todo: 필요 없을시 제거
+    @Column(name = "period_point_amount", nullable = false, columnDefinition = "decimal(12,2) default '0.00'")
+    private Double periodPointAmount;
 
-    // 피드백 작성 수
+    // 피드백 작성 횟수
     @Column(name = "feedback_writing_count", nullable = false, columnDefinition = "int(11) default '0'")
     private int feedbackWritingCount;
 
-    // 피드백 채택 수
-    @Column(name = "feedback_reward_count", nullable = false, columnDefinition = "int(11) default '0'")
-    private int feedbackRewardCount;
+    // 작성한 피드백 채택 횟수
+    @Column(name = "feedback_selection_count", nullable = false, columnDefinition = "int(11) default '0'")
+    private int feedbackSelectionCount;
 
     // Todo: 아래 필드 어떻게 할지...? 매번 계산할지, 결과 저장할지
     // 답변 채택률
@@ -80,11 +80,11 @@ public class User extends AbstractEntity<Long> {
 
     // Todo: 다른 social login 지원시 entity 분리 고려
     // Todo: 필요없을 시 제거
-    // OAuth Access Token(카톡, FB)
+    // OAuth Access Token
     @Column(name = "oauth_token", length = 256)
     private String oAuthToken;
 
-    // 가입한 OAuth Type
+    // 가입한 OAuth Type(카톡, FB)
     @Enumerated(EnumType.STRING)  // enum 이름을 DB에 저장
     @Column(name = "oauth_type", length = 20)
     private OAuthType oAuthType;
@@ -123,10 +123,11 @@ public class User extends AbstractEntity<Long> {
     }
 
     public boolean changePoint(double point) {
-        this.currentPoint += point;
-        this.periodPoint += point;
+        this.totalPointAmount += point;
+        this.currentPointAmount += point;
+        this.periodPointAmount += point;
 
-        if (currentPoint < 0) {
+        if (currentPointAmount < 0) {
             return false;
         }
         return true;
@@ -139,11 +140,11 @@ public class User extends AbstractEntity<Long> {
         this.uuid = uuid;
         this.userGrade = UserGrade.BRONZE;
         this.useVersionCode = 10000;
-        this.totalPoint = 0d;
-        this.currentPoint = 0d;
-        this.periodPoint = 0d;
+        this.totalPointAmount = 0d;
+        this.currentPointAmount = 0d;
+        this.periodPointAmount = 0d;
         this.feedbackWritingCount = 0;
-        this.feedbackRewardCount = 0;
+        this.feedbackSelectionCount = 0;
         this.oAuthToken = oAuthToken;
         this.oAuthType = oAuthType;
     }

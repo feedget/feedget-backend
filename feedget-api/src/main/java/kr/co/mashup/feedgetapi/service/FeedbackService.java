@@ -197,7 +197,7 @@ public class FeedbackService {
         PointHistory pointHistory = new PointHistory();
         pointHistory.setGiverId(creationWriter.getUserId());
         pointHistory.setReceiverId(feedbackWriter.getUserId());
-        pointHistory.setPoint(creation.getRewardPoint());
+        pointHistory.setPointAmount(creation.getRewardPoint());
         pointHistory.setType(PointHistory.Type.FEEDBACK_REWARD);
         pointHistoryRepository.save(pointHistory);
 

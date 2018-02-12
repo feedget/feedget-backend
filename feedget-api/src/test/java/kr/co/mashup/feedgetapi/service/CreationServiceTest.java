@@ -68,8 +68,9 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
-        writer.setCurrentPoint(100.0);
-        writer.setPeriodPoint(100.0);
+        writer.setTotalPointAmount(100.0);
+        writer.setCurrentPointAmount(100.0);
+        writer.setPeriodPointAmount(100.0);
 
         Category category = new Category();
         category.setName("design");
@@ -125,8 +126,9 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
-        writer.setCurrentPoint(5.0);
-        writer.setPeriodPoint(5.0);
+        writer.setTotalPointAmount(5.0);
+        writer.setCurrentPointAmount(5.0);
+        writer.setPeriodPointAmount(5.0);
 
         when(userRepository.findOne(userId)).thenReturn(writer);
 
@@ -152,8 +154,9 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
-        writer.setCurrentPoint(100.0);
-        writer.setPeriodPoint(100.0);
+        writer.setTotalPointAmount(100.0);
+        writer.setCurrentPointAmount(100.0);
+        writer.setPeriodPointAmount(100.0);
 
         when(userRepository.findOne(userId)).thenReturn(writer);
         when(categoryRepository.findByName("design")).thenReturn(Optional.empty());
@@ -178,8 +181,9 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
-        writer.setCurrentPoint(100.0);
-        writer.setPeriodPoint(100.0);
+        writer.setTotalPointAmount(100.0);
+        writer.setCurrentPointAmount(100.0);
+        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -243,8 +247,8 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
-        writer.setCurrentPoint(100.0);
-        writer.setPeriodPoint(100.0);
+        writer.setCurrentPointAmount(100.0);
+        writer.setPeriodPointAmount(100.0);
 
         when(userRepository.findOne(userId)).thenReturn(writer);
         when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.empty());
@@ -272,8 +276,8 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
-        writer.setCurrentPoint(100.0);
-        writer.setPeriodPoint(100.0);
+        writer.setCurrentPointAmount(100.0);
+        writer.setPeriodPointAmount(100.0);
 
         User otherUser = new User();
         otherUser.setUserId(2L);
@@ -311,8 +315,8 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
-        writer.setCurrentPoint(100.0);
-        writer.setPeriodPoint(100.0);
+        writer.setCurrentPointAmount(100.0);
+        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -347,8 +351,8 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
-        writer.setCurrentPoint(100.0);
-        writer.setPeriodPoint(100.0);
+        writer.setCurrentPointAmount(100.0);
+        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -382,8 +386,9 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
-        writer.setCurrentPoint(100.0);
-        writer.setPeriodPoint(100.0);
+        writer.setTotalPointAmount(100.0);
+        writer.setCurrentPointAmount(100.0);
+        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -418,8 +423,8 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
-        writer.setCurrentPoint(100.0);
-        writer.setPeriodPoint(100.0);
+        writer.setCurrentPointAmount(100.0);
+        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -446,8 +451,9 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
-        writer.setCurrentPoint(100.0);
-        writer.setPeriodPoint(100.0);
+        writer.setTotalPointAmount(100.0);
+        writer.setCurrentPointAmount(100.0);
+        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -496,8 +502,8 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
-        writer.setCurrentPoint(100.0);
-        writer.setPeriodPoint(100.0);
+        writer.setCurrentPointAmount(100.0);
+        writer.setPeriodPointAmount(100.0);
 
         when(userRepository.findOne(userId)).thenReturn(writer);
         when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.empty());
@@ -519,8 +525,8 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
-        writer.setCurrentPoint(100.0);
-        writer.setPeriodPoint(100.0);
+        writer.setCurrentPointAmount(100.0);
+        writer.setPeriodPointAmount(100.0);
 
         User otherUser = new User();
         otherUser.setUserId(2L);
@@ -552,8 +558,8 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
-        writer.setCurrentPoint(100.0);
-        writer.setPeriodPoint(100.0);
+        writer.setCurrentPointAmount(100.0);
+        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -582,8 +588,8 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
-        writer.setCurrentPoint(100.0);
-        writer.setPeriodPoint(100.0);
+        writer.setCurrentPointAmount(100.0);
+        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -610,8 +616,8 @@ public class CreationServiceTest {
 
         User user = new User();
         user.setUserId(userId);
-        user.setCurrentPoint(100.0);
-        user.setPeriodPoint(100.0);
+        user.setCurrentPointAmount(100.0);
+        user.setPeriodPointAmount(100.0);
 
         Page<Creation> page = new PageImpl<>(Collections.emptyList(), pageable, 0);
 
@@ -636,8 +642,8 @@ public class CreationServiceTest {
 
         User user = new User();
         user.setUserId(userId);
-        user.setCurrentPoint(100.0);
-        user.setPeriodPoint(100.0);
+        user.setCurrentPointAmount(100.0);
+        user.setPeriodPointAmount(100.0);
 
         Page<Creation> page = new PageImpl<>(Collections.emptyList(), pageable, 0);
 
@@ -687,8 +693,8 @@ public class CreationServiceTest {
 
         User user = new User();
         user.setUserId(userId);
-        user.setCurrentPoint(100.0);
-        user.setPeriodPoint(100.0);
+        user.setCurrentPointAmount(100.0);
+        user.setPeriodPointAmount(100.0);
 
         when(userRepository.findByUserId(userId)).thenReturn(Optional.of(user));
         when(categoryRepository.findByName(categoryName)).thenReturn(Optional.empty());
@@ -707,8 +713,8 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
-        writer.setCurrentPoint(100.0);
-        writer.setPeriodPoint(100.0);
+        writer.setCurrentPointAmount(100.0);
+        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -746,8 +752,8 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
-        writer.setCurrentPoint(100.0);
-        writer.setPeriodPoint(100.0);
+        writer.setCurrentPointAmount(100.0);
+        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -801,8 +807,8 @@ public class CreationServiceTest {
 
         User writer = new User();
         writer.setUserId(userId);
-        writer.setCurrentPoint(100.0);
-        writer.setPeriodPoint(100.0);
+        writer.setCurrentPointAmount(100.0);
+        writer.setPeriodPointAmount(100.0);
 
         when(userRepository.findByUserId(userId)).thenReturn(Optional.of(writer));
         when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.empty());
