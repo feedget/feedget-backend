@@ -29,10 +29,6 @@ public class Feedback extends AbstractEntity<Long> {
     @Column(name = "content", nullable = false)
     private String content;
 
-    // 첨부 컨텐츠 - 최대 3개
-    @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FeedbackAttachedContent> attachedContents;
-
     // 작성자 ID(read only)
     @Column(name = "writer_id", nullable = false, insertable = false, updatable = false)
     private Long writerId;
@@ -64,6 +60,10 @@ public class Feedback extends AbstractEntity<Long> {
     // 피드백 채택 의견
     @Column(name = "selection_comment", length = 255)
     private String selectionComment;
+
+    // 첨부 컨텐츠 - 최대 3개
+    @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FeedbackAttachedContent> attachedContents;
 
     /**
      * 작성자인지 여부 조회

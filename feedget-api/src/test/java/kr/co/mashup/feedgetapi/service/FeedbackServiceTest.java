@@ -452,9 +452,9 @@ public class FeedbackServiceTest {
 
         User feedbackWriter = new User();
         feedbackWriter.setUserId(2L);
-        feedbackWriter.setCurrentPoint(10.0);
-        feedbackWriter.setTotalPoint(10.0);
-        feedbackWriter.setPeriodPoint(10.0);
+        feedbackWriter.setCurrentPointAmount(10.0);
+        feedbackWriter.setTotalPointAmount(10.0);
+        feedbackWriter.setPeriodPointAmount(10.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -515,9 +515,9 @@ public class FeedbackServiceTest {
 
         User feedbackWriter = new User();
         feedbackWriter.setUserId(2L);
-        feedbackWriter.setCurrentPoint(10.0);
-        feedbackWriter.setTotalPoint(10.0);
-        feedbackWriter.setPeriodPoint(10.0);
+        feedbackWriter.setCurrentPointAmount(10.0);
+        feedbackWriter.setTotalPointAmount(10.0);
+        feedbackWriter.setPeriodPointAmount(10.0);
 
         Feedback feedback = new Feedback();
         feedback.setWriter(feedbackWriter);
@@ -545,9 +545,9 @@ public class FeedbackServiceTest {
 
         User feedbackWriter = new User();
         feedbackWriter.setUserId(2L);
-        feedbackWriter.setCurrentPoint(10.0);
-        feedbackWriter.setTotalPoint(10.0);
-        feedbackWriter.setPeriodPoint(10.0);
+        feedbackWriter.setCurrentPointAmount(10.0);
+        feedbackWriter.setTotalPointAmount(10.0);
+        feedbackWriter.setPeriodPointAmount(10.0);
 
         Feedback feedback = new Feedback();
         feedback.setWriter(feedbackWriter);
@@ -579,9 +579,9 @@ public class FeedbackServiceTest {
 
         User feedbackWriter = new User();
         feedbackWriter.setUserId(2L);
-        feedbackWriter.setCurrentPoint(10.0);
-        feedbackWriter.setTotalPoint(10.0);
-        feedbackWriter.setPeriodPoint(10.0);
+        feedbackWriter.setCurrentPointAmount(10.0);
+        feedbackWriter.setTotalPointAmount(10.0);
+        feedbackWriter.setPeriodPointAmount(10.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -620,9 +620,9 @@ public class FeedbackServiceTest {
 
         User feedbackWriter = new User();
         feedbackWriter.setUserId(2L);
-        feedbackWriter.setCurrentPoint(10.0);
-        feedbackWriter.setTotalPoint(10.0);
-        feedbackWriter.setPeriodPoint(10.0);
+        feedbackWriter.setCurrentPointAmount(10.0);
+        feedbackWriter.setTotalPointAmount(10.0);
+        feedbackWriter.setPeriodPointAmount(10.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);

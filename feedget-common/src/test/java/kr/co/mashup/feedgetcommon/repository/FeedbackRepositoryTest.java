@@ -64,11 +64,11 @@ public class FeedbackRepositoryTest {
         writer.setEmail("testUser1@test.io");
         writer.setUuid(UniqueIdGenerator.getStringId());
         writer.setUserGrade(User.UserGrade.BRONZE);
-        writer.setTotalPoint(100.0);
-        writer.setCurrentPoint(100.0);
-        writer.setPeriodPoint(100.0);
+        writer.setTotalPointAmount(100.0);
+        writer.setCurrentPointAmount(100.0);
+        writer.setPeriodPointAmount(100.0);
         writer.setFeedbackWritingCount(1);
-        writer.setFeedbackRewardCount(1);
+        writer.setFeedbackSelectionCount(1);
         entityManager.persistAndFlush(writer);
 
         User otherUser = new User();
@@ -77,11 +77,11 @@ public class FeedbackRepositoryTest {
         otherUser.setEmail("testUser2@test.io");
         otherUser.setUuid(UniqueIdGenerator.getStringId());
         otherUser.setUserGrade(User.UserGrade.BRONZE);
-        otherUser.setTotalPoint(100.0);
-        otherUser.setCurrentPoint(100.0);
-        otherUser.setPeriodPoint(100.0);
+        otherUser.setTotalPointAmount(100.0);
+        otherUser.setCurrentPointAmount(100.0);
+        otherUser.setPeriodPointAmount(100.0);
         otherUser.setFeedbackWritingCount(1);
-        otherUser.setFeedbackRewardCount(1);
+        otherUser.setFeedbackSelectionCount(1);
         entityManager.persistAndFlush(otherUser);
 
         Feedback feedback;

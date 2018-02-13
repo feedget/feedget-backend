@@ -40,11 +40,11 @@ public class UserRepositoryTest {
         user.setCloudMsgRegId(null);
         user.setUserGrade(User.UserGrade.BRONZE);
         user.setUseVersionCode(100000);
-        user.setTotalPoint(100.0);
-        user.setPeriodPoint(100.0);
-        user.setCurrentPoint(100.0);
+        user.setTotalPointAmount(100.0);
+        user.setPeriodPointAmount(100.0);
+        user.setCurrentPointAmount(100.0);
         user.setFeedbackWritingCount(3);
-        user.setFeedbackRewardCount(3);
+        user.setFeedbackSelectionCount(3);
         sut.save(user);
     }
 
