@@ -3,10 +3,13 @@ package kr.co.mashup.feedgetapi.batch;
 import kr.co.mashup.feedgetcommon.domain.Creation;
 import kr.co.mashup.feedgetcommon.repository.CreationRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.*;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
@@ -16,9 +19,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.persistence.EntityManagerFactory;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,15 +78,24 @@ public class CreationEndJobConfiguration {
     }
     // end::jobstep[]
 
+    /**
+     * 마감 대상인 진행중인 창작물 조회하는 reader
+     *
+     * @param processingDate 처리 날짜
+     * @return endCreationReader
+     * @throws Exception
+     */
     @StepScope
     @Bean(name = "endCreationReader")
-    public JpaPagingItemReader<Creation> readEndCreation(@Value("#{jobParameters}") Map<String, Object> jobParameters) throws Exception {
+    public JpaPagingItemReader<Creation> readEndCreation(@Value("#{jobParameters['processingAt']}") Date processingDate) throws Exception {
         String readQuery = "SELECT c FROM Creation c WHERE c.dueDate > :startDate" +
                 " AND c.dueDate < :endDate AND c.status = :status";
 
+        LocalDateTime processingAt = LocalDateTime.ofInstant(processingDate.toInstant(), ZoneId.of("UTC"));
+
         Map<String, Object> params = new HashMap<>();
-        params.put("startDate", LocalDateTime.now().minusDays(1L));
-        params.put("endDate", LocalDateTime.now());
+        params.put("startDate", processingAt.minusDays(1L));
+        params.put("endDate", processingAt);
         params.put("status", Creation.Status.PROCEEDING);
 
         JpaPagingItemReader<Creation> reader = new JpaPagingItemReader<>();
@@ -121,5 +136,22 @@ public class CreationEndJobConfiguration {
                 }
             }
         };
+    }
+
+    @Autowired
+    private JobLauncher jobLauncher;
+
+    @Autowired
+    @Qualifier("creationEndJob")
+    private Job creationEndJob;
+
+    //    @Scheduled(cron = "${schedule.cron.creation-end}")
+    @Scheduled(fixedDelay = 1000)
+    public void runEndCreationJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+        JobParameters params = new JobParametersBuilder()
+                .addDate("processingAt", new Date())
+                .toJobParameters();
+
+        jobLauncher.run(creationEndJob, params);
     }
 }

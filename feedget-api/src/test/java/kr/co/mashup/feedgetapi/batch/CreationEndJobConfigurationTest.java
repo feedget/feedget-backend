@@ -52,7 +52,7 @@ public class CreationEndJobConfigurationTest {
                 .thenReturn(createCreation(1L), createCreation(2L), null);
 
         JobParametersBuilder builder = new JobParametersBuilder();
-        builder.addDate("date", new Date());
+        builder.addDate("processingAt", new Date());
 
         // when : 창작물 마감 job이 실행되면
         JobExecution jobExecution = jobLauncherTestUtils.launchJob(builder.toJobParameters());
