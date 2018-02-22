@@ -133,6 +133,8 @@ public class CreationEndJobConfiguration {
                     creationRepository.save(item);
 
                     // Todo: 마감 후 창작물 게시자에게 push로 창작물 마감 알림을 보낸다
+                    // 24시 01분에 마감한다고 생각했을 때 이 시간대에 푸시를 보내면 안된다
+                    // 푸시는 아침 정도에 보내는게 적당하다면 이걸 어떻게 분리할 것인가?
                 }
             }
         };
@@ -145,8 +147,7 @@ public class CreationEndJobConfiguration {
     @Qualifier("creationEndJob")
     private Job creationEndJob;
 
-    //    @Scheduled(cron = "${schedule.cron.creation-end}")
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(cron = "${schedule.cron.creation-end}", zone = "Asia/Seoul")
     public void runEndCreationJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
         JobParameters params = new JobParametersBuilder()
                 .addDate("processingAt", new Date())
