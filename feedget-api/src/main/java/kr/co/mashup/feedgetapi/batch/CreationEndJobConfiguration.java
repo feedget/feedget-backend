@@ -1,15 +1,18 @@
 package kr.co.mashup.feedgetapi.batch;
 
+import kr.co.mashup.feedgetapi.common.batch.JobConfig;
 import kr.co.mashup.feedgetcommon.domain.Creation;
 import kr.co.mashup.feedgetcommon.repository.CreationRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.*;
-import org.springframework.batch.core.configuration.annotation.*;
-import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.JobScope;
+import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
-import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
-import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
@@ -19,7 +22,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.persistence.EntityManagerFactory;
 import java.time.LocalDateTime;
@@ -30,12 +32,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 창작물 마감 batch job
+ * step 1)
+ * reader : 어제 마감인 창작물 조회
+ * processor : 미구현
+ * writer : 창작물의 상태 마감으로 변경
+ * <p>
  * Created by ethan.kim on 2018. 2. 12..
  */
 @Configuration
-@EnableBatchProcessing
 @Slf4j
-public class CreationEndJobConfiguration {
+public class CreationEndJobConfiguration implements JobConfig {
 
     public static final String JOB_NAME = "creationEndJob";
     private static final int PAGE_SIZE = 100;
@@ -53,10 +60,33 @@ public class CreationEndJobConfiguration {
     @Autowired
     private CreationRepository creationRepository;
 
+    @Autowired
+    @Qualifier(value = JOB_NAME)
+    private Job creationEndJob;
+
+    @Override
+    public String getJobName() {
+        return JOB_NAME;
+    }
+
+    @Override
+    public Job getJobInstance() {
+        return creationEndJob;
+    }
+
+    @Override
+    public JobParameters getJobParameters(Map<String, Object> actionParams) {
+        Date processingAt = (Date) actionParams.getOrDefault("processingAt", new Date());
+
+        return new JobParametersBuilder()
+                .addDate("processingAt", processingAt)
+                .toJobParameters();
+    }
+
     // tag::jobstep[]
     @Bean(name = "creationEndJob")
     public Job creationEndJob(@Qualifier("creationEndStep") Step creationEndStep) {
-        return jobBuilderFactory.get("creationEndJob")
+        return jobBuilderFactory.get(JOB_NAME)
                 .incrementer(new RunIdIncrementer())
                 .start(creationEndStep)
                 .build();
@@ -138,21 +168,5 @@ public class CreationEndJobConfiguration {
                 }
             }
         };
-    }
-
-    @Autowired
-    private JobLauncher jobLauncher;
-
-    @Autowired
-    @Qualifier("creationEndJob")
-    private Job creationEndJob;
-
-    @Scheduled(cron = "${schedule.cron.creation-end}", zone = "Asia/Seoul")
-    public void runEndCreationJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        JobParameters params = new JobParametersBuilder()
-                .addDate("processingAt", new Date())
-                .toJobParameters();
-
-        jobLauncher.run(creationEndJob, params);
     }
 }
