@@ -6,6 +6,7 @@ import kr.co.mashup.feedgetcommon.repository.CreationRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.batch.core.*;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.JobScopeTestExecutionListener;
@@ -21,6 +22,9 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -44,6 +48,10 @@ public class CreationEndJobConfigurationTest {
 
     @MockBean(name = "endCreationReader")
     private JpaPagingItemReader endCreationReader;
+
+    @Autowired
+    @Qualifier(value = "endCreationWriter")
+    private ItemWriter<Creation> creationItemWriter;
 
     private Creation createCreation(long creationId) {
         Creation creation = new Creation();
@@ -113,6 +121,24 @@ public class CreationEndJobConfigurationTest {
         assertThat(status).isTrue();
         assertThat(exitStatus).isTrue();
 
+        verify(creationRepository, times(2)).save(any(Creation.class));
+    }
+
+    /**
+     * Standalone Component
+     */
+    @Test
+    public void writeEndCreation() throws Exception {
+        // given : 진행중인 창작물 리스트로
+        List<Creation> creations = Stream.iterate(0L, idx -> idx + 1)
+                .limit(2)
+                .map(this::createCreation)
+                .collect(Collectors.toList());
+
+        // when : 창작물 마감 step의 writer를 사용하면
+        creationItemWriter.write(creations);
+
+        // then : 창작물이 마감된다
         verify(creationRepository, times(2)).save(any(Creation.class));
     }
 }
