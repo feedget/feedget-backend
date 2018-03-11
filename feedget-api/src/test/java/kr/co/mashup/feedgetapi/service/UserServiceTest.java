@@ -69,12 +69,13 @@ public class UserServiceTest {
         dto.setOAuthToken("oauthToken");
         dto.setOAuthType(User.OAuthType.FB);
 
-        User user = new User();
-        user.setRealName("realName");
-        user.setNickname("nickname");
-        user.setEmail("test@mashup.co.kr");
-        user.setOAuthToken("oauthToken");
-        user.setOAuthType(User.OAuthType.FB);
+        User user = User.builder()
+                .realName("realName")
+                .nickname("nickname")
+                .email("test@mashup.co.kr")
+                .oAuthToken("oauthToken")
+                .oAuthType(User.OAuthType.FB)
+                .build();
 
         when(userRepository.findByEmail("test@mashup.co.kr")).thenReturn(Optional.of(user));
 
@@ -95,7 +96,7 @@ public class UserServiceTest {
         UserDto.UpdateNickname dto = new UserDto.UpdateNickname();
         dto.setNickname("123456");
 
-        when(userRepository.findByUserId(userId)).thenReturn(Optional.of(new User()));
+        when(userRepository.findByUserId(userId)).thenReturn(Optional.of(User.builder().build()));
 
         // when : 닉네임을 수정하면
         sut.modifyUserNickname(userId, dto);

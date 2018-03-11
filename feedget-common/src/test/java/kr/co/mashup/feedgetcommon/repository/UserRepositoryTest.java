@@ -32,19 +32,21 @@ public class UserRepositoryTest {
 
     @Before
     public void setUp() throws Exception {
-        user = new User();
-        user.setRealName("ethan");
-        user.setNickname("ethannick");
-        user.setEmail(USER_EMAIL);
-        user.setUuid(UniqueIdGenerator.getStringId());
-        user.setCloudMsgRegId(null);
-        user.setUserGrade(User.UserGrade.BRONZE);
-        user.setUseVersionCode(100000);
-        user.setTotalPointAmount(100.0);
-        user.setPeriodPointAmount(100.0);
-        user.setCurrentPointAmount(100.0);
-        user.setFeedbackWritingCount(3);
-        user.setFeedbackSelectionCount(3);
+        user = User.builder()
+                .realName("ethan")
+                .nickname("ethannick")
+                .email(USER_EMAIL)
+                .uuid(UniqueIdGenerator.getStringId())
+                .cloudMsgRegId(null)
+                .userGrade(User.UserGrade.BRONZE)
+                .useVersionCode(100000)
+                .totalPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .feedbackWritingCount(3)
+                .feedbackSelectionCount(3)
+                .build();
+
         sut.save(user);
     }
 

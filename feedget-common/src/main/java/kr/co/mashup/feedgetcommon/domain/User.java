@@ -13,12 +13,12 @@ import java.util.List;
 @Entity
 @Table(name = "user")
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  // JPA에서 default constructor를 사용 가능, project에서 금지
 @ToString(exclude = {"creations", "feedbacks"})
 @EqualsAndHashCode(callSuper = false, of = "userId")
 public class User extends AbstractEntity<Long> {
 
+    @Setter  // TODO: 2018. 3. 12. TC에서 사용. 제거할 방법 고려
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
@@ -75,8 +75,8 @@ public class User extends AbstractEntity<Long> {
     private int feedbackSelectionCount;
 
     // Todo: 아래 필드 어떻게 할지...? 매번 계산할지, 결과 저장할지
-    // 답변 채택률
-    // 질문 마감률
+    // 답변 채택률  feedback selection rate
+    // 질문 마감률  creation deadline rate
 
     // Todo: 다른 social login 지원시 entity 분리 고려
     // Todo: 필요없을 시 제거
@@ -103,6 +103,25 @@ public class User extends AbstractEntity<Long> {
     public enum OAuthType {
         KAKAO,
         FB;
+    }
+
+    // TODO: 2018. 3. 12. 너무 field가 많다. domain 분리 필요
+    @Builder
+    public User(String uuid, String realName, String nickname, String email, String cloudMsgRegId, UserGrade userGrade, int useVersionCode, Double totalPointAmount, Double currentPointAmount, Double periodPointAmount, int feedbackWritingCount, int feedbackSelectionCount, String oAuthToken, OAuthType oAuthType) {
+        this.uuid = uuid;
+        this.realName = realName;
+        this.nickname = nickname;
+        this.email = email;
+        this.cloudMsgRegId = cloudMsgRegId;
+        this.userGrade = userGrade;
+        this.useVersionCode = useVersionCode;
+        this.totalPointAmount = totalPointAmount;
+        this.currentPointAmount = currentPointAmount;
+        this.periodPointAmount = periodPointAmount;
+        this.feedbackWritingCount = feedbackWritingCount;
+        this.feedbackSelectionCount = feedbackSelectionCount;
+        this.oAuthToken = oAuthToken;
+        this.oAuthType = oAuthType;
     }
 
     /**

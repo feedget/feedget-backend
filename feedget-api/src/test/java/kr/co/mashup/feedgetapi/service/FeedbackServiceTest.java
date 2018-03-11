@@ -61,7 +61,8 @@ public class FeedbackServiceTest {
         Pageable pageable = new PageRequest(0, 10);
         Long cursor = null;
 
-        User user = new User();
+        User user = User.builder()
+                .build();
         user.setUserId(userId);
 
         Creation creation = new Creation();
@@ -101,7 +102,8 @@ public class FeedbackServiceTest {
         Pageable pageable = new PageRequest(1, 10);
         Long cursor = null;
 
-        User user = new User();
+        User user = User.builder()
+                .build();
         user.setUserId(userId);
 
         Creation creation = new Creation();
@@ -162,7 +164,8 @@ public class FeedbackServiceTest {
         Pageable pageable = new PageRequest(0, 10);
         Long cursor = null;
 
-        User user = new User();
+        User user = User.builder()
+                .build();
         user.setUserId(userId);
 
         when(userRepository.findByUserId(userId)).thenReturn(Optional.of(user));
@@ -185,7 +188,8 @@ public class FeedbackServiceTest {
         Pageable pageable = new PageRequest(0, 10);
         Long cursor = null;
 
-        User user = new User();
+        User user = User.builder()
+                .build();
         user.setUserId(userId);
 
         Creation creation = new Creation();
@@ -209,10 +213,12 @@ public class FeedbackServiceTest {
         dto.setContent("feedback content");
         dto.setAnonymity(true);
 
-        User user = new User();
+        User user = User.builder()
+                .build();
         user.setUserId(userId);
 
-        User otherUser = new User();
+        User otherUser = User.builder()
+                .build();
         otherUser.setUserId(2L);
 
         Creation creation = new Creation();
@@ -262,7 +268,8 @@ public class FeedbackServiceTest {
         dto.setContent("feedback content");
         dto.setAnonymity(true);
 
-        User user = new User();
+        User user = User.builder()
+                .build();
         user.setUserId(userId);
 
         when(userRepository.findByUserId(userId)).thenReturn(Optional.of(user));
@@ -286,7 +293,8 @@ public class FeedbackServiceTest {
         dto.setContent("feedback content");
         dto.setAnonymity(true);
 
-        User user = new User();
+        User user = User.builder()
+                .build();
         user.setUserId(userId);
 
         Creation creation = new Creation();
@@ -314,10 +322,12 @@ public class FeedbackServiceTest {
         dto.setContent("feedback content");
         dto.setAnonymity(true);
 
-        User user = new User();
+        User user = User.builder()
+                .build();
         user.setUserId(userId);
 
-        User otherUser = new User();
+        User otherUser = User.builder()
+                .build();
         otherUser.setUserId(2L);
 
         Creation creation = new Creation();
@@ -344,7 +354,8 @@ public class FeedbackServiceTest {
         long creationId = 1L;
         long feedbackId = 1L;
 
-        User user = new User();
+        User user = User.builder()
+                .build();
         user.setUserId(userId);
 
         Feedback feedback = new Feedback();
@@ -394,7 +405,8 @@ public class FeedbackServiceTest {
         long creationId = 1L;
         long feedbackId = 1L;
 
-        User user = new User();
+        User user = User.builder()
+                .build();
         user.setUserId(userId);
 
         Feedback feedback = new Feedback();
@@ -419,7 +431,8 @@ public class FeedbackServiceTest {
         long creationId = 1L;
         long feedbackId = 1L;
 
-        User user = new User();
+        User user = User.builder()
+                .build();
         user.setUserId(userId);
 
         Creation creation = new Creation();
@@ -447,14 +460,16 @@ public class FeedbackServiceTest {
         FeedbackDto.Selection dto = new FeedbackDto.Selection();
         dto.setSelectionComment("comment");
 
-        User creationWriter = new User();
+        User creationWriter = User.builder()
+                .build();
         creationWriter.setUserId(creationWriterId);
 
-        User feedbackWriter = new User();
+        User feedbackWriter = User.builder()
+                .totalPointAmount(10.0)
+                .currentPointAmount(10.0)
+                .periodPointAmount(10.0)
+                .build();
         feedbackWriter.setUserId(2L);
-        feedbackWriter.setCurrentPointAmount(10.0);
-        feedbackWriter.setTotalPointAmount(10.0);
-        feedbackWriter.setPeriodPointAmount(10.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -513,11 +528,12 @@ public class FeedbackServiceTest {
         FeedbackDto.Selection dto = new FeedbackDto.Selection();
         dto.setSelectionComment("comment");
 
-        User feedbackWriter = new User();
+        User feedbackWriter = User.builder()
+                .totalPointAmount(10.0)
+                .currentPointAmount(10.0)
+                .periodPointAmount(10.0)
+                .build();
         feedbackWriter.setUserId(2L);
-        feedbackWriter.setCurrentPointAmount(10.0);
-        feedbackWriter.setTotalPointAmount(10.0);
-        feedbackWriter.setPeriodPointAmount(10.0);
 
         Feedback feedback = new Feedback();
         feedback.setWriter(feedbackWriter);
@@ -543,11 +559,12 @@ public class FeedbackServiceTest {
         FeedbackDto.Selection dto = new FeedbackDto.Selection();
         dto.setSelectionComment("comment");
 
-        User feedbackWriter = new User();
+        User feedbackWriter = User.builder()
+                .totalPointAmount(10.0)
+                .currentPointAmount(10.0)
+                .periodPointAmount(10.0)
+                .build();
         feedbackWriter.setUserId(2L);
-        feedbackWriter.setCurrentPointAmount(10.0);
-        feedbackWriter.setTotalPointAmount(10.0);
-        feedbackWriter.setPeriodPointAmount(10.0);
 
         Feedback feedback = new Feedback();
         feedback.setWriter(feedbackWriter);
@@ -574,14 +591,16 @@ public class FeedbackServiceTest {
         FeedbackDto.Selection dto = new FeedbackDto.Selection();
         dto.setSelectionComment("comment");
 
-        User creationWriter = new User();
+        User creationWriter = User.builder()
+                .build();
         creationWriter.setUserId(creationWriterId);
 
-        User feedbackWriter = new User();
+        User feedbackWriter = User.builder()
+                .totalPointAmount(10.0)
+                .currentPointAmount(10.0)
+                .periodPointAmount(10.0)
+                .build();
         feedbackWriter.setUserId(2L);
-        feedbackWriter.setCurrentPointAmount(10.0);
-        feedbackWriter.setTotalPointAmount(10.0);
-        feedbackWriter.setPeriodPointAmount(10.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -615,14 +634,16 @@ public class FeedbackServiceTest {
         FeedbackDto.Selection dto = new FeedbackDto.Selection();
         dto.setSelectionComment("comment");
 
-        User creationWriter = new User();
+        User creationWriter = User.builder()
+                .build();
         creationWriter.setUserId(creationWriterId);
 
-        User feedbackWriter = new User();
+        User feedbackWriter = User.builder()
+                .totalPointAmount(10.0)
+                .currentPointAmount(10.0)
+                .periodPointAmount(10.0)
+                .build();
         feedbackWriter.setUserId(2L);
-        feedbackWriter.setCurrentPointAmount(10.0);
-        feedbackWriter.setTotalPointAmount(10.0);
-        feedbackWriter.setPeriodPointAmount(10.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
