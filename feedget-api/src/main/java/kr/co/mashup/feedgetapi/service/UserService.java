@@ -9,6 +9,7 @@ import kr.co.mashup.feedgetcommon.repository.UserRepository;
 import kr.co.mashup.feedgetcommon.util.UniqueIdGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,7 +64,15 @@ public class UserService {
      */
     private User signUpUser(SignInDto.Create dto) {
         // Todo: add signUp history
-        User user = new User(dto.getRealName(), dto.getNickname(), dto.getEmail(), UniqueIdGenerator.getStringId(), dto.getOAuthToken(), dto.getOAuthType());
+        User user = User.builder()
+                .realName(dto.getRealName())
+                .nickname(dto.getNickname())
+                .email(dto.getEmail())
+                .uuid(UniqueIdGenerator.getStringId())
+                .oAuthToken(dto.getOAuthToken())
+                .oAuthType(dto.getOAuthType())
+                .build();
+
         return userRepository.save(user);
     }
 
@@ -86,5 +95,26 @@ public class UserService {
 
         user.changeNickname(dto.getNickname());
         userRepository.save(user);
+    }
+
+    /**
+     * 유저 정보 조회
+     *
+     * @param userId
+     * @param uuid
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public UserDto.DetailResponse readUserInfo(long userId, String uuid) {
+        Optional<User> userOp;
+
+        if (StringUtils.equals(uuid, "me")) {  // 내정보 조회
+            userOp = userRepository.findByUserId(userId);
+        } else {  // 다른 유저 정보 조회
+            userOp = userRepository.findByUuid(uuid);
+        }
+
+        User user = userOp.orElseThrow(() -> new NotFoundException("not found user"));
+        return UserDto.DetailResponse.newDetailResponse(user);
     }
 }

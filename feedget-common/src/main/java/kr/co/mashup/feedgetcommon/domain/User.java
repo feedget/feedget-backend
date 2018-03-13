@@ -75,8 +75,14 @@ public class User extends AbstractEntity<Long> {
     private int feedbackSelectionCount;
 
     // Todo: 아래 필드 어떻게 할지...? 매번 계산할지, 결과 저장할지
-    // 답변 채택률  feedback selection rate
-    // 질문 마감률  creation deadline rate
+
+    // 답변 채택률
+    @Column(name = "feedback_selection_rate", nullable = false, columnDefinition = "decimal(12,2) default '0.00'")
+    private Double feedbackSelectionRate;
+
+    // 창작물 마감률
+    @Column(name = "creation_deadline_rate", nullable = false, columnDefinition = "decimal(12,2) default '0.00'")
+    private Double creationDeadlineRate;
 
     // Todo: 다른 social login 지원시 entity 분리 고려
     // Todo: 필요없을 시 제거
@@ -107,7 +113,10 @@ public class User extends AbstractEntity<Long> {
 
     // TODO: 2018. 3. 12. 너무 field가 많다. domain 분리 필요
     @Builder
-    public User(String uuid, String realName, String nickname, String email, String cloudMsgRegId, UserGrade userGrade, int useVersionCode, Double totalPointAmount, Double currentPointAmount, Double periodPointAmount, int feedbackWritingCount, int feedbackSelectionCount, String oAuthToken, OAuthType oAuthType) {
+    public User(String uuid, String realName, String nickname, String email, String cloudMsgRegId, UserGrade userGrade,
+                int useVersionCode, Double totalPointAmount, Double currentPointAmount, Double periodPointAmount,
+                int feedbackWritingCount, int feedbackSelectionCount, Double feedbackSelectionRate, Double creationDeadlineRate,
+                String oAuthToken, OAuthType oAuthType) {
         this.uuid = uuid;
         this.realName = realName;
         this.nickname = nickname;
@@ -120,6 +129,8 @@ public class User extends AbstractEntity<Long> {
         this.periodPointAmount = periodPointAmount;
         this.feedbackWritingCount = feedbackWritingCount;
         this.feedbackSelectionCount = feedbackSelectionCount;
+        this.feedbackSelectionRate = feedbackSelectionRate;
+        this.creationDeadlineRate = creationDeadlineRate;
         this.oAuthToken = oAuthToken;
         this.oAuthType = oAuthType;
     }
@@ -150,22 +161,6 @@ public class User extends AbstractEntity<Long> {
             return false;
         }
         return true;
-    }
-
-    public User(String realName, String nickname, String email, String uuid, String oAuthToken, OAuthType oAuthType) {
-        this.realName = realName;
-        this.nickname = nickname;
-        this.email = email;
-        this.uuid = uuid;
-        this.userGrade = UserGrade.BRONZE;
-        this.useVersionCode = 10000;
-        this.totalPointAmount = 0d;
-        this.currentPointAmount = 0d;
-        this.periodPointAmount = 0d;
-        this.feedbackWritingCount = 0;
-        this.feedbackSelectionCount = 0;
-        this.oAuthToken = oAuthToken;
-        this.oAuthType = oAuthType;
     }
 
     public void changeNickname(String nickname) {
