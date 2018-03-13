@@ -71,6 +71,8 @@ public class FeedbackRepositoryTest {
                 .currentPointAmount(100.0)
                 .feedbackWritingCount(1)
                 .feedbackSelectionCount(1)
+                .feedbackSelectionRate(0.0)
+                .creationDeadlineRate(0.0)
                 .build();
         entityManager.persistAndFlush(writer);
 
@@ -87,6 +89,8 @@ public class FeedbackRepositoryTest {
                 .currentPointAmount(100.0)
                 .feedbackWritingCount(1)
                 .feedbackSelectionCount(1)
+                .feedbackSelectionRate(0.0)
+                .creationDeadlineRate(0.0)
                 .build();
         entityManager.persistAndFlush(otherUser);
 

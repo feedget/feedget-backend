@@ -45,6 +45,8 @@ public class UserRepositoryTest {
                 .currentPointAmount(100.0)
                 .feedbackWritingCount(3)
                 .feedbackSelectionCount(3)
+                .feedbackSelectionRate(0.0)
+                .creationDeadlineRate(0.0)
                 .build();
 
         sut.save(user);
