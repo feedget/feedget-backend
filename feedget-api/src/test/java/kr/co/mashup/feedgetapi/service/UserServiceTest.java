@@ -16,6 +16,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -69,12 +70,13 @@ public class UserServiceTest {
         dto.setOAuthToken("oauthToken");
         dto.setOAuthType(User.OAuthType.FB);
 
-        User user = new User();
-        user.setRealName("realName");
-        user.setNickname("nickname");
-        user.setEmail("test@mashup.co.kr");
-        user.setOAuthToken("oauthToken");
-        user.setOAuthType(User.OAuthType.FB);
+        User user = User.builder()
+                .realName("realName")
+                .nickname("nickname")
+                .email("test@mashup.co.kr")
+                .oAuthToken("oauthToken")
+                .oAuthType(User.OAuthType.FB)
+                .build();
 
         when(userRepository.findByEmail("test@mashup.co.kr")).thenReturn(Optional.of(user));
 
@@ -95,7 +97,7 @@ public class UserServiceTest {
         UserDto.UpdateNickname dto = new UserDto.UpdateNickname();
         dto.setNickname("123456");
 
-        when(userRepository.findByUserId(userId)).thenReturn(Optional.of(new User()));
+        when(userRepository.findByUserId(userId)).thenReturn(Optional.of(User.builder().build()));
 
         // when : 닉네임을 수정하면
         sut.modifyUserNickname(userId, dto);
@@ -121,5 +123,78 @@ public class UserServiceTest {
         sut.modifyUserNickname(userId, dto);
 
         // then : 존재하지 않는 유저라 닉네임이 수정되지 않는다
+    }
+
+    @Test
+    public void readUserInfo_유저_자신의_정보_조회_성공() {
+        // given : 유저 ID, 정보 조회할 유저의 UUID로
+        long userId = 1L;
+        String uuid = "me";
+
+        User user = User.builder()
+                .realName("realName")
+                .nickname("nickname")
+                .email("test@mashup.co.kr")
+                .oAuthToken("oauthToken")
+                .oAuthType(User.OAuthType.FB)
+                .currentPointAmount(100.0)
+                .feedbackSelectionRate(10.0)
+                .creationDeadlineRate(10.0)
+                .build();
+
+        when(userRepository.findByUserId(userId)).thenReturn(Optional.of(user));
+
+        // when : 유저 정보를 조회하면
+        UserDto.DetailResponse response = sut.readUserInfo(userId, uuid);
+
+        // then : 자신의 정보가 조회된다
+        assertThat(response).isNotNull();
+        verify(userRepository, never()).findByUuid(uuid);
+        verify(userRepository, times(1)).findByUserId(userId);
+    }
+
+    @Test
+    public void readUserInfo_다른_유저의_정보_조회_성공() {
+        // given : 유저 ID, 정보 조회할 유저의 UUID로
+        long userId = 1L;
+        String uuid = "feeerer3403035dd223fhd";
+
+        User user = User.builder()
+                .realName("realName")
+                .nickname("nickname")
+                .email("test@mashup.co.kr")
+                .oAuthToken("oauthToken")
+                .oAuthType(User.OAuthType.FB)
+                .currentPointAmount(100.0)
+                .feedbackSelectionRate(10.0)
+                .creationDeadlineRate(10.0)
+                .build();
+
+        when(userRepository.findByUuid(uuid)).thenReturn(Optional.of(user));
+
+        // when : 유저 정보를 조회하면
+        UserDto.DetailResponse response = sut.readUserInfo(userId, uuid);
+
+        // then : 다른 유저의 정보가 조회된다
+        assertThat(response).isNotNull();
+        verify(userRepository, times(1)).findByUuid(uuid);
+        verify(userRepository, never()).findByUserId(userId);
+    }
+
+    @Test
+    public void readUserInfo_존재하지_않는_유저라_유저_정보_조회_실패() {
+        expectedException.expect(NotFoundException.class);
+        expectedException.expectMessage("not found user");
+
+        // given : 유저 ID, 정보 조회할 유저의 UUID로
+        long userId = 1L;
+        String uuid = "me";
+
+        when(userRepository.findByUserId(userId)).thenReturn(Optional.empty());
+
+        // when : 유저 정보를 조회하면
+        UserDto.DetailResponse response = sut.readUserInfo(userId, uuid);
+
+        // then : 존재하지 않는 유저라 유저 정보를 조회할 수 없다
     }
 }

@@ -58,30 +58,40 @@ public class FeedbackRepositoryTest {
         creation.setFeedbackCount(0L);
         entityManager.persistAndFlush(creation);
 
-        writer = new User();
-        writer.setRealName("test");
-        writer.setNickname("test");
-        writer.setEmail("testUser1@test.io");
-        writer.setUuid(UniqueIdGenerator.getStringId());
-        writer.setUserGrade(User.UserGrade.BRONZE);
-        writer.setTotalPointAmount(100.0);
-        writer.setCurrentPointAmount(100.0);
-        writer.setPeriodPointAmount(100.0);
-        writer.setFeedbackWritingCount(1);
-        writer.setFeedbackSelectionCount(1);
+        writer = User.builder()
+                .realName("writer")
+                .nickname("writerNick")
+                .email("writer@test.io")
+                .uuid(UniqueIdGenerator.getStringId())
+                .cloudMsgRegId(null)
+                .userGrade(User.UserGrade.BRONZE)
+                .useVersionCode(100000)
+                .totalPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .feedbackWritingCount(1)
+                .feedbackSelectionCount(1)
+                .feedbackSelectionRate(0.0)
+                .creationDeadlineRate(0.0)
+                .build();
         entityManager.persistAndFlush(writer);
 
-        User otherUser = new User();
-        otherUser.setRealName("test");
-        otherUser.setNickname("test");
-        otherUser.setEmail("testUser2@test.io");
-        otherUser.setUuid(UniqueIdGenerator.getStringId());
-        otherUser.setUserGrade(User.UserGrade.BRONZE);
-        otherUser.setTotalPointAmount(100.0);
-        otherUser.setCurrentPointAmount(100.0);
-        otherUser.setPeriodPointAmount(100.0);
-        otherUser.setFeedbackWritingCount(1);
-        otherUser.setFeedbackSelectionCount(1);
+        User otherUser = User.builder()
+                .realName("other")
+                .nickname("otherNick")
+                .email("other@test.io")
+                .uuid(UniqueIdGenerator.getStringId())
+                .cloudMsgRegId(null)
+                .userGrade(User.UserGrade.BRONZE)
+                .useVersionCode(100000)
+                .totalPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .feedbackWritingCount(1)
+                .feedbackSelectionCount(1)
+                .feedbackSelectionRate(0.0)
+                .creationDeadlineRate(0.0)
+                .build();
         entityManager.persistAndFlush(otherUser);
 
         Feedback feedback;

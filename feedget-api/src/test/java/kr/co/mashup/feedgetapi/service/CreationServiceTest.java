@@ -66,11 +66,12 @@ public class CreationServiceTest {
         dto.setAnonymity(true);
         dto.setRewardPoint(10.0);
 
-        User writer = new User();
+        User writer = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         writer.setUserId(userId);
-        writer.setTotalPointAmount(100.0);
-        writer.setCurrentPointAmount(100.0);
-        writer.setPeriodPointAmount(100.0);
 
         Category category = new Category();
         category.setName("design");
@@ -124,11 +125,13 @@ public class CreationServiceTest {
         dto.setAnonymity(true);
         dto.setRewardPoint(10.0);
 
-        User writer = new User();
+        User writer = User.builder()
+                .totalPointAmount(5.0)
+                .currentPointAmount(5.0)
+                .periodPointAmount(5.0)
+                .build();
         writer.setUserId(userId);
-        writer.setTotalPointAmount(5.0);
-        writer.setCurrentPointAmount(5.0);
-        writer.setPeriodPointAmount(5.0);
+
 
         when(userRepository.findOne(userId)).thenReturn(writer);
 
@@ -152,11 +155,12 @@ public class CreationServiceTest {
         dto.setAnonymity(true);
         dto.setRewardPoint(10.0);
 
-        User writer = new User();
+        User writer = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         writer.setUserId(userId);
-        writer.setTotalPointAmount(100.0);
-        writer.setCurrentPointAmount(100.0);
-        writer.setPeriodPointAmount(100.0);
 
         when(userRepository.findOne(userId)).thenReturn(writer);
         when(categoryRepository.findByName("design")).thenReturn(Optional.empty());
@@ -179,11 +183,12 @@ public class CreationServiceTest {
         dto.setAnonymity(true);
         dto.setRewardPoint(10.0);
 
-        User writer = new User();
+        User writer = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         writer.setUserId(userId);
-        writer.setTotalPointAmount(100.0);
-        writer.setCurrentPointAmount(100.0);
-        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -245,10 +250,12 @@ public class CreationServiceTest {
         dto.setAnonymity(true);
         dto.setRewardPoint(10.0);
 
-        User writer = new User();
+        User writer = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         writer.setUserId(userId);
-        writer.setCurrentPointAmount(100.0);
-        writer.setPeriodPointAmount(100.0);
 
         when(userRepository.findOne(userId)).thenReturn(writer);
         when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.empty());
@@ -274,12 +281,15 @@ public class CreationServiceTest {
         dto.setAnonymity(true);
         dto.setRewardPoint(10.0);
 
-        User writer = new User();
+        User writer = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         writer.setUserId(userId);
-        writer.setCurrentPointAmount(100.0);
-        writer.setPeriodPointAmount(100.0);
 
-        User otherUser = new User();
+        User otherUser = User.builder()
+                .build();
         otherUser.setUserId(2L);
 
         Creation creation = new Creation();
@@ -313,10 +323,12 @@ public class CreationServiceTest {
         dto.setAnonymity(true);
         dto.setRewardPoint(10.0);
 
-        User writer = new User();
+        User writer = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         writer.setUserId(userId);
-        writer.setCurrentPointAmount(100.0);
-        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -349,10 +361,12 @@ public class CreationServiceTest {
         dto.setAnonymity(true);
         dto.setRewardPoint(10.0);
 
-        User writer = new User();
+        User writer = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         writer.setUserId(userId);
-        writer.setCurrentPointAmount(100.0);
-        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -384,11 +398,12 @@ public class CreationServiceTest {
         dto.setAnonymity(true);
         dto.setRewardPoint(1000.0);
 
-        User writer = new User();
+        User writer = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         writer.setUserId(userId);
-        writer.setTotalPointAmount(100.0);
-        writer.setCurrentPointAmount(100.0);
-        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -421,10 +436,12 @@ public class CreationServiceTest {
         dto.setAnonymity(true);
         dto.setRewardPoint(10.0);
 
-        User writer = new User();
+        User writer = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         writer.setUserId(userId);
-        writer.setCurrentPointAmount(100.0);
-        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -449,11 +466,12 @@ public class CreationServiceTest {
         long userId = 1L;
         long creationId = 1L;
 
-        User writer = new User();
+        User writer = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         writer.setUserId(userId);
-        writer.setTotalPointAmount(100.0);
-        writer.setCurrentPointAmount(100.0);
-        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -500,10 +518,12 @@ public class CreationServiceTest {
         long userId = 1L;
         long creationId = 1L;
 
-        User writer = new User();
+        User writer = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         writer.setUserId(userId);
-        writer.setCurrentPointAmount(100.0);
-        writer.setPeriodPointAmount(100.0);
 
         when(userRepository.findOne(userId)).thenReturn(writer);
         when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.empty());
@@ -523,12 +543,15 @@ public class CreationServiceTest {
         long userId = 1L;
         long creationId = 1L;
 
-        User writer = new User();
+        User writer = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         writer.setUserId(userId);
-        writer.setCurrentPointAmount(100.0);
-        writer.setPeriodPointAmount(100.0);
 
-        User otherUser = new User();
+        User otherUser = User.builder()
+                .build();
         otherUser.setUserId(2L);
 
         Creation creation = new Creation();
@@ -556,10 +579,12 @@ public class CreationServiceTest {
         long userId = 1L;
         long creationId = 1L;
 
-        User writer = new User();
+        User writer = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         writer.setUserId(userId);
-        writer.setCurrentPointAmount(100.0);
-        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -586,10 +611,12 @@ public class CreationServiceTest {
         long userId = 1L;
         long creationId = 1L;
 
-        User writer = new User();
+        User writer = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         writer.setUserId(userId);
-        writer.setCurrentPointAmount(100.0);
-        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -614,10 +641,12 @@ public class CreationServiceTest {
         String category = "ALL";
         Pageable pageable = new PageRequest(0, 10);
 
-        User user = new User();
+        User user = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         user.setUserId(userId);
-        user.setCurrentPointAmount(100.0);
-        user.setPeriodPointAmount(100.0);
 
         Page<Creation> page = new PageImpl<>(Collections.emptyList(), pageable, 0);
 
@@ -640,10 +669,12 @@ public class CreationServiceTest {
         String categoryName = "design";
         Pageable pageable = new PageRequest(0, 10);
 
-        User user = new User();
+        User user = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         user.setUserId(userId);
-        user.setCurrentPointAmount(100.0);
-        user.setPeriodPointAmount(100.0);
 
         Page<Creation> page = new PageImpl<>(Collections.emptyList(), pageable, 0);
 
@@ -691,10 +722,12 @@ public class CreationServiceTest {
         String categoryName = "design";
         Pageable pageable = new PageRequest(0, 10);
 
-        User user = new User();
+        User user = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         user.setUserId(userId);
-        user.setCurrentPointAmount(100.0);
-        user.setPeriodPointAmount(100.0);
 
         when(userRepository.findByUserId(userId)).thenReturn(Optional.of(user));
         when(categoryRepository.findByName(categoryName)).thenReturn(Optional.empty());
@@ -711,10 +744,12 @@ public class CreationServiceTest {
         long userId = 1L;
         long creationId = 1L;
 
-        User writer = new User();
+        User writer = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         writer.setUserId(userId);
-        writer.setCurrentPointAmount(100.0);
-        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -750,10 +785,12 @@ public class CreationServiceTest {
         long userId = 1L;
         long creationId = 1L;
 
-        User writer = new User();
+        User writer = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         writer.setUserId(userId);
-        writer.setCurrentPointAmount(100.0);
-        writer.setPeriodPointAmount(100.0);
 
         Creation creation = new Creation();
         creation.setCreationId(creationId);
@@ -805,10 +842,12 @@ public class CreationServiceTest {
         long userId = 1L;
         long creationId = 1L;
 
-        User writer = new User();
+        User writer = User.builder()
+                .totalPointAmount(100.0)
+                .currentPointAmount(100.0)
+                .periodPointAmount(100.0)
+                .build();
         writer.setUserId(userId);
-        writer.setCurrentPointAmount(100.0);
-        writer.setPeriodPointAmount(100.0);
 
         when(userRepository.findByUserId(userId)).thenReturn(Optional.of(writer));
         when(creationRepository.findByCreationId(creationId)).thenReturn(Optional.empty());

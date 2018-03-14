@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import kr.co.mashup.feedgetapi.exception.ErrorResponse;
 import kr.co.mashup.feedgetapi.service.UserService;
+import kr.co.mashup.feedgetapi.web.dto.DataResponse;
 import kr.co.mashup.feedgetapi.web.dto.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,12 @@ import javax.validation.Valid;
 @Slf4j
 public class UserController {
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @ApiOperation(value = "유저 닉네임 수정", notes = "유저의 닉네임을 수정한다")
     @ApiResponses(value = {
@@ -55,4 +60,20 @@ public class UserController {
     }
 
     // Todo: token 갱신 API 추가
+
+    @ApiOperation(value = "유저 정보 조회", notes = "유저의 정보를 조회한다. me - 자신의 정보 조회." +
+            " uuid(32자) - 다른 유저 정보 조회")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청(필수 파라미터 누락)"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    @GetMapping(value = "/{uuid}")
+    public ResponseEntity getUserInfo(@RequestAttribute long userId,
+                                      @PathVariable(value = "uuid") String uuid) {
+        log.info("getUserInfo - userId : {}, uuid : {}", userId, uuid);
+
+        UserDto.DetailResponse userResponse = userService.readUserInfo(userId, uuid);
+        return new ResponseEntity<>(new DataResponse<>(userResponse), HttpStatus.OK);
+    }
 }

@@ -1,7 +1,6 @@
 package kr.co.mashup.feedgetapi.web.interceptor;
 
 import kr.co.mashup.feedgetapi.exception.InvalidTokenException;
-import kr.co.mashup.feedgetapi.exception.NotFoundException;
 import kr.co.mashup.feedgetapi.security.JwtProperties;
 import kr.co.mashup.feedgetapi.security.TokenManager;
 import kr.co.mashup.feedgetcommon.domain.User;
@@ -121,7 +120,7 @@ public class AuthInterceptorTest {
 
         when(environment.getActiveProfiles()).thenReturn(activeProfiles);
         when(tokenManager.getUserUuid(accessToken)).thenReturn(uuid);
-        when(userRepository.findByUuid(uuid)).thenReturn(Optional.of(new User()));
+        when(userRepository.findByUuid(uuid)).thenReturn(Optional.of(User.builder().build()));
 
         // when : 인터셉터를 통과시키면
         boolean result = sut.preHandle(request, response, hec.getHandler());

@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -106,5 +107,23 @@ public class UserControllerTest {
 
         // then : 자리수 제한을 넘어 닉네임이 수정되지 않는다
         verify(userService, never()).modifyUserNickname(userId, dto);
+    }
+
+    @Test
+    public void getUserInfo_유저_정보_조회_성공() throws Exception {
+        // given : 유저 ID
+        long userId = 1L;
+        String uuid = "me";
+
+        // when : 유저 정보를 조회하면
+        MvcResult result = mockMvc.perform(get("/users/{uuid}", uuid)
+                .requestAttr("userId", userId)
+                .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk())
+                .andReturn();
+
+        // then : 유저 정보가 조회된다
+        verify(userService, times(1)).readUserInfo(userId, uuid);
     }
 }

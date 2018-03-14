@@ -142,8 +142,9 @@ public class TokenManagerTest {
     public void generateAccessToken_access_token_생성_성공() {
         // given : 유저 정보로
         String uuid = UniqueIdGenerator.getStringId();
-        User user = new User();
-        user.setUuid(uuid);
+        User user = User.builder()
+                .uuid(uuid)
+                .build();
 
         // when : access token을 생성하면
         String token = sut.generateAccessToken(user);
@@ -167,8 +168,9 @@ public class TokenManagerTest {
     public void generateRefreshToken_refresh_token_생성_성공() {
         // given : 유저 정보로
         String uuid = UniqueIdGenerator.getStringId();
-        User user = new User();
-        user.setUuid(uuid);
+        User user = User.builder()
+                .uuid(uuid)
+                .build();
 
         // when : refresh token을 생성하면
         String token = sut.generateRefreshToken(user);
