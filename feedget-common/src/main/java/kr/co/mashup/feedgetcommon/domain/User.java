@@ -1,6 +1,7 @@
 package kr.co.mashup.feedgetcommon.domain;
 
 import lombok.*;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.util.List;
@@ -165,5 +166,13 @@ public class User extends AbstractEntity<Long> {
 
     public void changeNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public boolean isSameCloudMsgRegId(String cloudMsgRegId) {
+        return StringUtils.equals(this.cloudMsgRegId, cloudMsgRegId);
+    }
+
+    public void changeCloudMsgRegId(String cloudMsgRegId) {
+        this.cloudMsgRegId = cloudMsgRegId;
     }
 }
