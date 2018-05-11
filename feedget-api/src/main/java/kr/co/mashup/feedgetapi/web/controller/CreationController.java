@@ -5,7 +5,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import kr.co.mashup.feedgetapi.exception.ErrorResponse;
-import kr.co.mashup.feedgetapi.service.CreationService;
+import kr.co.mashup.feedgetapi.service.CreationQueryService;
+import kr.co.mashup.feedgetapi.service.CreationCommandService;
 import kr.co.mashup.feedgetapi.web.CreationUpdateValidator;
 import kr.co.mashup.feedgetapi.web.dto.CreationDto;
 import kr.co.mashup.feedgetapi.web.dto.DataListResponse;
@@ -34,11 +35,18 @@ import javax.validation.Valid;
 @Slf4j
 public class CreationController {
 
-    @Autowired
-    private CreationService creationService;
+    private final CreationCommandService creationCommandService;
+
+    private final CreationQueryService creationQueryService;
+
+    private final CreationUpdateValidator creationUpdateValidator;
 
     @Autowired
-    private CreationUpdateValidator creationUpdateValidator;
+    public CreationController(CreationCommandService creationCommandService, CreationQueryService creationQueryService, CreationUpdateValidator creationUpdateValidator) {
+        this.creationCommandService = creationCommandService;
+        this.creationQueryService = creationQueryService;
+        this.creationUpdateValidator = creationUpdateValidator;
+    }
 
     // Todo: 정렬 추가 - 최신순, 마감빠른순, 포인트 많은 순, 피드백 많은 순, 피드백 적은
     @ApiOperation(value = "창작물 리스트 조회", notes = "창작물 리스트를 조회한다")
@@ -54,7 +62,7 @@ public class CreationController {
                                                           @PageableDefault(page = 0, size = 20) Pageable pageable) {
         log.info("readCreations - userId : {}, category : {}, cursor : {}, pageable : {}", userId, categoryName, cursor, pageable);
 
-        Page<CreationDto.Response> creationPage = creationService.readCreations(userId, categoryName, pageable);
+        Page<CreationDto.Response> creationPage = creationQueryService.readCreations(userId, categoryName, pageable);
 
         // Todo: header에서 기타 정보를 내릴지 고려
 //        HttpHeaders headers = new HttpHeaders();
@@ -77,7 +85,7 @@ public class CreationController {
                                                                  @PathVariable(value = "creationId") long creationId) {
         log.info("readCreation - userId : {}, creationId : {}", userId, creationId);
 
-        CreationDto.DetailResponse detailResponse = creationService.readCreation(userId, creationId);
+        CreationDto.DetailResponse detailResponse = creationQueryService.readCreation(userId, creationId);
         return new DataResponse<>(detailResponse);
     }
 
@@ -101,7 +109,7 @@ public class CreationController {
             return new ResponseEntity<>(errorRepoonse, HttpStatus.BAD_REQUEST);
         }
 
-        long creationId = creationService.addCreation(userId, create);
+        long creationId = creationCommandService.addCreation(userId, create);
         return new ResponseEntity<>(new DataResponse<>(creationId), HttpStatus.CREATED);
     }
 
@@ -127,7 +135,7 @@ public class CreationController {
             return new ResponseEntity<>(errorRepoonse, HttpStatus.BAD_REQUEST);
         }
 
-        creationService.modifyCreation(userId, creationId, update);
+        creationCommandService.modifyCreation(userId, creationId, update);
         return new ResponseEntity<>(Response.ok(), HttpStatus.OK);
     }
 
@@ -142,7 +150,7 @@ public class CreationController {
                                          @PathVariable(value = "creationId") long creationId) {
         log.info("deleteCreation - userId : {}, creationId : {}", userId, creationId);
 
-        creationService.removeCreation(userId, creationId);
+        creationCommandService.removeCreation(userId, creationId);
         return ResponseEntity.ok().build();
     }
 

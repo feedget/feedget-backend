@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import kr.co.mashup.feedgetapi.exception.ErrorResponse;
-import kr.co.mashup.feedgetapi.service.UserService;
+import kr.co.mashup.feedgetapi.service.UserCommandService;
 import kr.co.mashup.feedgetapi.web.dto.DataResponse;
 import kr.co.mashup.feedgetapi.web.dto.SignInDto;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ import javax.validation.Valid;
 public class SignInController {
 
     @Autowired
-    private UserService userService;
+    private UserCommandService userCommandService;
 
     @ApiOperation(value = "Sign In", notes = "User Sign In")
     @ApiResponses(value = {
@@ -51,7 +51,7 @@ public class SignInController {
             return new ResponseEntity<>(errorRepoonse, HttpStatus.BAD_REQUEST);
         }
 
-        SignInDto.Response response = userService.signInUser(create);
+        SignInDto.Response response = userCommandService.signInUser(create);
         return new ResponseEntity<>(new DataResponse<>(response), HttpStatus.OK);
     }
 }

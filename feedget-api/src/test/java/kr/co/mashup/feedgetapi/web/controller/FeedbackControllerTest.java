@@ -1,8 +1,8 @@
 package kr.co.mashup.feedgetapi.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.co.mashup.feedgetapi.service.FeedbackService;
-import kr.co.mashup.feedgetapi.web.dto.CreationDto;
+import kr.co.mashup.feedgetapi.service.FeedbackQueryService;
+import kr.co.mashup.feedgetapi.service.FeedbackCommandService;
 import kr.co.mashup.feedgetapi.web.dto.FeedbackDto;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -41,7 +41,10 @@ public class FeedbackControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private FeedbackService feedbackService;
+    private FeedbackCommandService feedbackCommandService;
+
+    @Mock
+    private FeedbackQueryService feedbackQueryService;
 
     @InjectMocks
     private FeedbackController sut;
@@ -70,7 +73,7 @@ public class FeedbackControllerTest {
 
         List<FeedbackDto.Response> feedbacks = Collections.emptyList();
 
-        when(feedbackService.readFeedbackList(eq(userId), eq(creationId), any(), anyLong())).thenReturn(feedbacks);
+        when(feedbackQueryService.readFeedbackList(eq(userId), eq(creationId), any(), anyLong())).thenReturn(feedbacks);
         ArgumentCaptor<Pageable> pageableArg = ArgumentCaptor.forClass(Pageable.class);
 
         // when : 피드백 리스트를 조회하면
@@ -83,7 +86,7 @@ public class FeedbackControllerTest {
                 .andReturn();
 
         // then : 피드백 리스트가 조회된다
-        verify(feedbackService, times(1)).readFeedbackList(eq(userId), eq(creationId), pageableArg.capture(), anyLong());
+        verify(feedbackQueryService, times(1)).readFeedbackList(eq(userId), eq(creationId), pageableArg.capture(), anyLong());
         assertEquals(pageableArg.getValue(), pageable);
     }
 
@@ -106,7 +109,7 @@ public class FeedbackControllerTest {
                 .andReturn();
 
         // then : 피드백이 추가된다
-        verify(feedbackService, times(1)).addFeedback(userId, creationId, dto);
+        verify(feedbackCommandService, times(1)).addFeedback(userId, creationId, dto);
     }
 
     @Test
@@ -128,7 +131,7 @@ public class FeedbackControllerTest {
                 .andReturn();
 
         // then : 피드백 내용이 짧아 피드백이 추가되지 않는다
-        verify(feedbackService, never()).addFeedback(userId, creationId, dto);
+        verify(feedbackCommandService, never()).addFeedback(userId, creationId, dto);
     }
 
     @Test
@@ -145,7 +148,7 @@ public class FeedbackControllerTest {
                 .andReturn();
 
         // then : 창작물의 피드백이 삭제된다
-        verify(feedbackService, times(1)).removeFeedback(userId, creationId, feedbackId);
+        verify(feedbackCommandService, times(1)).removeFeedback(userId, creationId, feedbackId);
     }
 
     @Test
@@ -167,7 +170,7 @@ public class FeedbackControllerTest {
                 .andReturn();
 
         // then : 피드백이 채택된다
-        verify(feedbackService, times(1)).selectFeedback(userId, creationId, feedbackId, dto);
+        verify(feedbackCommandService, times(1)).selectFeedback(userId, creationId, feedbackId, dto);
     }
 
     @Test
@@ -189,6 +192,6 @@ public class FeedbackControllerTest {
                 .andReturn();
 
         // then : 채택 의견이 짧아 피드백이 채택되지 않는다
-        verify(feedbackService, never()).selectFeedback(userId, creationId, feedbackId, dto);
+        verify(feedbackCommandService, never()).selectFeedback(userId, creationId, feedbackId, dto);
     }
 }

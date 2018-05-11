@@ -5,7 +5,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import kr.co.mashup.feedgetapi.exception.ErrorResponse;
-import kr.co.mashup.feedgetapi.service.FeedbackService;
+import kr.co.mashup.feedgetapi.service.FeedbackQueryService;
+import kr.co.mashup.feedgetapi.service.FeedbackCommandService;
 import kr.co.mashup.feedgetapi.web.dto.DataListResponse;
 import kr.co.mashup.feedgetapi.web.dto.FeedbackDto;
 import kr.co.mashup.feedgetapi.web.dto.Response;
@@ -32,8 +33,15 @@ import java.util.List;
 @Slf4j
 public class FeedbackController {
 
+    private final FeedbackCommandService feedbackCommandService;
+
+    private final FeedbackQueryService feedbackQueryService;
+
     @Autowired
-    private FeedbackService feedbackService;
+    public FeedbackController(FeedbackCommandService feedbackCommandService, FeedbackQueryService feedbackQueryService) {
+        this.feedbackCommandService = feedbackCommandService;
+        this.feedbackQueryService = feedbackQueryService;
+    }
 
     // Todo: 2018.01.18 - 클라쪽에서 pagenation은 추후에 구현하기로 해서 기본 size를 20 -> 50으로 변경하여 안돼는 것처럼 수정
     @ApiOperation(value = "창작물의 피드백 리스트 조회", notes = "창작물의 피드백 리스트를 조회한다")
@@ -49,7 +57,7 @@ public class FeedbackController {
                                                           @PageableDefault(page = 0, size = 50) Pageable pageable) {
         log.info("readFeedbacks - userId : {}, creationId : {}, cursor : {}, pageable : {}", userId, creationId, cursor, pageable);
 
-        List<FeedbackDto.Response> feedbacks = feedbackService.readFeedbackList(userId, creationId, pageable, cursor);
+        List<FeedbackDto.Response> feedbacks = feedbackQueryService.readFeedbackList(userId, creationId, pageable, cursor);
         return new ResponseEntity<>(new DataListResponse<>(feedbacks), HttpStatus.OK);
     }
 
@@ -73,7 +81,7 @@ public class FeedbackController {
             return new ResponseEntity<>(errorRepoonse, HttpStatus.BAD_REQUEST);
         }
 
-        feedbackService.addFeedback(userId, creationId, create);
+        feedbackCommandService.addFeedback(userId, creationId, create);
         return new ResponseEntity<>(Response.created(), HttpStatus.CREATED);
     }
 
@@ -89,7 +97,7 @@ public class FeedbackController {
                                          @PathVariable(value = "feedbackId") long feedbackId) {
         log.info("deleteFeedback - userId : {}, creationId : {}, feedbackId : {}", userId, creationId, feedbackId);
 
-        feedbackService.removeFeedback(userId, creationId, feedbackId);
+        feedbackCommandService.removeFeedback(userId, creationId, feedbackId);
         return ResponseEntity.ok().build();
     }
 
@@ -115,7 +123,7 @@ public class FeedbackController {
             return new ResponseEntity<>(errorRepoonse, HttpStatus.BAD_REQUEST);
         }
 
-        feedbackService.selectFeedback(userId, creationId, feedbackId, selection);
+        feedbackCommandService.selectFeedback(userId, creationId, feedbackId, selection);
         return ResponseEntity.ok().build();
     }
 }

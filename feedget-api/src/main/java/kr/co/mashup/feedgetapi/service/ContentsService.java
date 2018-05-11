@@ -14,8 +14,8 @@ import kr.co.mashup.feedgetcommon.domain.FeedbackAttachedContent;
 import kr.co.mashup.feedgetcommon.domain.code.ContentType;
 import kr.co.mashup.feedgetcommon.repository.CreationRepository;
 import kr.co.mashup.feedgetcommon.repository.FeedbackRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +31,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class ContentsService {
 
     private final CreationRepository creationRepository;
@@ -39,6 +38,13 @@ public class ContentsService {
     private final FeedbackRepository feedbackRepository;
 
     private final StorageProperties storageProperties;
+
+    @Autowired
+    public ContentsService(CreationRepository creationRepository, FeedbackRepository feedbackRepository, StorageProperties storageProperties) {
+        this.creationRepository = creationRepository;
+        this.feedbackRepository = feedbackRepository;
+        this.storageProperties = storageProperties;
+    }
 
     /**
      * 창작물의 첨부 컨텐츠 추가

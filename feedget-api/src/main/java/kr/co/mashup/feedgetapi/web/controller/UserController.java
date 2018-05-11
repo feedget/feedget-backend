@@ -5,7 +5,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import kr.co.mashup.feedgetapi.exception.ErrorResponse;
-import kr.co.mashup.feedgetapi.service.UserService;
+import kr.co.mashup.feedgetapi.service.UserCommandService;
+import kr.co.mashup.feedgetapi.service.UserQueryService;
 import kr.co.mashup.feedgetapi.web.dto.DataResponse;
 import kr.co.mashup.feedgetapi.web.dto.UserDto;
 import lombok.extern.slf4j.Slf4j;
@@ -28,11 +29,14 @@ import javax.validation.Valid;
 @Slf4j
 public class UserController {
 
-    private final UserService userService;
+    private final UserCommandService userCommandService;
+
+    private final UserQueryService userQueryService;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserCommandService userCommandService, UserQueryService userQueryService) {
+        this.userCommandService = userCommandService;
+        this.userQueryService = userQueryService;
     }
 
     @ApiOperation(value = "유저 닉네임 수정", notes = "유저의 닉네임을 수정한다")
@@ -55,7 +59,7 @@ public class UserController {
             return new ResponseEntity<>(errorRepoonse, HttpStatus.BAD_REQUEST);
         }
 
-        userService.modifyUserNickname(userId, updateNickname);
+        userCommandService.modifyUserNickname(userId, updateNickname);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -73,7 +77,7 @@ public class UserController {
                                       @PathVariable(value = "uuid") String uuid) {
         log.info("getUserInfo - userId : {}, uuid : {}", userId, uuid);
 
-        UserDto.DetailResponse userResponse = userService.readUserInfo(userId, uuid);
+        UserDto.DetailResponse userResponse = userQueryService.readUserInfo(userId, uuid);
         return new ResponseEntity<>(new DataResponse<>(userResponse), HttpStatus.OK);
     }
 }

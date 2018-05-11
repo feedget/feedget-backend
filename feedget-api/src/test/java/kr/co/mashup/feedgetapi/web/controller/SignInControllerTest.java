@@ -1,7 +1,7 @@
 package kr.co.mashup.feedgetapi.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.co.mashup.feedgetapi.service.UserService;
+import kr.co.mashup.feedgetapi.service.UserCommandService;
 import kr.co.mashup.feedgetapi.web.dto.SignInDto;
 import kr.co.mashup.feedgetcommon.domain.User;
 import org.junit.Before;
@@ -30,7 +30,7 @@ public class SignInControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private UserService userService;
+    private UserCommandService userCommandService;
 
     @InjectMocks
     private SignInController sut;
@@ -68,7 +68,7 @@ public class SignInControllerTest {
                 .andReturn();
 
         // then : 로그인 된다
-        verify(userService, times(1)).signInUser(dto);
+        verify(userCommandService, times(1)).signInUser(dto);
     }
 
     @Test
@@ -90,7 +90,7 @@ public class SignInControllerTest {
                 .andReturn();
 
         // then : 실명이 없어서 로그인되지 않는다
-        verify(userService, never()).signInUser(dto);
+        verify(userCommandService, never()).signInUser(dto);
     }
 
     @Test
@@ -112,7 +112,7 @@ public class SignInControllerTest {
                 .andReturn();
 
         // then : 닉네임이 없어서 로그인되지 않는다
-        verify(userService, never()).signInUser(dto);
+        verify(userCommandService, never()).signInUser(dto);
     }
 
     @Test
@@ -134,7 +134,7 @@ public class SignInControllerTest {
                 .andReturn();
 
         // then : 이메일이 없어서 로그인되지 않는다
-        verify(userService, never()).signInUser(dto);
+        verify(userCommandService, never()).signInUser(dto);
     }
 
     @Test
@@ -156,7 +156,7 @@ public class SignInControllerTest {
                 .andReturn();
 
         // then : 이메일 형식이 아니라 로그인되지 않는다
-        verify(userService, never()).signInUser(dto);
+        verify(userCommandService, never()).signInUser(dto);
     }
 
     @Test
@@ -178,7 +178,7 @@ public class SignInControllerTest {
                 .andReturn();
 
         // then : oauthToken이 없어서 로그인되지 않는다
-        verify(userService, never()).signInUser(dto);
+        verify(userCommandService, never()).signInUser(dto);
     }
 
     @Test
@@ -199,6 +199,6 @@ public class SignInControllerTest {
                 .andReturn();
 
         // then : oauthType이 없어서 로그인되지 않는다
-        verify(userService, never()).signInUser(dto);
+        verify(userCommandService, never()).signInUser(dto);
     }
 }

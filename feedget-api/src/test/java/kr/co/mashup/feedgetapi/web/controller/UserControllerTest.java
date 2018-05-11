@@ -1,7 +1,8 @@
 package kr.co.mashup.feedgetapi.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.co.mashup.feedgetapi.service.UserService;
+import kr.co.mashup.feedgetapi.service.UserCommandService;
+import kr.co.mashup.feedgetapi.service.UserQueryService;
 import kr.co.mashup.feedgetapi.web.dto.UserDto;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -30,7 +31,10 @@ public class UserControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private UserService userService;
+    private UserCommandService userCommandService;
+
+    @Mock
+    private UserQueryService userQueryService;
 
     @InjectMocks
     private UserController sut;
@@ -66,7 +70,7 @@ public class UserControllerTest {
                 .andReturn();
 
         // then : 닉네임이 수정된다
-        verify(userService, times(1)).modifyUserNickname(userId, dto);
+        verify(userCommandService, times(1)).modifyUserNickname(userId, dto);
     }
 
     @Test
@@ -86,7 +90,7 @@ public class UserControllerTest {
                 .andReturn();
 
         // then : 수정할 닉네임이 없어서 수정되지 않는다
-        verify(userService, never()).modifyUserNickname(userId, dto);
+        verify(userCommandService, never()).modifyUserNickname(userId, dto);
     }
 
     @Test
@@ -106,7 +110,7 @@ public class UserControllerTest {
                 .andReturn();
 
         // then : 자리수 제한을 넘어 닉네임이 수정되지 않는다
-        verify(userService, never()).modifyUserNickname(userId, dto);
+        verify(userCommandService, never()).modifyUserNickname(userId, dto);
     }
 
     @Test
@@ -124,6 +128,6 @@ public class UserControllerTest {
                 .andReturn();
 
         // then : 유저 정보가 조회된다
-        verify(userService, times(1)).readUserInfo(userId, uuid);
+        verify(userQueryService, times(1)).readUserInfo(userId, uuid);
     }
 }

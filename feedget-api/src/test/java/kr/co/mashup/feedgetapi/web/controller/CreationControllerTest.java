@@ -1,7 +1,8 @@
 package kr.co.mashup.feedgetapi.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.co.mashup.feedgetapi.service.CreationService;
+import kr.co.mashup.feedgetapi.service.CreationCommandService;
+import kr.co.mashup.feedgetapi.service.CreationQueryService;
 import kr.co.mashup.feedgetapi.web.CreationUpdateValidator;
 import kr.co.mashup.feedgetapi.web.dto.CreationDto;
 import org.junit.Before;
@@ -41,7 +42,10 @@ public class CreationControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private CreationService creationService;
+    private CreationCommandService creationCommandService;
+
+    @Mock
+    private CreationQueryService creationQueryService;
 
     @Spy
     private CreationUpdateValidator creationUpdateValidator;
@@ -82,7 +86,7 @@ public class CreationControllerTest {
                 .andReturn();
 
         // then : 창작물이 추가된다
-        verify(creationService, times(1)).addCreation(anyLong(), any(CreationDto.Create.class));
+        verify(creationCommandService, times(1)).addCreation(anyLong(), any(CreationDto.Create.class));
     }
 
     @Test
@@ -106,7 +110,7 @@ public class CreationControllerTest {
                 .andReturn();
 
         // then : 제목이 없어서 창작물이 추가되지 않는다
-        verify(creationService, never()).addCreation(anyLong(), any(CreationDto.Create.class));
+        verify(creationCommandService, never()).addCreation(anyLong(), any(CreationDto.Create.class));
     }
 
     @Test
@@ -130,7 +134,7 @@ public class CreationControllerTest {
                 .andReturn();
 
         // then : 설명이 없어서 창작물이 추가되지 않는다
-        verify(creationService, never()).addCreation(anyLong(), any(CreationDto.Create.class));
+        verify(creationCommandService, never()).addCreation(anyLong(), any(CreationDto.Create.class));
     }
 
     @Test
@@ -154,7 +158,7 @@ public class CreationControllerTest {
                 .andReturn();
 
         // then : 카테고리가 없어서 창작물이 추가되지 않는다
-        verify(creationService, never()).addCreation(anyLong(), any(CreationDto.Create.class));
+        verify(creationCommandService, never()).addCreation(anyLong(), any(CreationDto.Create.class));
     }
 
     @Test
@@ -179,7 +183,7 @@ public class CreationControllerTest {
                 .andReturn();
 
         // then : 창작물이 수정된다
-        verify(creationService, times(1)).modifyCreation(userId, creationId, dto);
+        verify(creationCommandService, times(1)).modifyCreation(userId, creationId, dto);
     }
 
     @Test
@@ -204,7 +208,7 @@ public class CreationControllerTest {
                 .andReturn();
 
         // then : 제목이 없어서 창작물이 수정되지 않는다
-        verify(creationService, never()).modifyCreation(userId, creationId, dto);
+        verify(creationCommandService, never()).modifyCreation(userId, creationId, dto);
     }
 
     @Test
@@ -229,7 +233,7 @@ public class CreationControllerTest {
                 .andReturn();
 
         // then : 설명이 없어서 창작물이 수정되지 않는다
-        verify(creationService, never()).modifyCreation(userId, creationId, dto);
+        verify(creationCommandService, never()).modifyCreation(userId, creationId, dto);
     }
 
     @Test
@@ -254,7 +258,7 @@ public class CreationControllerTest {
                 .andReturn();
 
         // then : 카테고리가 없어서 창작물이 수정되지 않는다
-        verify(creationService, never()).modifyCreation(userId, creationId, dto);
+        verify(creationCommandService, never()).modifyCreation(userId, creationId, dto);
     }
 
     @Test
@@ -270,7 +274,7 @@ public class CreationControllerTest {
                 .andReturn();
 
         // then : 창작물이 삭제된다
-        verify(creationService, times(1)).removeCreation(userId, creationId);
+        verify(creationCommandService, times(1)).removeCreation(userId, creationId);
     }
 
     @Test
@@ -282,7 +286,7 @@ public class CreationControllerTest {
 
         Page<CreationDto.Response> creationPage = new PageImpl<>(Collections.emptyList());
 
-        when(creationService.readCreations(eq(userId), eq(category), any())).thenReturn(creationPage);
+        when(creationQueryService.readCreations(eq(userId), eq(category), any())).thenReturn(creationPage);
         ArgumentCaptor<Pageable> pageableArg = ArgumentCaptor.forClass(Pageable.class);
 
         // when : 창작물 리스트를 조회하면
@@ -295,7 +299,7 @@ public class CreationControllerTest {
                 .andReturn();
 
         // then : 창작물 리스트가 조회된다
-        verify(creationService, times(1)).readCreations(eq(userId), eq(category), pageableArg.capture());
+        verify(creationQueryService, times(1)).readCreations(eq(userId), eq(category), pageableArg.capture());
         assertEquals(pageableArg.getValue(), pageable);
     }
 
@@ -312,6 +316,6 @@ public class CreationControllerTest {
                 .andReturn();
 
         // then : 창작물이 조회된다
-        verify(creationService, times(1)).readCreation(eq(userId), eq(creationId));
+        verify(creationQueryService, times(1)).readCreation(eq(userId), eq(creationId));
     }
 }
