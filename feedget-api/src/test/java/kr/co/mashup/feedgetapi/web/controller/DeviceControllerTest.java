@@ -13,6 +13,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.Mockito.*;
@@ -56,15 +57,15 @@ public class DeviceControllerTest {
         dto.setCloudMsgRegToken("testCloudToken");
 
         // when : Cloud Messaging Device 정보를 등록하면
-        MvcResult result = mockMvc.perform(patch("/devices/cloud-messaging")
+        ResultActions resultActions = mockMvc.perform(patch("/devices/cloud-messaging")
                 .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isOk())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : Cloud Messaging Device 정보가 등록된다
+        // then : HttpStatus 200 / Cloud Messaging Device 정보가 등록된다
+        MvcResult result = resultActions.andExpect(status().isOk())
+                .andReturn();
         verify(deviceService, times(1)).registerCloudMessagingDevice(userId, dto);
     }
 
@@ -76,15 +77,15 @@ public class DeviceControllerTest {
         dto.setCloudMsgRegToken("");
 
         // when : Cloud Messaging Device 정보를 등록하면
-        MvcResult result = mockMvc.perform(patch("/devices/cloud-messaging")
+        ResultActions resultActions = mockMvc.perform(patch("/devices/cloud-messaging")
                 .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : CloudMsgRegId가 공백이라 Cloud Messaging Device 정보가 등록되지 않는다
+        // then : HttpStatus 400 / CloudMsgRegId가 공백이라 Cloud Messaging Device 정보가 등록되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(deviceService, never()).registerCloudMessagingDevice(userId, dto);
     }
 }

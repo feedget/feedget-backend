@@ -11,6 +11,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
@@ -52,13 +53,13 @@ public class CreationAttachedContentControllerTest {
         MockMultipartFile file = new MockMultipartFile("files", "filename.jpg", "image/jpeg", "some image".getBytes());
 
         // when : 창작물의 컨텐츠를 추가하면
-        MvcResult result = mockMvc.perform(fileUpload("/creations/{creationId}/contents", creationId)
+        ResultActions resultActions = mockMvc.perform(fileUpload("/creations/{creationId}/contents", creationId)
                 .file(file)
-                .param("contentsType", "IMAGE")
-        ).andExpect(status().isCreated())
-                .andReturn();
+                .param("contentsType", "IMAGE"));
 
-        // then : 컨텐츠가 추가된다
+        // then : HttpStatus 201 / 컨텐츠가 추가된다
+        MvcResult result = resultActions.andExpect(status().isCreated())
+                .andReturn();
         verify(contentsService, times(1)).addCreationAttachedContents(eq(creationId), any(CreationDto.AttachedContent.class));
     }
 
@@ -69,12 +70,12 @@ public class CreationAttachedContentControllerTest {
         MockMultipartFile file = new MockMultipartFile("files", "filename.jpg", "image/jpeg", "some image".getBytes());
 
         // when : 창작물의 컨텐츠를 추가하면
-        MvcResult result = mockMvc.perform(fileUpload("/creations/{creationId}/contents", creationId)
-                .param("contentsType", "IMAGE")
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+        ResultActions resultActions = mockMvc.perform(fileUpload("/creations/{creationId}/contents", creationId)
+                .param("contentsType", "IMAGE"));
 
-        // then : 컨텐츠가 추가되지 않는다
+        // then : HttpStatus 400 / 컨텐츠가 추가되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(contentsService, never()).addCreationAttachedContents(eq(creationId), any(CreationDto.AttachedContent.class));
     }
 
@@ -85,7 +86,7 @@ public class CreationAttachedContentControllerTest {
         MockMultipartFile file = new MockMultipartFile("files", "filename.jpg", "image/jpeg", "some image".getBytes());
 
         // when : 창작물의 컨텐츠를 추가하면
-        MvcResult result = mockMvc.perform(fileUpload("/creations/{creationId}/contents", creationId)
+        ResultActions resultActions = mockMvc.perform(fileUpload("/creations/{creationId}/contents", creationId)
                 .file(file)
                 .file(file)
                 .file(file)
@@ -97,11 +98,11 @@ public class CreationAttachedContentControllerTest {
                 .file(file)
                 .file(file)
                 .file(file)
-                .param("contentsType", "IMAGE")
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+                .param("contentsType", "IMAGE"));
 
-        // then : 컨텐츠가 추가되지 않는다
+        // then : HttpStatus 400 / 컨텐츠가 추가되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(contentsService, never()).addCreationAttachedContents(eq(creationId), any(CreationDto.AttachedContent.class));
     }
 
@@ -112,14 +113,14 @@ public class CreationAttachedContentControllerTest {
         List<Long> contentIds = Arrays.asList(1L, 2L, 3L);
 
         // when : 창작물의 컨텐츠를 제거하면
-        MvcResult result = mockMvc.perform(delete("/creations/{creationId}/contents", creationId)
+        ResultActions resultActions = mockMvc.perform(delete("/creations/{creationId}/contents", creationId)
                 .param("contentId", String.valueOf(1L))
                 .param("contentId", String.valueOf(2L))
-                .param("contentId", String.valueOf(3L))
-        ).andExpect(status().isOk())
-                .andReturn();
+                .param("contentId", String.valueOf(3L)));
 
-        // then : 컨텐츠가 제거된다
+        // then : HttpStatus 200 / 컨텐츠가 제거된다
+        MvcResult result = resultActions.andExpect(status().isOk())
+                .andReturn();
         verify(contentsService, times(1)).removeCreationAttachedContents(creationId, contentIds);
     }
 
@@ -129,11 +130,11 @@ public class CreationAttachedContentControllerTest {
         long creationId = 1L;
 
         // when : 창작물의 컨텐츠를 제거하면
-        MvcResult result = mockMvc.perform(delete("/creations/{creationId}/contents", creationId)
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+        ResultActions resultActions = mockMvc.perform(delete("/creations/{creationId}/contents", creationId));
 
-        // then : 컨텐츠가 제거되지 않는다
+        // then : HttpStatus 400 / 컨텐츠가 제거되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(contentsService, never()).removeCreationAttachedContents(eq(creationId), anyListOf(Long.class));
     }
 }

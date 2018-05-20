@@ -1,8 +1,8 @@
 package kr.co.mashup.feedgetapi.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.co.mashup.feedgetapi.service.FeedbackQueryService;
 import kr.co.mashup.feedgetapi.service.FeedbackCommandService;
+import kr.co.mashup.feedgetapi.service.FeedbackQueryService;
 import kr.co.mashup.feedgetapi.web.dto.FeedbackDto;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -18,6 +18,7 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Collections;
@@ -77,15 +78,15 @@ public class FeedbackControllerTest {
         ArgumentCaptor<Pageable> pageableArg = ArgumentCaptor.forClass(Pageable.class);
 
         // when : 피드백 리스트를 조회하면
-        MvcResult result = mockMvc.perform(get("/creations/{creationId}/feedback", creationId)
+        ResultActions resultActions = mockMvc.perform(get("/creations/{creationId}/feedback", creationId)
                 .requestAttr("userId", userId)
                 .param("cursor", String.valueOf(1))
                 .param("page", String.valueOf(0))
-                .param("size", String.valueOf(10))
-        ).andExpect(status().isOk())
-                .andReturn();
+                .param("size", String.valueOf(10)));
 
-        // then : 피드백 리스트가 조회된다
+        // then : HttpStatus 200 / 피드백 리스트가 조회된다
+        MvcResult result = resultActions.andExpect(status().isOk())
+                .andReturn();
         verify(feedbackQueryService, times(1)).readFeedbackList(eq(userId), eq(creationId), pageableArg.capture(), anyLong());
         assertEquals(pageableArg.getValue(), pageable);
     }
@@ -100,15 +101,17 @@ public class FeedbackControllerTest {
         dto.setAnonymity(true);
 
         // when : 창작물에 피드백을 추가하면
-        MvcResult result = mockMvc.perform(post("/creations/{creationId}/feedback", creationId)
-                .requestAttr("userId", userId)
-                .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isCreated())
-                .andReturn();
+        ResultActions resultActions =
+                mockMvc.perform(post("/creations/{creationId}/feedback", creationId)
+                        .requestAttr("userId", userId)
+                        .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto))
+                );
 
-        // then : 피드백이 추가된다
+        // then : HttpStatus 201 / 피드백이 추가된다
+        MvcResult result = resultActions.andExpect(status().isCreated())
+                .andReturn();
         verify(feedbackCommandService, times(1)).addFeedback(userId, creationId, dto);
     }
 
@@ -122,15 +125,15 @@ public class FeedbackControllerTest {
         dto.setAnonymity(true);
 
         // when : 창작물에 피드백을 추가하면
-        MvcResult result = mockMvc.perform(post("/creations/{creationId}/feedback", creationId)
+        ResultActions resultActions = mockMvc.perform(post("/creations/{creationId}/feedback", creationId)
                 .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : 피드백 내용이 짧아 피드백이 추가되지 않는다
+        // then : HttpStatus 400 / 피드백 내용이 짧아 피드백이 추가되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(feedbackCommandService, never()).addFeedback(userId, creationId, dto);
     }
 
@@ -142,12 +145,12 @@ public class FeedbackControllerTest {
         long feedbackId = 1L;
 
         // when : 창작물의 피드백을 삭제하면
-        MvcResult result = mockMvc.perform(delete("/creations/{creationId}/feedback/{feedbackId}", creationId, feedbackId)
-                .requestAttr("userId", userId)
-        ).andExpect(status().isOk())
-                .andReturn();
+        ResultActions resultActions = mockMvc.perform(delete("/creations/{creationId}/feedback/{feedbackId}", creationId, feedbackId)
+                .requestAttr("userId", userId));
 
-        // then : 창작물의 피드백이 삭제된다
+        // then : HttpStatus 200 / 창작물의 피드백이 삭제된다
+        MvcResult result = resultActions.andExpect(status().isOk())
+                .andReturn();
         verify(feedbackCommandService, times(1)).removeFeedback(userId, creationId, feedbackId);
     }
 
@@ -161,15 +164,15 @@ public class FeedbackControllerTest {
         dto.setSelectionComment("comment");
 
         // when : 창작물의 피드백을 채택하면
-        MvcResult result = mockMvc.perform(put("/creations/{creationId}/feedback/{feedbackId}/selection", creationId, feedbackId)
-                        .requestAttr("userId", userId)
+        ResultActions resultActions = mockMvc.perform(put("/creations/{creationId}/feedback/{feedbackId}/selection", creationId, feedbackId)
+                .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isOk())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : 피드백이 채택된다
+        // then : HttpStatus 200 / 피드백이 채택된다
+        MvcResult result = resultActions.andExpect(status().isOk())
+                .andReturn();
         verify(feedbackCommandService, times(1)).selectFeedback(userId, creationId, feedbackId, dto);
     }
 
@@ -183,15 +186,15 @@ public class FeedbackControllerTest {
         dto.setSelectionComment("co");
 
         // when : 창작물의 피드백을 채택하면
-        MvcResult result = mockMvc.perform(put("/creations/{creationId}/feedback/{feedbackId}/selection", creationId, feedbackId)
+        ResultActions resultActions = mockMvc.perform(put("/creations/{creationId}/feedback/{feedbackId}/selection", creationId, feedbackId)
                 .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : 채택 의견이 짧아 피드백이 채택되지 않는다
+        // then : HttpStatus 400 / 채택 의견이 짧아 피드백이 채택되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(feedbackCommandService, never()).selectFeedback(userId, creationId, feedbackId, dto);
     }
 }

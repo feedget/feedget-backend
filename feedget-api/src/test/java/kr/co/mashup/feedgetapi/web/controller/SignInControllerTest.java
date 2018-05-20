@@ -14,6 +14,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.Mockito.*;
@@ -60,14 +61,14 @@ public class SignInControllerTest {
         dto.setOAuthType(User.OAuthType.FB);
 
         // when : signIn을 하면
-        MvcResult result = mockMvc.perform(post("/sign-in")
+        ResultActions resultActions = mockMvc.perform(post("/sign-in")
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isOk())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : 로그인 된다
+        // then : HttpStatus 200 / 로그인 된다
+        MvcResult result = resultActions.andExpect(status().isOk())
+                .andReturn();
         verify(userCommandService, times(1)).signInUser(dto);
     }
 
@@ -82,14 +83,14 @@ public class SignInControllerTest {
         dto.setOAuthType(User.OAuthType.FB);
 
         // when : signIn을 하면
-        MvcResult result = mockMvc.perform(post("/sign-in")
+        ResultActions resultActions = mockMvc.perform(post("/sign-in")
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : 실명이 없어서 로그인되지 않는다
+        // then : HttpStatus 400 / 실명이 없어서 로그인되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(userCommandService, never()).signInUser(dto);
     }
 
@@ -104,14 +105,14 @@ public class SignInControllerTest {
         dto.setOAuthType(User.OAuthType.FB);
 
         // when : signIn을 하면
-        MvcResult result = mockMvc.perform(post("/sign-in")
+        ResultActions resultActions = mockMvc.perform(post("/sign-in")
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : 닉네임이 없어서 로그인되지 않는다
+        // then : HttpStatus 400 / 닉네임이 없어서 로그인되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(userCommandService, never()).signInUser(dto);
     }
 
@@ -126,14 +127,15 @@ public class SignInControllerTest {
         dto.setOAuthType(User.OAuthType.FB);
 
         // when : signIn을 하면
-        MvcResult result = mockMvc.perform(post("/sign-in")
+        ResultActions resultActions = mockMvc.perform(post("/sign-in")
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+        );
 
-        // then : 이메일이 없어서 로그인되지 않는다
+        // then : HttpStatus 400 / 이메일이 없어서 로그인되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(userCommandService, never()).signInUser(dto);
     }
 
@@ -148,14 +150,14 @@ public class SignInControllerTest {
         dto.setOAuthType(User.OAuthType.FB);
 
         // when : signIn을 하면
-        MvcResult result = mockMvc.perform(post("/sign-in")
+        ResultActions resultActions = mockMvc.perform(post("/sign-in")
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : 이메일 형식이 아니라 로그인되지 않는다
+        // then : HttpStatus 400 / 이메일 형식이 아니라 로그인되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(userCommandService, never()).signInUser(dto);
     }
 
@@ -170,14 +172,14 @@ public class SignInControllerTest {
         dto.setOAuthType(User.OAuthType.FB);
 
         // when : signIn을 하면
-        MvcResult result = mockMvc.perform(post("/sign-in")
+        ResultActions resultActions = mockMvc.perform(post("/sign-in")
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : oauthToken이 없어서 로그인되지 않는다
+        // then : HttpStatus 400 / oauthToken이 없어서 로그인되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(userCommandService, never()).signInUser(dto);
     }
 
@@ -191,14 +193,14 @@ public class SignInControllerTest {
         dto.setOAuthToken("oauthToken");
 
         // when : signIn을 하면
-        MvcResult result = mockMvc.perform(post("/sign-in")
+        ResultActions resultActions = mockMvc.perform(post("/sign-in")
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : oauthType이 없어서 로그인되지 않는다
+        // then : HttpStatus 400 / oauthType이 없어서 로그인되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(userCommandService, never()).signInUser(dto);
     }
 }

@@ -11,6 +11,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
@@ -53,13 +54,13 @@ public class FeedbackAttachedContentControllerTest {
         MockMultipartFile file = new MockMultipartFile("files", "filename.jpg", "image/jpeg", "some image".getBytes());
 
         // when : 피드백의 컨텐츠를 추가하면
-        MvcResult result = mockMvc.perform(fileUpload("/creations/{creationId}/feedback/{feedbackId}/contents", creationId, feedbackId)
+        ResultActions resultActions = mockMvc.perform(fileUpload("/creations/{creationId}/feedback/{feedbackId}/contents", creationId, feedbackId)
                 .file(file)
-                .param("contentsType", "IMAGE")
-        ).andExpect(status().isCreated())
-                .andReturn();
+                .param("contentsType", "IMAGE"));
 
-        // then : 컨텐츠가 추가된다
+        // then : HttpStatus 201 / 컨텐츠가 추가된다
+        MvcResult result = resultActions.andExpect(status().isCreated())
+                .andReturn();
         verify(contentsService, times(1)).addFeedbackAttachedContents(eq(creationId), eq(feedbackId), any(FeedbackDto.AttachedContent.class));
     }
 
@@ -71,12 +72,12 @@ public class FeedbackAttachedContentControllerTest {
         MockMultipartFile file = new MockMultipartFile("files", "filename.jpg", "image/jpeg", "some image".getBytes());
 
         // when : 피드백의 컨텐츠를 추가하면
-        MvcResult result = mockMvc.perform(fileUpload("/creations/{creationId}/feedback/{feedbackId}/contents", creationId, feedbackId)
-                .param("contentsType", "IMAGE")
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+        ResultActions resultActions = mockMvc.perform(fileUpload("/creations/{creationId}/feedback/{feedbackId}/contents", creationId, feedbackId)
+                .param("contentsType", "IMAGE"));
 
-        // then : 컨텐츠가 추가되지 않는다
+        // then : HttpStatus 400 / 컨텐츠가 추가되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(contentsService, never()).addFeedbackAttachedContents(eq(creationId), eq(feedbackId), any(FeedbackDto.AttachedContent.class));
     }
 
@@ -88,16 +89,16 @@ public class FeedbackAttachedContentControllerTest {
         MockMultipartFile file = new MockMultipartFile("files", "filename.jpg", "image/jpeg", "some image".getBytes());
 
         // when : 피드백의 컨텐츠를 추가하면
-        MvcResult result = mockMvc.perform(fileUpload("/creations/{creationId}/feedback/{feedbackId}/contents", creationId, feedbackId)
+        ResultActions resultActions = mockMvc.perform(fileUpload("/creations/{creationId}/feedback/{feedbackId}/contents", creationId, feedbackId)
                 .file(file)
                 .file(file)
                 .file(file)
                 .file(file)
-                .param("contentsType", "IMAGE")
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+                .param("contentsType", "IMAGE"));
 
-        // then : 컨텐츠가 추가되지 않는다
+        // then : HttpStatus 400 / 컨텐츠가 추가되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(contentsService, never()).addFeedbackAttachedContents(eq(creationId), eq(feedbackId), any(FeedbackDto.AttachedContent.class));
     }
 
@@ -109,14 +110,14 @@ public class FeedbackAttachedContentControllerTest {
         List<Long> contentIds = Arrays.asList(1L, 2L, 3L);
 
         // when : 피드백의 컨텐츠를 제거하면
-        MvcResult result = mockMvc.perform(delete("/creations/{creationId}/feedback/{feedbackId}/contents", creationId, feedbackId)
+        ResultActions resultActions = mockMvc.perform(delete("/creations/{creationId}/feedback/{feedbackId}/contents", creationId, feedbackId)
                 .param("contentId", String.valueOf(1L))
                 .param("contentId", String.valueOf(2L))
-                .param("contentId", String.valueOf(3L))
-        ).andExpect(status().isOk())
-                .andReturn();
+                .param("contentId", String.valueOf(3L)));
 
-        // then : 컨텐츠가 제거된다
+        // then : HttpStatus 200 / 컨텐츠가 제거된다
+        MvcResult result = resultActions.andExpect(status().isOk())
+                .andReturn();
         verify(contentsService, times(1)).removeFeedbackAttachedContents(creationId, feedbackId, contentIds);
     }
 
@@ -127,11 +128,11 @@ public class FeedbackAttachedContentControllerTest {
         long feedbackId = 1L;
 
         // when : 피드백의 컨텐츠를 제거하면
-        MvcResult result = mockMvc.perform(delete("/creations/{creationId}/feedback/{feedbackId}/contents", creationId, feedbackId)
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+        ResultActions resultActions = mockMvc.perform(delete("/creations/{creationId}/feedback/{feedbackId}/contents", creationId, feedbackId));
 
-        // then : 컨텐츠가 제거되지 않는다
+        // then : HttpStatus 400 / 컨텐츠가 제거되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(contentsService, never()).removeFeedbackAttachedContents(eq(creationId), eq(feedbackId), anyListOf(Long.class));
     }
 }

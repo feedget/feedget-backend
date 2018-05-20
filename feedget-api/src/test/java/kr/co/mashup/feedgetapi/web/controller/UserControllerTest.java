@@ -14,6 +14,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.Mockito.*;
@@ -61,15 +62,15 @@ public class UserControllerTest {
         dto.setNickname("nickname");
 
         // when : 닉네임을 수정하면
-        MvcResult result = mockMvc.perform(patch("/users/nickname")
+        ResultActions resultActions = mockMvc.perform(patch("/users/nickname")
                 .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isOk())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : 닉네임이 수정된다
+        // then : HttpStatus 200 / 닉네임이 수정된다
+        MvcResult result = resultActions.andExpect(status().isOk())
+                .andReturn();
         verify(userCommandService, times(1)).modifyUserNickname(userId, dto);
     }
 
@@ -81,15 +82,15 @@ public class UserControllerTest {
         dto.setNickname("");
 
         // when : 닉네임을 수정하면
-        MvcResult result = mockMvc.perform(patch("/users/nickname")
+        ResultActions resultActions = mockMvc.perform(patch("/users/nickname")
                 .header("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : 수정할 닉네임이 없어서 수정되지 않는다
+        // then : HttpStatus 400 / 수정할 닉네임이 없어서 수정되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(userCommandService, never()).modifyUserNickname(userId, dto);
     }
 
@@ -101,15 +102,15 @@ public class UserControllerTest {
         dto.setNickname("12345678910");
 
         // when : 닉네임을 수정하면
-        MvcResult result = mockMvc.perform(patch("/users/nickname")
+        ResultActions resultActions = mockMvc.perform(patch("/users/nickname")
                 .header("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : 자리수 제한을 넘어 닉네임이 수정되지 않는다
+        // then : HttpStatus 400 / 자리수 제한을 넘어 닉네임이 수정되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(userCommandService, never()).modifyUserNickname(userId, dto);
     }
 
@@ -120,14 +121,14 @@ public class UserControllerTest {
         String uuid = "me";
 
         // when : 유저 정보를 조회하면
-        MvcResult result = mockMvc.perform(get("/users/{uuid}", uuid)
+        ResultActions resultActions = mockMvc.perform(get("/users/{uuid}", uuid)
                 .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isOk())
-                .andReturn();
+                .contentType(MediaType.APPLICATION_JSON));
 
-        // then : 유저 정보가 조회된다
+        // then : HttpStatus 200 / 유저 정보가 조회된다
+        MvcResult result = resultActions.andExpect(status().isOk())
+                .andReturn();
         verify(userQueryService, times(1)).readUserInfo(userId, uuid);
     }
 }

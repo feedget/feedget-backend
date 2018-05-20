@@ -21,6 +21,7 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Collections;
@@ -77,15 +78,15 @@ public class CreationControllerTest {
         dto.setRewardPoint(10.0);
 
         // when : 창작물을 추가하면
-        MvcResult result = mockMvc.perform(post("/creations")
+        ResultActions resultActions = mockMvc.perform(post("/creations")
                 .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isCreated())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : 창작물이 추가된다
+        // then : HttpStatus 201 / 창작물이 추가된다
+        MvcResult result = resultActions.andExpect(status().isCreated())
+                .andReturn();
         verify(creationCommandService, times(1)).addCreation(anyLong(), any(CreationDto.Create.class));
     }
 
@@ -101,15 +102,15 @@ public class CreationControllerTest {
         dto.setRewardPoint(10.0);
 
         // when : 창작물을 추가하면
-        MvcResult result = mockMvc.perform(post("/creations")
+        ResultActions resultActions = mockMvc.perform(post("/creations")
                 .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : 제목이 없어서 창작물이 추가되지 않는다
+        // then : HttpStatus 400 / 제목이 없어서 창작물이 추가되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(creationCommandService, never()).addCreation(anyLong(), any(CreationDto.Create.class));
     }
 
@@ -125,15 +126,15 @@ public class CreationControllerTest {
         dto.setRewardPoint(10.0);
 
         // when : 창작물을 추가하면
-        MvcResult result = mockMvc.perform(post("/creations")
+        ResultActions resultActions = mockMvc.perform(post("/creations")
                 .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : 설명이 없어서 창작물이 추가되지 않는다
+        // then : HttpStatus 400 / 설명이 없어서 창작물이 추가되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(creationCommandService, never()).addCreation(anyLong(), any(CreationDto.Create.class));
     }
 
@@ -149,15 +150,15 @@ public class CreationControllerTest {
         dto.setRewardPoint(10.0);
 
         // when : 창작물을 추가하면
-        MvcResult result = mockMvc.perform(post("/creations")
+        ResultActions resultActions = mockMvc.perform(post("/creations")
                 .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : 카테고리가 없어서 창작물이 추가되지 않는다
+        // then : HttpStatus 400 / 카테고리가 없어서 창작물이 추가되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(creationCommandService, never()).addCreation(anyLong(), any(CreationDto.Create.class));
     }
 
@@ -174,15 +175,15 @@ public class CreationControllerTest {
         dto.setRewardPoint(1000.0);
 
         // when : 창작물을 수정하면
-        MvcResult result = mockMvc.perform(put("/creations/{creationId}", creationId)
+        ResultActions resultActions = mockMvc.perform(put("/creations/{creationId}", creationId)
                 .requestAttr("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isOk())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : 창작물이 수정된다
+        // then : HttpStatus 200 / 창작물이 수정된다
+        MvcResult result = resultActions.andExpect(status().isOk())
+                .andReturn();
         verify(creationCommandService, times(1)).modifyCreation(userId, creationId, dto);
     }
 
@@ -199,15 +200,15 @@ public class CreationControllerTest {
         dto.setRewardPoint(1000.0);
 
         // when : 창작물을 수정하면
-        MvcResult result = mockMvc.perform(put("/creations/{creationId}", creationId)
+        ResultActions resultActions = mockMvc.perform(put("/creations/{creationId}", creationId)
                 .header("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : 제목이 없어서 창작물이 수정되지 않는다
+        // then : HttpStatus 400 / 제목이 없어서 창작물이 수정되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(creationCommandService, never()).modifyCreation(userId, creationId, dto);
     }
 
@@ -224,15 +225,15 @@ public class CreationControllerTest {
         dto.setRewardPoint(1000.0);
 
         // when : 창작물을 수정하면
-        MvcResult result = mockMvc.perform(put("/creations/{creationId}", creationId)
+        ResultActions resultActions = mockMvc.perform(put("/creations/{creationId}", creationId)
                 .header("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : 설명이 없어서 창작물이 수정되지 않는다
+        // then : HttpStatus 400 / 설명이 없어서 창작물이 수정되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(creationCommandService, never()).modifyCreation(userId, creationId, dto);
     }
 
@@ -249,15 +250,15 @@ public class CreationControllerTest {
         dto.setRewardPoint(1000.0);
 
         // when : 창작물을 수정하면
-        MvcResult result = mockMvc.perform(put("/creations/{creationId}", creationId)
+        ResultActions resultActions = mockMvc.perform(put("/creations/{creationId}", creationId)
                 .header("userId", userId)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-        ).andExpect(status().isBadRequest())
-                .andReturn();
+                .content(objectMapper.writeValueAsString(dto)));
 
-        // then : 카테고리가 없어서 창작물이 수정되지 않는다
+        // then : HttpStatus 400 / 카테고리가 없어서 창작물이 수정되지 않는다
+        MvcResult result = resultActions.andExpect(status().isBadRequest())
+                .andReturn();
         verify(creationCommandService, never()).modifyCreation(userId, creationId, dto);
     }
 
@@ -268,12 +269,12 @@ public class CreationControllerTest {
         long creationId = 1L;
 
         // when : 창작물을 삭제하면
-        MvcResult result = mockMvc.perform(delete("/creations/{creationId}", creationId)
-                .requestAttr("userId", userId)
-        ).andExpect(status().isOk())
-                .andReturn();
+        ResultActions resultActions = mockMvc.perform(delete("/creations/{creationId}", creationId)
+                .requestAttr("userId", userId));
 
-        // then : 창작물이 삭제된다
+        // then : HttpStatus 200 / 창작물이 삭제된다
+        MvcResult result = resultActions.andExpect(status().isOk())
+                .andReturn();
         verify(creationCommandService, times(1)).removeCreation(userId, creationId);
     }
 
@@ -290,15 +291,15 @@ public class CreationControllerTest {
         ArgumentCaptor<Pageable> pageableArg = ArgumentCaptor.forClass(Pageable.class);
 
         // when : 창작물 리스트를 조회하면
-        MvcResult result = mockMvc.perform(get("/creations")
+        ResultActions resultActions = mockMvc.perform(get("/creations")
                 .requestAttr("userId", userId)
                 .param("category", category)
                 .param("page", String.valueOf(0))
-                .param("size", String.valueOf(10))
-        ).andExpect(status().isOk())
-                .andReturn();
+                .param("size", String.valueOf(10)));
 
-        // then : 창작물 리스트가 조회된다
+        // then : HttpStatus 200 / 창작물 리스트가 조회된다
+        MvcResult result = resultActions.andExpect(status().isOk())
+                .andReturn();
         verify(creationQueryService, times(1)).readCreations(eq(userId), eq(category), pageableArg.capture());
         assertEquals(pageableArg.getValue(), pageable);
     }
@@ -310,12 +311,12 @@ public class CreationControllerTest {
         long creationId = 1L;
 
         // when : 창작물을 조회하면
-        MvcResult result = mockMvc.perform(get("/creations/{creationId}", creationId)
-                .requestAttr("userId", userId)
-        ).andExpect(status().isOk())
-                .andReturn();
+        ResultActions resultActions = mockMvc.perform(get("/creations/{creationId}", creationId)
+                .requestAttr("userId", userId));
 
-        // then : 창작물이 조회된다
+        // then : HttpStatus 200 / 창작물이 조회된다
+        MvcResult result = resultActions.andExpect(status().isOk())
+                .andReturn();
         verify(creationQueryService, times(1)).readCreation(eq(userId), eq(creationId));
     }
 }
